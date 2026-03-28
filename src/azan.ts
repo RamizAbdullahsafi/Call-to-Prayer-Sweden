@@ -2,7 +2,6 @@ import type { PrayerKey } from "./prayerTimes";
 
 const STORAGE_VOICE = "ctp.azan.voice";
 const STORAGE_PLAY = "ctp.azan.play";
-const STORAGE_CUSTOM = "ctp.azan.customUrl";
 const STORAGE_VOLUME = "ctp.azan.volume";
 const STORAGE_AZAN_KEYS = "ctp.azan.prayerKeys";
 
@@ -110,8 +109,6 @@ const WIKIMEDIA_VOICES: AzanVoiceDef[] = [
 ];
 
 export const AZAN_VOICES: AzanVoiceDef[] = [...ALADHAN_VOICES, ...WIKIMEDIA_VOICES];
-
-export const CUSTOM_VOICE_ID = "custom";
 
 const DEFAULT_VOICE_ID = "mishary-dubai";
 
@@ -260,7 +257,15 @@ export function saveAzanPrayerKeys(keys: Set<PrayerKey>): void {
 export function loadAzanVoiceId(): string {
   try {
     const raw = localStorage.getItem(STORAGE_VOICE);
-    if (raw === CUSTOM_VOICE_ID) return CUSTOM_VOICE_ID;
+    if (raw === "custom") {
+      try {
+        localStorage.removeItem("ctp.azan.customUrl");
+        localStorage.setItem(STORAGE_VOICE, DEFAULT_VOICE_ID);
+      } catch {
+        /* ignore */
+      }
+      return DEFAULT_VOICE_ID;
+    }
     if (raw && AZAN_VOICES.some((v) => v.id === raw)) return raw;
   } catch {
     /* ignore */
@@ -270,7 +275,7 @@ export function loadAzanVoiceId(): string {
 
 export function saveAzanVoiceId(id: string): void {
   try {
-    if (id === CUSTOM_VOICE_ID || AZAN_VOICES.some((v) => v.id === id)) {
+    if (AZAN_VOICES.some((v) => v.id === id)) {
       localStorage.setItem(STORAGE_VOICE, id);
     }
   } catch {
@@ -278,44 +283,12 @@ export function saveAzanVoiceId(id: string): void {
   }
 }
 
-export function loadCustomAzanUrl(): string {
-  try {
-    return localStorage.getItem(STORAGE_CUSTOM) ?? "";
-  } catch {
-    return "";
-  }
-}
-
-export function saveCustomAzanUrl(url: string): void {
-  try {
-    const t = url.trim();
-    if (t) localStorage.setItem(STORAGE_CUSTOM, t);
-    else localStorage.removeItem(STORAGE_CUSTOM);
-  } catch {
-    /* ignore */
-  }
-}
-
-export function resolveAzanUrl(voiceId: string): string | null {
-  if (voiceId === CUSTOM_VOICE_ID) {
-    const u = loadCustomAzanUrl().trim();
-    if (!u) return null;
-    try {
-      const parsed = new URL(u);
-      if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return null;
-      return u;
-    } catch {
-      return null;
-    }
-  }
+function resolveAzanUrl(voiceId: string): string | null {
   const def = AZAN_VOICES.find((v) => v.id === voiceId);
   return def?.url ?? null;
 }
 
-export function getVoiceMeta(voiceId: string): { title: string; artist: string } {
-  if (voiceId === CUSTOM_VOICE_ID) {
-    return { title: "Adhan (egen URL)", artist: "Anpassad" };
-  }
+function getVoiceMeta(voiceId: string): { title: string; artist: string } {
   const def = AZAN_VOICES.find((v) => v.id === voiceId);
   if (def) return { title: "Adhan", artist: `${def.reciter} — ${def.label}` };
   return { title: "Adhan", artist: "Call to Prayer Sweden" };

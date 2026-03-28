@@ -82,6 +82,11 @@ header .source {
   }
 }
 
+.controls-load {
+  display: flex;
+  align-items: flex-end;
+}
+
 label {
   display: block;
   font-size: 0.75rem;
@@ -394,14 +399,6 @@ button.secondary:disabled {
   flex: 0 0 auto;
   display: flex;
   align-items: flex-end;
-}
-
-.azan-custom-wrap {
-  margin-bottom: 0.75rem;
-}
-
-.azan-custom-wrap input[type="url"] {
-  margin-top: 0.35rem;
 }
 
 .azan-play-toggle {

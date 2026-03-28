@@ -9,22 +9,16 @@ import {
 } from "./prayerTimes";
 import {
   AZAN_VOICES,
-  CUSTOM_VOICE_ID,
   DEFAULT_AZAN_PRAYER_KEYS,
-  getVoiceMeta,
   loadAzanPlayEnabled,
   loadAzanPrayerKeys,
   loadAzanVolume,
   loadAzanVoiceId,
-  loadCustomAzanUrl,
   playAzanFromVoiceId,
-  playAzanUrl,
-  resolveAzanUrl,
   saveAzanPlayEnabled,
   saveAzanPrayerKeys,
   saveAzanVolume,
   saveAzanVoiceId,
-  saveCustomAzanUrl,
   setAzanPlaybackListener,
   stopAzan,
 } from "./azan";
@@ -117,8 +111,7 @@ function render(root: HTMLElement): void {
   root.innerHTML = `
     <header>
       <h1>Call to Prayer Sweden</h1>
-      <p class="tagline">Dagens bönetider för vald ort i Sverige.</p>
-      <p class="source">Tider hämtas från Islamiska förbundets officiella widget — samma källa som <strong>Muslimens Kompanjon</strong>.</p>
+      <p class="tagline">Bönetider för svenska orter — samma källa som Muslimens Kompanjon.</p>
     </header>
     <div class="controls">
       <div>
@@ -131,23 +124,23 @@ function render(root: HTMLElement): void {
         </select>
       </div>
       <div>
-        <label for="cityCustom">Egen ort (valfritt)</label>
-        <input type="text" id="cityCustom" autocomplete="address-level2" placeholder="T.ex. Ystad — används om ifylld" value="" />
+        <label for="cityCustom">Annan ort (valfritt)</label>
+        <input type="text" id="cityCustom" autocomplete="address-level2" placeholder="Skriv ort om den inte finns i listan" value="" />
       </div>
       <div class="controls-row">
         <div>
           <label for="date">Datum</label>
           <input type="date" id="date" />
         </div>
-        <div style="display:flex;align-items:flex-end;">
-          <button type="button" class="primary" id="load">Hämta tider</button>
+        <div class="controls-load">
+          <button type="button" class="primary" id="load">Visa tider</button>
         </div>
       </div>
     </div>
     <fieldset class="notify-fieldset">
       <legend>Påminnelser</legend>
       <p class="notify-hint">
-        Webbläsarens aviseringar vid bönetid (samma dag som i datumfältet). Lämna gärna fliken öppen — vissa webbläsare pausar bakgrundssidor.
+        Avisering när det är dags att be (dagens datum). Låt gärna sidan vara öppen.
       </p>
       <div class="notify-actions">
         <button type="button" class="secondary" id="notify-perm">Tillåt aviseringar</button>
@@ -161,13 +154,13 @@ function render(root: HTMLElement): void {
       </div>
       <label class="notify-silent-row">
         <input type="checkbox" id="notify-silent" />
-        Tyst systemljud för avisering (ingen standardpling — adhan nedan spelas ändå om aktiverad)
+        Ingen aviseringspling (adhan kan fortfarande spelas nedan)
       </label>
     </fieldset>
     <fieldset class="azan-fieldset">
-      <legend>Adhan (ljud)</legend>
+      <legend>Adhan</legend>
       <p class="azan-hint">
-        Välj muezzin och volym. Vid bönetid spelas adhan om du tillåtit ljud och fliken kan spela (tryck &quot;Testa&quot; en gång om inget hörs). Skärmen kan hållas vaken under uppspelning om webbläsaren tillåter det.
+        Välj röst och volym. Använd <strong>Testa</strong> om ljud inte hörs första gången.
       </p>
       <div class="azan-row azan-row-top">
         <div class="azan-grow">
@@ -177,7 +170,6 @@ function render(root: HTMLElement): void {
               const sub = `${v.reciter} — ${v.label}`;
               return `<option value="${v.id}">${sub}</option>`;
             }).join("")}
-            <option value="${CUSTOM_VOICE_ID}">Egen länk (URL)…</option>
           </select>
         </div>
         <div class="azan-actions azan-actions-btns">
@@ -189,11 +181,7 @@ function render(root: HTMLElement): void {
         <label for="azan-volume">Volym <span id="azan-volume-label">${volPct}%</span></label>
         <input type="range" id="azan-volume" min="0" max="100" value="${volPct}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${volPct}" />
       </div>
-      <div id="azan-custom-wrap" class="azan-custom-wrap" hidden>
-        <label for="azan-custom-url">Egen MP3/OGG-URL (https)</label>
-        <input type="url" id="azan-custom-url" inputmode="url" autocomplete="off" placeholder="https://…" />
-      </div>
-      <p class="azan-sublegend">Spela adhan vid dessa böner</p>
+      <p class="azan-sublegend">Adhan vid dessa böner</p>
       <div class="notify-grid azan-prayer-grid" id="azan-prayer-grid">
         ${ORDER.map((key) => {
           const checked = azanPrayerKeys.has(key) ? "checked" : "";
@@ -205,23 +193,22 @@ function render(root: HTMLElement): void {
       </div>
       <label class="azan-play-toggle">
         <input type="checkbox" id="azan-play" />
-        Spela adhan vid vald bönetid (om volym &gt; 0)
+        Spela adhan vid påminnelse
       </label>
       <div id="azan-playing" class="azan-playing" hidden role="status" aria-live="polite">
         <span class="azan-playing-dot" aria-hidden="true"></span>
         Adhan spelas…
       </div>
       <p class="azan-attrib">
-        Mishary Alafasy m.fl. via <a href="https://www.aladhan.com/download-adhans" target="_blank" rel="noopener noreferrer">AlAdhan</a>
-        (inkl. valfri Karl Jenkins-inspelning). Wikimedia: <a href="https://commons.wikimedia.org/wiki/Category:Adhan" target="_blank" rel="noopener noreferrer">Commons</a>.
-        Uppspelning kan visas i mediekontroller (Media Session) om webbläsaren stöder det.
+        Ljud från <a href="https://www.aladhan.com/download-adhans" target="_blank" rel="noopener noreferrer">AlAdhan</a> och
+        <a href="https://commons.wikimedia.org/wiki/Category:Adhan" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>.
       </p>
     </fieldset>
     <div id="error" class="error" hidden role="alert"></div>
     <div id="next" class="next-banner" hidden></div>
     <div id="schedule" class="schedule"></div>
     <footer>
-      <p>Islamiska förbundet i Sverige — <a href="https://www.islamiskaforbundet.se/muslimens-kompanjon/" target="_blank" rel="noopener noreferrer">Muslimens Kompanjon</a></p>
+      <p>Bönetider: Islamiska förbundet · <a href="https://www.islamiskaforbundet.se/muslimens-kompanjon/" target="_blank" rel="noopener noreferrer">Muslimens Kompanjon</a></p>
     </footer>
   `;
 
@@ -235,8 +222,6 @@ function render(root: HTMLElement): void {
   const notifyPermBtn = root.querySelector<HTMLButtonElement>("#notify-perm")!;
   const permStatusEl = root.querySelector<HTMLSpanElement>("#perm-status")!;
   const azanVoiceEl = root.querySelector<HTMLSelectElement>("#azan-voice")!;
-  const azanCustomWrap = root.querySelector<HTMLDivElement>("#azan-custom-wrap")!;
-  const azanCustomUrlEl = root.querySelector<HTMLInputElement>("#azan-custom-url")!;
   const azanPlayEl = root.querySelector<HTMLInputElement>("#azan-play")!;
   const azanTestBtn = root.querySelector<HTMLButtonElement>("#azan-test")!;
   const azanStopBtn = root.querySelector<HTMLButtonElement>("#azan-stop")!;
@@ -251,14 +236,8 @@ function render(root: HTMLElement): void {
   cityCustomEl.value = savedCustom;
 
   azanVoiceEl.value = loadAzanVoiceId();
-  azanCustomUrlEl.value = loadCustomAzanUrl();
   azanPlayEl.checked = loadAzanPlayEnabled();
   notifySilentEl.checked = loadNotifySilent();
-
-  function syncAzanCustomWrap(): void {
-    azanCustomWrap.hidden = azanVoiceEl.value !== CUSTOM_VOICE_ID;
-  }
-  syncAzanCustomWrap();
 
   setAzanPlaybackListener((playing) => {
     azanPlayingEl.hidden = !playing;
@@ -494,12 +473,6 @@ function render(root: HTMLElement): void {
 
   azanVoiceEl.addEventListener("change", () => {
     saveAzanVoiceId(azanVoiceEl.value);
-    syncAzanCustomWrap();
-    restartNotifications();
-  });
-
-  azanCustomUrlEl.addEventListener("change", () => {
-    saveCustomAzanUrl(azanCustomUrlEl.value);
     restartNotifications();
   });
 
@@ -510,20 +483,8 @@ function render(root: HTMLElement): void {
 
   azanTestBtn.addEventListener("click", () => {
     saveAzanVoiceId(azanVoiceEl.value);
-    if (azanVoiceEl.value === CUSTOM_VOICE_ID) {
-      saveCustomAzanUrl(azanCustomUrlEl.value);
-    }
-    const url = resolveAzanUrl(azanVoiceEl.value);
-    if (!url) {
-      showError(
-        azanVoiceEl.value === CUSTOM_VOICE_ID
-          ? "Ange en giltig http(s)-URL till en MP3- eller OGG-fil."
-          : "Kunde inte spela upp — välj en annan röst."
-      );
-      return;
-    }
     hideError();
-    playAzanUrl(url, getVoiceMeta(azanVoiceEl.value));
+    playAzanFromVoiceId(azanVoiceEl.value);
   });
 
   azanStopBtn.addEventListener("click", () => {
