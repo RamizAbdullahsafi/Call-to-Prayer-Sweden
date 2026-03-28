@@ -8,6 +8,27 @@ import {
   type PrayerKey,
 } from "./prayerTimes";
 import {
+  AZAN_VOICES,
+  CUSTOM_VOICE_ID,
+  DEFAULT_AZAN_PRAYER_KEYS,
+  getVoiceMeta,
+  loadAzanPlayEnabled,
+  loadAzanPrayerKeys,
+  loadAzanVolume,
+  loadAzanVoiceId,
+  loadCustomAzanUrl,
+  playAzanFromVoiceId,
+  playAzanUrl,
+  resolveAzanUrl,
+  saveAzanPlayEnabled,
+  saveAzanPrayerKeys,
+  saveAzanVolume,
+  saveAzanVoiceId,
+  saveCustomAzanUrl,
+  setAzanPlaybackListener,
+  stopAzan,
+} from "./azan";
+import {
   DEFAULT_NOTIFY_KEYS,
   loadNotifyKeys,
   notificationsSupported,
@@ -35,6 +56,23 @@ const ORDER: PrayerKey[] = [
 ];
 
 const CITY_CUSTOM_KEY = "ctp.ort.custom";
+const NOTIFY_SILENT_KEY = "ctp.notify.silent";
+
+function loadNotifySilent(): boolean {
+  try {
+    return localStorage.getItem(NOTIFY_SILENT_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function saveNotifySilent(on: boolean): void {
+  try {
+    localStorage.setItem(NOTIFY_SILENT_KEY, on ? "1" : "0");
+  } catch {
+    /* ignore */
+  }
+}
 
 function getNextPrayer(
   day: PrayerDay,
@@ -73,6 +111,8 @@ function render(root: HTMLElement): void {
     }
   })();
   const notifyKeys = loadNotifyKeys();
+  const azanPrayerKeys = loadAzanPrayerKeys();
+  const volPct = Math.round(loadAzanVolume() * 100);
 
   root.innerHTML = `
     <header>
@@ -119,6 +159,63 @@ function render(root: HTMLElement): void {
           return `<label class="notify-item"><input type="checkbox" class="notify-prayer" data-key="${key}" ${checked} />${LABELS[key].sv}</label>`;
         }).join("")}
       </div>
+      <label class="notify-silent-row">
+        <input type="checkbox" id="notify-silent" />
+        Tyst systemljud för avisering (ingen standardpling — adhan nedan spelas ändå om aktiverad)
+      </label>
+    </fieldset>
+    <fieldset class="azan-fieldset">
+      <legend>Adhan (ljud)</legend>
+      <p class="azan-hint">
+        Välj muezzin och volym. Vid bönetid spelas adhan om du tillåtit ljud och fliken kan spela (tryck &quot;Testa&quot; en gång om inget hörs). Skärmen kan hållas vaken under uppspelning om webbläsaren tillåter det.
+      </p>
+      <div class="azan-row azan-row-top">
+        <div class="azan-grow">
+          <label for="azan-voice">Röst</label>
+          <select id="azan-voice" aria-label="Välj adhan-röst">
+            ${AZAN_VOICES.map((v) => {
+              const sub = `${v.reciter} — ${v.label}`;
+              return `<option value="${v.id}">${sub}</option>`;
+            }).join("")}
+            <option value="${CUSTOM_VOICE_ID}">Egen länk (URL)…</option>
+          </select>
+        </div>
+        <div class="azan-actions azan-actions-btns">
+          <button type="button" class="secondary" id="azan-test">Testa</button>
+          <button type="button" class="secondary" id="azan-stop" disabled>Stoppa</button>
+        </div>
+      </div>
+      <div class="azan-volume-row">
+        <label for="azan-volume">Volym <span id="azan-volume-label">${volPct}%</span></label>
+        <input type="range" id="azan-volume" min="0" max="100" value="${volPct}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${volPct}" />
+      </div>
+      <div id="azan-custom-wrap" class="azan-custom-wrap" hidden>
+        <label for="azan-custom-url">Egen MP3/OGG-URL (https)</label>
+        <input type="url" id="azan-custom-url" inputmode="url" autocomplete="off" placeholder="https://…" />
+      </div>
+      <p class="azan-sublegend">Spela adhan vid dessa böner</p>
+      <div class="notify-grid azan-prayer-grid" id="azan-prayer-grid">
+        ${ORDER.map((key) => {
+          const checked = azanPrayerKeys.has(key) ? "checked" : "";
+          return `<label class="notify-item"><input type="checkbox" class="azan-prayer" data-key="${key}" ${checked} />${LABELS[key].sv}</label>`;
+        }).join("")}
+      </div>
+      <div class="azan-sync-row">
+        <button type="button" class="secondary" id="azan-sync-notify">Samma böner som påminnelser</button>
+      </div>
+      <label class="azan-play-toggle">
+        <input type="checkbox" id="azan-play" />
+        Spela adhan vid vald bönetid (om volym &gt; 0)
+      </label>
+      <div id="azan-playing" class="azan-playing" hidden role="status" aria-live="polite">
+        <span class="azan-playing-dot" aria-hidden="true"></span>
+        Adhan spelas…
+      </div>
+      <p class="azan-attrib">
+        Mishary Alafasy m.fl. via <a href="https://www.aladhan.com/download-adhans" target="_blank" rel="noopener noreferrer">AlAdhan</a>
+        (inkl. valfri Karl Jenkins-inspelning). Wikimedia: <a href="https://commons.wikimedia.org/wiki/Category:Adhan" target="_blank" rel="noopener noreferrer">Commons</a>.
+        Uppspelning kan visas i mediekontroller (Media Session) om webbläsaren stöder det.
+      </p>
     </fieldset>
     <div id="error" class="error" hidden role="alert"></div>
     <div id="next" class="next-banner" hidden></div>
@@ -137,8 +234,40 @@ function render(root: HTMLElement): void {
   const scheduleEl = root.querySelector<HTMLDivElement>("#schedule")!;
   const notifyPermBtn = root.querySelector<HTMLButtonElement>("#notify-perm")!;
   const permStatusEl = root.querySelector<HTMLSpanElement>("#perm-status")!;
+  const azanVoiceEl = root.querySelector<HTMLSelectElement>("#azan-voice")!;
+  const azanCustomWrap = root.querySelector<HTMLDivElement>("#azan-custom-wrap")!;
+  const azanCustomUrlEl = root.querySelector<HTMLInputElement>("#azan-custom-url")!;
+  const azanPlayEl = root.querySelector<HTMLInputElement>("#azan-play")!;
+  const azanTestBtn = root.querySelector<HTMLButtonElement>("#azan-test")!;
+  const azanStopBtn = root.querySelector<HTMLButtonElement>("#azan-stop")!;
+  const azanVolumeEl = root.querySelector<HTMLInputElement>("#azan-volume")!;
+  const azanVolumeLabelEl = root.querySelector<HTMLSpanElement>("#azan-volume-label")!;
+  const azanPlayingEl = root.querySelector<HTMLDivElement>("#azan-playing")!;
+  const azanSyncNotifyBtn = root.querySelector<HTMLButtonElement>(
+    "#azan-sync-notify"
+  )!;
+  const notifySilentEl = root.querySelector<HTMLInputElement>("#notify-silent")!;
 
   cityCustomEl.value = savedCustom;
+
+  azanVoiceEl.value = loadAzanVoiceId();
+  azanCustomUrlEl.value = loadCustomAzanUrl();
+  azanPlayEl.checked = loadAzanPlayEnabled();
+  notifySilentEl.checked = loadNotifySilent();
+
+  function syncAzanCustomWrap(): void {
+    azanCustomWrap.hidden = azanVoiceEl.value !== CUSTOM_VOICE_ID;
+  }
+  syncAzanCustomWrap();
+
+  setAzanPlaybackListener((playing) => {
+    azanPlayingEl.hidden = !playing;
+    azanStopBtn.disabled = !playing;
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") stopAzan();
+  });
 
   const today = new Date();
   dateEl.valueAsDate = today;
@@ -189,6 +318,21 @@ function render(root: HTMLElement): void {
     return set;
   }
 
+  function readAzanPrayerKeysFromDom(): Set<PrayerKey> {
+    const boxes = root.querySelectorAll<HTMLInputElement>(".azan-prayer");
+    const set = new Set<PrayerKey>();
+    for (const el of boxes) {
+      const key = el.dataset.key as PrayerKey | undefined;
+      if (key && el.checked) set.add(key);
+    }
+    return set;
+  }
+
+  function updateVolumeLabel(pct: number): void {
+    azanVolumeLabelEl.textContent = `${pct}%`;
+    azanVolumeEl.setAttribute("aria-valuenow", String(pct));
+  }
+
   function updatePermStatus(): void {
     if (!notificationsSupported()) {
       permStatusEl.textContent = "Stöds inte i den här webbläsaren.";
@@ -219,6 +363,15 @@ function render(root: HTMLElement): void {
         disposeNotify();
         dateEl.valueAsDate = new Date();
         void load();
+      },
+      {
+        onPrayerTime: (key) => {
+          if (!loadAzanPlayEnabled()) return;
+          if (loadAzanVolume() <= 0) return;
+          if (!loadAzanPrayerKeys().has(key)) return;
+          playAzanFromVoiceId(loadAzanVoiceId());
+        },
+        getNotificationSilent: () => notifySilentEl.checked,
       }
     );
   }
@@ -336,6 +489,78 @@ function render(root: HTMLElement): void {
       keys = readNotifyKeysFromDom();
     }
     saveNotifyKeys(keys);
+    restartNotifications();
+  });
+
+  azanVoiceEl.addEventListener("change", () => {
+    saveAzanVoiceId(azanVoiceEl.value);
+    syncAzanCustomWrap();
+    restartNotifications();
+  });
+
+  azanCustomUrlEl.addEventListener("change", () => {
+    saveCustomAzanUrl(azanCustomUrlEl.value);
+    restartNotifications();
+  });
+
+  azanPlayEl.addEventListener("change", () => {
+    saveAzanPlayEnabled(azanPlayEl.checked);
+    restartNotifications();
+  });
+
+  azanTestBtn.addEventListener("click", () => {
+    saveAzanVoiceId(azanVoiceEl.value);
+    if (azanVoiceEl.value === CUSTOM_VOICE_ID) {
+      saveCustomAzanUrl(azanCustomUrlEl.value);
+    }
+    const url = resolveAzanUrl(azanVoiceEl.value);
+    if (!url) {
+      showError(
+        azanVoiceEl.value === CUSTOM_VOICE_ID
+          ? "Ange en giltig http(s)-URL till en MP3- eller OGG-fil."
+          : "Kunde inte spela upp — välj en annan röst."
+      );
+      return;
+    }
+    hideError();
+    playAzanUrl(url, getVoiceMeta(azanVoiceEl.value));
+  });
+
+  azanStopBtn.addEventListener("click", () => {
+    stopAzan();
+  });
+
+  azanVolumeEl.addEventListener("input", () => {
+    const pct = Number(azanVolumeEl.value);
+    saveAzanVolume(pct / 100);
+    updateVolumeLabel(pct);
+  });
+
+  notifySilentEl.addEventListener("change", () => {
+    saveNotifySilent(notifySilentEl.checked);
+    restartNotifications();
+  });
+
+  root.querySelector("#azan-prayer-grid")!.addEventListener("change", () => {
+    let keys = readAzanPrayerKeysFromDom();
+    if (keys.size === 0) {
+      for (const el of root.querySelectorAll<HTMLInputElement>(".azan-prayer")) {
+        const k = el.dataset.key as PrayerKey;
+        el.checked = DEFAULT_AZAN_PRAYER_KEYS.includes(k);
+      }
+      keys = readAzanPrayerKeysFromDom();
+    }
+    saveAzanPrayerKeys(keys);
+    restartNotifications();
+  });
+
+  azanSyncNotifyBtn.addEventListener("click", () => {
+    const nk = readNotifyKeysFromDom();
+    for (const el of root.querySelectorAll<HTMLInputElement>(".azan-prayer")) {
+      const k = el.dataset.key as PrayerKey;
+      el.checked = nk.has(k);
+    }
+    saveAzanPrayerKeys(nk);
     restartNotifications();
   });
 

@@ -66,11 +66,19 @@ const TICK_MS = 15_000;
 const FIRE_WINDOW_MS = 120_000;
 const RELOAD_THROTTLE_MS = 45_000;
 
+export type PrayerNotifyOptions = {
+  /** Called once when a prayer notification fires (same moment as Notification). */
+  onPrayerTime?: (key: PrayerKey) => void;
+  /** When true, the system/browser notification uses no default sound (HTML adhan still plays). */
+  getNotificationSilent?: () => boolean;
+};
+
 function tick(
   day: PrayerDay,
   keys: Set<PrayerKey>,
   onReloadToday: () => void,
-  reloadState: { lastMs: number }
+  reloadState: { lastMs: number },
+  options?: PrayerNotifyOptions
 ): void {
   const now = new Date();
 
@@ -92,11 +100,13 @@ function tick(
         key === "sunrise"
           ? "Shuruk"
           : key.charAt(0).toUpperCase() + key.slice(1);
+      const silent = options?.getNotificationSilent?.() ?? false;
       new Notification("Call to Prayer Sweden", {
         body: `${label} — ${day.city} (${day.schedule[key]})`,
         tag: `ctp-${day.date}-${key}`,
-        silent: false,
+        silent,
       });
+      options?.onPrayerTime?.(key);
     }
   }
 }
@@ -108,7 +118,8 @@ function tick(
 export function startPrayerNotifications(
   day: PrayerDay,
   keys: Set<PrayerKey>,
-  onReloadToday: () => void
+  onReloadToday: () => void,
+  options?: PrayerNotifyOptions
 ): () => void {
   if (!notificationsSupported() || Notification.permission !== "granted") {
     return () => {};
@@ -117,10 +128,10 @@ export function startPrayerNotifications(
   const reloadState = { lastMs: 0 };
 
   const id = window.setInterval(() => {
-    tick(day, keys, onReloadToday, reloadState);
+    tick(day, keys, onReloadToday, reloadState, options);
   }, TICK_MS);
 
-  tick(day, keys, onReloadToday, reloadState);
+  tick(day, keys, onReloadToday, reloadState, options);
 
   return () => {
     window.clearInterval(id);
