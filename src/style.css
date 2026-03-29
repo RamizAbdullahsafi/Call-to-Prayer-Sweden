@@ -1152,6 +1152,13 @@ button.secondary:disabled {
   text-decoration: underline;
 }
 
+.azan-playback-error {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--error);
+}
+
 .error {
   padding: 0.75rem 1rem;
   background: var(--error-soft-bg);

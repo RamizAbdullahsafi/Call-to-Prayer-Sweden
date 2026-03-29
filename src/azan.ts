@@ -294,19 +294,24 @@ function getVoiceMeta(voiceId: string): { title: string; artist: string } {
   return { title: "Adhan", artist: "Call to Prayer Sweden" };
 }
 
-export function playAzanFromVoiceId(voiceId: string): void {
+export function playAzanFromVoiceId(
+  voiceId: string,
+  onPlaybackError?: () => void
+): void {
   const url = resolveAzanUrl(voiceId);
-  if (url) playAzanUrl(url, getVoiceMeta(voiceId));
+  if (url) playAzanUrl(url, getVoiceMeta(voiceId), onPlaybackError);
 }
 
 export function playAzanUrl(
   url: string,
-  meta?: { title: string; artist: string }
+  meta?: { title: string; artist: string },
+  onPlaybackError?: () => void
 ): void {
   stopAzan();
   const session = azanSession;
   const a = new Audio(url);
   a.volume = loadAzanVolume();
+  a.preload = "auto";
   currentAudio = a;
 
   const m = meta ?? { title: "Adhan", artist: "Call to Prayer Sweden" };
@@ -322,15 +327,22 @@ export function playAzanUrl(
     emitPlayback(false);
   };
 
-  a.addEventListener("ended", onEnd);
-  a.addEventListener("error", onEnd);
-
-  void a.play().catch(() => {
-    if (session !== azanSession) return;
+  let failureReported = false;
+  const onPlaybackFailed = (): void => {
+    if (session !== azanSession || failureReported) return;
+    failureReported = true;
     releaseWakeLock();
     clearMediaSession();
     if (currentAudio === a) currentAudio = null;
     emitPlayback(false);
+    onPlaybackError?.();
+  };
+
+  a.addEventListener("ended", onEnd);
+  a.addEventListener("error", () => onPlaybackFailed());
+
+  void a.play().catch(() => {
+    onPlaybackFailed();
   });
 }
 

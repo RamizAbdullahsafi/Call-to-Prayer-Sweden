@@ -43,6 +43,7 @@ export type MessageId =
   | "syncAzanWithNotify"
   | "playAdhanOnNotify"
   | "adhanPlaying"
+  | "adhanPlaybackFailed"
   | "attribAladhan"
   | "attribCommons"
   | "loadingTimesAria"
@@ -142,6 +143,8 @@ const sv: Messages = {
   syncAzanWithNotify: "Samma böner som påminnelser",
   playAdhanOnNotify: "Spela adhan vid påminnelse",
   adhanPlaying: "Adhan spelas…",
+  adhanPlaybackFailed:
+    "Kunde inte spela upp adhan. Kontrollera anslutningen eller prova en annan röst.",
   attribAladhan: "Ljud från",
   attribCommons: "och",
   loadingTimesAria: "Laddar bönetider…",
@@ -247,6 +250,8 @@ const en: Messages = {
   syncAzanWithNotify: "Same prayers as reminders",
   playAdhanOnNotify: "Play adhan with reminder",
   adhanPlaying: "Playing adhan…",
+  adhanPlaybackFailed:
+    "Could not play adhan. Check your connection or try another voice.",
   attribAladhan: "Audio from",
   attribCommons: "and",
   loadingTimesAria: "Loading prayer times…",
@@ -351,6 +356,8 @@ const ar: Messages = {
   syncAzanWithNotify: "نفس الصلوات كالتذكيرات",
   playAdhanOnNotify: "تشغيل الأذان مع التذكير",
   adhanPlaying: "جارٍ تشغيل الأذان…",
+  adhanPlaybackFailed:
+    "تعذّر تشغيل الأذان. تحقق من الاتصال أو جرّب صوتًا آخر.",
   attribAladhan: "صوت من",
   attribCommons: "و",
   loadingTimesAria: "جارٍ تحميل أوقات الصلاة…",
@@ -455,6 +462,8 @@ const fa: Messages = {
   syncAzanWithNotify: "همان نمازها مانند یادآورها",
   playAdhanOnNotify: "پخش اذان با یادآور",
   adhanPlaying: "در حال پخش اذان…",
+  adhanPlaybackFailed:
+    "پخش اذان ممکن نشد. اتصال را بررسی کنید یا صدای دیگری انتخاب کنید.",
   attribAladhan: "صدا از",
   attribCommons: "و",
   loadingTimesAria: "در حال بارگذاری اوقات نماز…",
@@ -562,6 +571,8 @@ const ku: Messages = {
   syncAzanWithNotify: "Heman nimêj wek bîranîn",
   playAdhanOnNotify: "Ezan bi bîranînê re bilêxe",
   adhanPlaying: "Ezan tê lêxistin…",
+  adhanPlaybackFailed:
+    "Ezan nehat lêxistin. Girêdanê kontrol bike an dengek din hilbijêre.",
   attribAladhan: "Deng ji",
   attribCommons: "û",
   loadingTimesAria: "Demên nimêjê tên barkirin…",
@@ -666,6 +677,8 @@ const so: Messages = {
   syncAzanWithNotify: "Isla salaadaha xusuusinta",
   playAdhanOnNotify: "Ku ciyaar adaan marka xusuusinta",
   adhanPlaying: "Adaan ayaa la ciyaarayaa…",
+  adhanPlaybackFailed:
+    "Adaan lama ciyaarin. Hubi xiriirka ama door cod kale.",
   attribAladhan: "Cod ka yimid",
   attribCommons: "iyo",
   loadingTimesAria: "Waqtiga salaadda waa la soo dejinayaa…",

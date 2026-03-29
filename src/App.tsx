@@ -217,6 +217,7 @@ export function App(): ReactElement {
     return "notify_only";
   });
   const [azanPlaying, setAzanPlaying] = useState(false);
+  const [adhanPlayError, setAdhanPlayError] = useState<string | null>(null);
   const [nowTick, setNowTick] = useState(() => new Date());
   const [geo, setGeo] = useState<GeoPoint | null>(null);
   const [geoLoading, setGeoLoading] = useState(false);
@@ -1242,6 +1243,7 @@ export function App(): ReactElement {
                 const v = e.target.value;
                 setAzanVoiceId(v);
                 saveAzanVoiceId(v);
+                setAdhanPlayError(null);
               }}
             >
               {AZAN_VOICES.map((vo) => (
@@ -1258,7 +1260,10 @@ export function App(): ReactElement {
               onClick={() => {
                 saveAzanVoiceId(azanVoiceId);
                 setError(null);
-                playAzanFromVoiceId(azanVoiceId);
+                setAdhanPlayError(null);
+                playAzanFromVoiceId(azanVoiceId, () =>
+                  setAdhanPlayError(t("adhanPlaybackFailed"))
+                );
               }}
             >
               {t("test")}
@@ -1273,6 +1278,11 @@ export function App(): ReactElement {
             </button>
           </div>
         </div>
+        {adhanPlayError ? (
+          <p className="azan-playback-error" role="alert">
+            {adhanPlayError}
+          </p>
+        ) : null}
         <div className="azan-volume-row">
           <label htmlFor="azan-volume">
             {t("volume")}{" "}
