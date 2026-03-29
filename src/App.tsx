@@ -59,6 +59,12 @@ import { qiblaBearing } from "./qibla";
 import { hijriFromGregorian, hijriImportantDay } from "./hijri";
 import { buildHijriMonthGrid, shiftHijriMonth } from "./hijriCalendar";
 import { AppDownloadBanner } from "./AppDownloadBanner";
+import {
+  hasAbsoluteOrientationListener,
+  headingFromOrientationEvent,
+  lerpHeading,
+  normalizeDeg,
+} from "./qiblaCompass";
 
 function prayerMsg(
   key: PrayerKey,
@@ -97,30 +103,11 @@ const ORDER: PrayerKey[] = [
 const CITY_CUSTOM_KEY = "ctp.ort.custom";
 const NOTIFY_SILENT_KEY = "ctp.notify.silent";
 type NotifyMode = "full" | "notify_only" | "vibrate" | "silent";
-type DeviceOrientationWithWebkit = DeviceOrientationEvent & {
-  webkitCompassHeading?: number | null;
-};
 type DeviceOrientationWithPermission = typeof DeviceOrientationEvent & {
   requestPermission?: () => Promise<"granted" | "denied">;
 };
 
-function normalizeDeg(value: number): number {
-  return ((value % 360) + 360) % 360;
-}
-
-function headingFromEvent(e: DeviceOrientationWithWebkit): number | null {
-  if (
-    typeof e.webkitCompassHeading === "number" &&
-    Number.isFinite(e.webkitCompassHeading)
-  ) {
-    return normalizeDeg(e.webkitCompassHeading);
-  }
-  if (typeof e.alpha === "number" && Number.isFinite(e.alpha)) {
-    // Alpha is clockwise from device frame; invert to get clockwise from north.
-    return normalizeDeg(360 - e.alpha);
-  }
-  return null;
-}
+const COMPASS_SMOOTH = 0.16;
 
 function loadNotifySilent(): boolean {
   try {
@@ -237,6 +224,7 @@ export function App(): ReactElement {
   const [headingDeg, setHeadingDeg] = useState<number | null>(null);
   const [compassPermissionNeeded, setCompassPermissionNeeded] = useState(false);
   const [compassError, setCompassError] = useState<string | null>(null);
+  const headingSmoothRef = useRef<number | null>(null);
   const stopCompassRef = useRef<() => void>(() => {});
 
   const [themePref, setThemePref] = useState<ThemePreference>(() =>
@@ -499,21 +487,38 @@ export function App(): ReactElement {
   };
 
   const startCompassTracking = useCallback((): (() => void) => {
+    headingSmoothRef.current = null;
     const onOrientation = (event: DeviceOrientationEvent): void => {
-      const heading = headingFromEvent(event as DeviceOrientationWithWebkit);
-      if (heading === null) return;
-      setHeadingDeg(heading);
+      const raw = headingFromOrientationEvent(event);
+      if (raw === null) return;
+      const prev = headingSmoothRef.current;
+      const next =
+        prev === null ? raw : lerpHeading(prev, raw, COMPASS_SMOOTH);
+      headingSmoothRef.current = next;
+      setHeadingDeg(next);
       setCompassError(null);
     };
-    window.addEventListener("deviceorientationabsolute", onOrientation, true);
-    window.addEventListener("deviceorientation", onOrientation, true);
+    const useAbsolute = hasAbsoluteOrientationListener();
+    const onOrientationChange = (): void => {
+      headingSmoothRef.current = null;
+    };
+    window.addEventListener("orientationchange", onOrientationChange);
+    if (useAbsolute) {
+      window.addEventListener("deviceorientationabsolute", onOrientation, true);
+    } else {
+      window.addEventListener("deviceorientation", onOrientation, true);
+    }
     return () => {
-      window.removeEventListener(
-        "deviceorientationabsolute",
-        onOrientation,
-        true
-      );
-      window.removeEventListener("deviceorientation", onOrientation, true);
+      window.removeEventListener("orientationchange", onOrientationChange);
+      if (useAbsolute) {
+        window.removeEventListener(
+          "deviceorientationabsolute",
+          onOrientation,
+          true
+        );
+      } else {
+        window.removeEventListener("deviceorientation", onOrientation, true);
+      }
     };
   }, []);
 
@@ -986,8 +991,6 @@ export function App(): ReactElement {
                   <svg
                     className="qibla-arrow-svg"
                     viewBox="0 0 48 56"
-                    width="48"
-                    height="56"
                     aria-hidden="true"
                   >
                     <title>Qibla</title>
