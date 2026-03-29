@@ -31,6 +31,8 @@ import {
   setAzanPlaybackListener,
   stopAzan,
 } from "./azan";
+import { Capacitor } from "@capacitor/core";
+import { LocalNotifications } from "@capacitor/local-notifications";
 import {
   DEFAULT_NOTIFY_KEYS,
   loadNotifyKeys,
@@ -39,6 +41,12 @@ import {
   saveNotifyKeys,
   startPrayerNotifications,
 } from "./notifications";
+import {
+  cancelAllNativePrayerNotifications,
+  isNativeLocalNotificationsAvailable,
+  requestNativeNotificationPermissions,
+  scheduleNativePrayerNotifications,
+} from "./nativePrayerNotifications";
 import {
   applyEffectiveTheme,
   effectiveTheme,
@@ -372,13 +380,48 @@ export function App(): ReactElement {
     disposeNotifyRef.current();
     disposeNotifyRef.current = () => {};
 
-    if (!notificationsSupported() || Notification.permission !== "granted")
+    const cleanupNative = (): void => {
+      if (Capacitor.isNativePlatform() && isNativeLocalNotificationsAvailable()) {
+        void cancelAllNativePrayerNotifications();
+      }
+    };
+
+    if (!notificationsSupported() || Notification.permission !== "granted") {
+      cleanupNative();
       return;
-    if (!scheduleDay) return;
-    if (scheduleDay.date !== formatDateYMD(new Date())) return;
-    if (notifyKeySet.size === 0) return;
+    }
+    if (!scheduleDay) {
+      cleanupNative();
+      return;
+    }
+    if (scheduleDay.date !== formatDateYMD(new Date())) {
+      cleanupNative();
+      return;
+    }
+    if (notifyKeySet.size === 0) {
+      cleanupNative();
+      return;
+    }
 
     saveNotifyKeys(notifyKeySet);
+
+    if (
+      Capacitor.isNativePlatform() &&
+      isNativeLocalNotificationsAvailable()
+    ) {
+      void scheduleNativePrayerNotifications({
+        day: scheduleDay,
+        keys: notifyKeySet,
+        notificationSilent: notifySilent,
+        title: t("appTitle"),
+        prayerLabel: (key) => t(prayerMsg(key, "prayer")),
+      });
+      disposeNotifyRef.current = cleanupNative;
+      return () => {
+        cleanupNative();
+      };
+    }
+
     const dispose = startPrayerNotifications(
       scheduleDay,
       notifyKeySet,
@@ -406,6 +449,32 @@ export function App(): ReactElement {
       dispose();
     };
   }, [scheduleDay, notifyKeySet, notifySilent, notifyMode, permRevision, t]);
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform() || !isNativeLocalNotificationsAvailable()) {
+      return;
+    }
+    let sub: { remove: () => Promise<void> } | undefined;
+    void LocalNotifications.addListener(
+      "localNotificationReceived",
+      (notification) => {
+        const key = notification.extra?.key as PrayerKey | undefined;
+        if (!key) return;
+        if (notifyMode === "vibrate" && "vibrate" in navigator) {
+          navigator.vibrate?.([220, 120, 220]);
+        }
+        if (!loadAzanPlayEnabled()) return;
+        if (loadAzanVolume() <= 0) return;
+        if (!loadAzanPrayerKeys().has(key)) return;
+        playAzanFromVoiceId(loadAzanVoiceId());
+      }
+    ).then((handle) => {
+      sub = handle;
+    });
+    return () => {
+      void sub?.remove();
+    };
+  }, [notifyMode]);
 
   const onNotifyChange = (key: PrayerKey, checked: boolean): void => {
     setNotifyKeys((prev) => {
@@ -442,6 +511,7 @@ export function App(): ReactElement {
 
   const requestPerm = async (): Promise<void> => {
     await requestNotificationPermission();
+    await requestNativeNotificationPermissions();
     setPermRevision((n) => n + 1);
   };
 

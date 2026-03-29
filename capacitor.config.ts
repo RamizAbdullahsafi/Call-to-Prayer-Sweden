@@ -10,6 +10,12 @@ const config: CapacitorConfig = {
   server: {
     androidScheme: "https",
   },
+  plugins: {
+    LocalNotifications: {
+      sound: "adhan_notify.wav",
+      iconColor: "#2563EB",
+    },
+  },
 };
 
 export default config;
