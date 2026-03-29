@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Prayer Sweden</string>
+    <string name="title_activity_main">Prayer Sweden</string>
+    <string name="package_name">se.calltoprayer.sweden</string>
+    <string name="custom_url_scheme">se.calltoprayer.sweden</string>
+</resources>

@@ -1,3 +1,12 @@
 node_modules
 dist
 *.local
+
+# Android (Capacitor) — keep source; ignore local machine / build outputs
+android/.gradle
+android/app/build
+android/build
+android/local.properties
+android/.idea
+android/*.iml
+android/captures

@@ -1,0 +1,4388 @@
+{
+  "head" : {
+    "vars" : [ "item", "itemLabel", "seatLabel" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q498470"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ale kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nödinge-Nol"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503162"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Alingsås kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Alingsås"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q182007"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Alvesta kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Alvesta"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503167"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Aneby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Aneby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q431271"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Arboga kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Arboga"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q493855"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Arjeplogs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Arjeplog"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499404"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Arvidsjaurs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Arvidsjaur"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511365"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Arvika kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Arvika"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509501"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Askersunds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Askersund"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q500071"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Avesta kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Avesta"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q267462"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bengtsfors kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bengtsfors"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q845930"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Svenstavik"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q376003"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bjurholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bjurholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511310"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bjuvs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bjuv"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509476"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bodens kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Boden"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503102"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bollebygds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bollebygd"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q62469"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bollnäs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bollnäs"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509546"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Borgholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Borgholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503209"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Borlänge kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Borlänge"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q894327"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Borås kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Borås"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q113718"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Botkyrka kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tumba"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509514"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Boxholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Boxholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q514830"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bromölla kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bromölla"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504261"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bräcke kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bräcke"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q186662"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Burlövs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Arlöv"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499464"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Båstads kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Båstad"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503132"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Dals-Eds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ed"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q113679"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Danderyds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Djursholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509469"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Degerfors kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Degerfors"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q132334"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Dorotea kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Dorotea"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q498447"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Eda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Charlottenberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q492614"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ekerö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ekerö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q512035"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Eksjö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Eksjö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509452"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Emmaboda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Emmaboda"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509568"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Enköpings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Enköping"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503144"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Eskilstuna kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Eskilstuna"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q1130264"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Eslövs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Eslöv"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503127"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Essunga kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nossebro"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q47018"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Fagersta kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Fagersta"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q508168"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Falkenbergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Falkenberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503214"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Falköpings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Falköping"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501545"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Falu kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Falun"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503204"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Filipstads kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Filipstad"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503180"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Finspångs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Finspång"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q27982"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Flens kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Flen"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499385"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Forshaga kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Forshaga"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499441"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Färgelanda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Färgelanda"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2642771"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gagnefs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Djurås"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505259"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gislaveds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gislaved"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q239332"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gnesta kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gnesta"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509609"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gnosjö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gnosjö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503122"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Grums kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Grums"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503148"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Grästorps kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Grästorp"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503193"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gullspångs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hova"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q493815"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gällivare kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gällivare"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q510010"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gävle kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gävle"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q52502"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Göteborgs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Göteborg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511281"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Götene kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Götene"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503198"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Habo kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Habo"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511407"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hagfors kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hagfors"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q508180"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hallsbergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hallsberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q47019"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hallstahammars kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hallstahammar"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504692"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Halmstads kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Halmstad"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499359"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hammarö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skoghall"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q113692"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Haninge kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Handen"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q510310"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Haparanda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Haparanda"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q516308"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Heby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Heby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q507684"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hedemora kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hedemora"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q487648"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Helsingborgs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Helsingborg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503111"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Herrljunga kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Herrljunga"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q428749"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hjo kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hjo"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q62464"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hofors kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hofors"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q492575"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Huddinge kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Huddinge centrum"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q29963"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hudiksvalls kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hudiksvall"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q512002"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hultsfreds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hultsfred"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q498477"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hylte kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hyltebruk"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q220881"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hällefors kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hällefors"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q513421"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Härjedalens kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sveg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q209634"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Härnösands kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Härnösand"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q500125"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Härryda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mölnlycke"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q508125"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hässleholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hässleholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511253"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Håbo kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bålsta"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505013"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Höganäs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Höganäs"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q510233"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Högsby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Högsby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504619"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hörby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hörby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q266401"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Höörs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Höör"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q512048"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Jokkmokks kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Jokkmokk"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q301259"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Järfälla kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Jakobsberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504689"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Jönköpings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Jönköping"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q117091"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kalix kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kalix"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q508153"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kalmar kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kalmar"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499435"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlsborgs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlsborg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q510223"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlshamns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlshamn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509634"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlskoga kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlskoga"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q1128384"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlskrona kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlskrona"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q498453"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlstads kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Karlstad"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q508140"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Katrineholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Katrineholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499393"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kils kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kil"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515299"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kinda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kisa"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499474"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kiruna kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kiruna"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504614"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Klippans kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Klippan"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504465"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Knivsta kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Knivsta"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q514815"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kramfors kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kramfors"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q498857"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kristianstads kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kristianstad"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q510364"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kristinehamns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kristinehamn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q514707"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Krokoms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Krokom"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504988"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kumla kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kumla"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499380"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kungsbacka kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kungsbacka"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q47169"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kungsörs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kungsör"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511394"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kungälvs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kungälv"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q513370"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kävlinge kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kävlinge"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q42009"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Köpings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Köping"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q487502"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Laholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Laholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q502298"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Landskrona kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Landskrona"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515326"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Laxå kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Laxå"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515282"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lekebergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Fjugesta"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509651"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Leksands kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Leksand"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503188"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lerums kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lerum"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509488"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lessebo kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lessebo"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q3120654"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lidingö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lidingö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515358"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lidköpings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lidköping"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511241"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lilla Edets kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lilla Edet"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q514858"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lindesbergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lindesberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499410"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Linköpings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Linköping"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504235"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ljungby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ljungby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515235"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ljusdals kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ljusdal"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q514739"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ljusnarsbergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kopparberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q427991"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lomma kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lomma"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503184"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ludvika kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ludvika"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q177019"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Luleå kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Luleå"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505018"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lunds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lund"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q948462"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lycksele kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lycksele"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503173"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lysekils kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Lysekil"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503361"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Malmö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Malmö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504266"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Malung-Sälens kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Malung"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501540"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Malå kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Malå"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q427422"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mariestads kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mariestad"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q240574"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Markaryds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Markaryd"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q500153"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Marks kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kinna"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501438"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Melleruds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mellerud"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q267030"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mjölby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mjölby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504239"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mora kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mora"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q508108"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Motala kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Motala"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505076"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mullsjö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mullsjö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q389040"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Munkedals kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Munkedal"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501494"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Munkfors kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Munkfors"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511270"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mölndals kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mölndal"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515250"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mönsterås kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mönsterås"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q514756"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mörbylånga kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Mörbylånga"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q946647"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nacka kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nacka"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q285894"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nora kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nora"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q37404"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Norbergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Norberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q514805"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nordanstigs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bergsjö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q514722"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nordmalings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nordmaling"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504676"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Norrköpings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Norrköping"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q214048"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Norrtälje kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Norrtälje"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q507644"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Norsjö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Norsjö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515318"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nybro kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nybro"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499460"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nykvarns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nykvarn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q500267"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nyköpings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nyköping"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505090"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nynäshamns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nynäshamn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505096"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nässjö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Nässjö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505109"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ockelbo kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ockelbo"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504257"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Olofströms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Olofström"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504630"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Orsa kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Orsa"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q338752"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Orusts kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Henån"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504594"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Osby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Osby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505006"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Oskarshamns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Oskarshamn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505085"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ovanåkers kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Edsbyn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505246"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Oxelösunds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Oxelösund"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q186230"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Pajala kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Pajala"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q125222"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Partille kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Partille"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504249"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Perstorps kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Perstorp"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q507656"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Piteå kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Piteå"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515342"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ragunda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hammarstrand"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q374794"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Region Gotland"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Visby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q507670"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Robertsfors kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Robertsfors"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515373"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ronneby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ronneby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504244"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Rättviks kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Rättvik"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q37399"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sala kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sala"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q516080"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Salems kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Salemstaden"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q149539"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sandvikens kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sandviken"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q216915"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sigtuna kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Märsta"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504626"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Simrishamns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Simrishamn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504601"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sjöbo kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sjöbo"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499421"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skara kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skara"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q430780"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skellefteå kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skellefteå"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q37462"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skinnskattebergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skinnskatteberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515266"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skurups kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skurup"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501452"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skövde kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skövde"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505046"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Smedjebackens kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Smedjebacken"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q221990"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sollefteå kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sollefteå"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q503746"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sollentuna kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tureberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q109010"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Solna kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Solna"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501463"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sorsele kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sorsele"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501420"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sotenäs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kungshamn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504609"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Staffanstorps kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Staffanstorp"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511438"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Stenungsunds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Stenungsund"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q506250"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Stockholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Stockholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505936"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Storfors kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Storfors"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499415"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Storumans kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Storuman"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501532"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Strängnäs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Strängnäs"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501424"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Strömstads kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Strömstad"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q514770"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Strömsunds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Strömsund"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q972564"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sundbybergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Hallonbergen"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q972564"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sundbybergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Centrala Sundbyberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504994"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sundsvalls kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sundsvall"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501205"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sunne kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sunne"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q34078"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Surahammars kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Surahammar"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504227"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Svalövs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Svalöv"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515706"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Svedala kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Svedala"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501487"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Svenljunga kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Svenljunga"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511326"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Säffle kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Säffle"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q1345439"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Säters kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Säter"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505239"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sävsjö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sävsjö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q145835"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Söderhamns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Söderhamn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515680"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Söderköpings kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Söderköping"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q516336"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Södertälje kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Södertälje"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515409"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sölvesborgs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Sölvesborg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511228"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tanums kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tanumshede"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501432"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tibro kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tibro"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501459"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tidaholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tidaholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q510198"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tierps kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tierp"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504983"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Timrå kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Timrå"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515491"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tingsryds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tingsryd"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501448"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tjörns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skärhamn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515519"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tomelilla kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tomelilla"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q510135"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Torsby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Torsby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515551"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Torsås kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Torsås"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501479"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tranemo kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tranemo"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505071"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tranås kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tranås"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504219"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Trelleborgs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Trelleborg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q28532"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Trollhättans kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Trollhättan"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505064"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Trosa kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Trosa"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q113730"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Tyresö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Bollmora"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q493066"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Täby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Täby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501470"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Töreboda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Töreboda"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501442"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Uddevalla kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Uddevalla"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q382808"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ulricehamns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ulricehamn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q507709"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Umeå kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Umeå"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q499425"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Upplands Väsby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Upplands Väsby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q113673"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Upplands-Bro kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Kungsängen"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q59091"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Uppsala kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Uppsala"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515505"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Uppvidinge kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åseda"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515969"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vadstena kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vadstena"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q605329"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vaggeryds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vaggeryd"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q605329"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vaggeryds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skillingaryd"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q509997"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Valdemarsviks kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Valdemarsvik"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501526"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vallentuna kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vallentuna"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501551"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vansbro kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vansbro"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q501428"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vara kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vara"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q179180"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Varbergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Varberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q500090"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vaxholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vaxholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511338"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vellinge kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vellinge"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505052"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vetlanda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vetlanda"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515861"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vilhelmina kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vilhelmina"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505057"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vimmerby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vimmerby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q504505"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vindelns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vindeln"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q249378"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vingåkers kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vingåker"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511426"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vänersborgs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vänersborg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q500210"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vännäs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vännäs"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q493841"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Värmdö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Gustavsberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q280562"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Värnamo kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Värnamo"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515477"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Västerviks kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Västervik"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q34550"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Västerås kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Västerås"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q500217"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Växjö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Växjö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q511297"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vårgårda kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Vårgårda"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q515699"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ydre kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Österbymo"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q505102"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ystads kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ystad"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q254799"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Älmhults kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Älmhult"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q123855"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Älvdalens kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Älvdalen"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q59858"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Älvkarleby kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Skutskär"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q255025"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Älvsbyns kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Älvsbyn"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q255206"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ängelholms kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ängelholm"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q271079"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åmåls kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åmål"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q271107"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ånge kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ånge"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q271153"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åre kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Järpen"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2777887"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Årjängs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Årjäng"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q271274"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åsele kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åsele"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q201813"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åstorps kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åstorp"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q271340"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åtvidabergs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åtvidaberg"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q293928"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Öckerö kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Öckerö"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q293970"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ödeshögs kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Ödeshög"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q297718"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Örebro kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Örebro"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q297936"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Örkelljunga kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Örkelljunga"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q298003"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Örnsköldsviks kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Örnsköldsvik"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q306789"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Östersunds kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Östersund"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q117728"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Österåkers kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Åkersberga"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q59093"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Östhammars kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Östhammar"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q307370"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Östra Göinge kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Broby"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q307569"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Överkalix kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Överkalix"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q307603"
+      },
+      "itemLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Övertorneå kommun"
+      },
+      "seatLabel" : {
+        "xml:lang" : "sv",
+        "type" : "literal",
+        "value" : "Övertorneå"
+      }
+    } ]
+  }
+}
