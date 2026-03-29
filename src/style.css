@@ -757,6 +757,13 @@ button.secondary:disabled {
 }
 
 /* Qibla dial with rotating arrow (bearing from north, clockwise) */
+.qibla-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.35rem 0 0.45rem;
+}
+
 .qibla-dial {
   position: relative;
   width: 7rem;
@@ -766,6 +773,12 @@ button.secondary:disabled {
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--accent);
+}
+
+.qibla-dial-face {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.18s linear;
 }
 
 .qibla-rose {
@@ -820,6 +833,7 @@ button.secondary:disabled {
   width: 3rem;
   height: 3.25rem;
   transform-origin: 50% 100%;
+  transition: transform 0.18s linear;
   z-index: 1;
 }
 

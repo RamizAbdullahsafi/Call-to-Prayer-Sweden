@@ -97,6 +97,30 @@ const ORDER: PrayerKey[] = [
 const CITY_CUSTOM_KEY = "ctp.ort.custom";
 const NOTIFY_SILENT_KEY = "ctp.notify.silent";
 type NotifyMode = "full" | "notify_only" | "vibrate" | "silent";
+type DeviceOrientationWithWebkit = DeviceOrientationEvent & {
+  webkitCompassHeading?: number | null;
+};
+type DeviceOrientationWithPermission = typeof DeviceOrientationEvent & {
+  requestPermission?: () => Promise<"granted" | "denied">;
+};
+
+function normalizeDeg(value: number): number {
+  return ((value % 360) + 360) % 360;
+}
+
+function headingFromEvent(e: DeviceOrientationWithWebkit): number | null {
+  if (
+    typeof e.webkitCompassHeading === "number" &&
+    Number.isFinite(e.webkitCompassHeading)
+  ) {
+    return normalizeDeg(e.webkitCompassHeading);
+  }
+  if (typeof e.alpha === "number" && Number.isFinite(e.alpha)) {
+    // Alpha is clockwise from device frame; invert to get clockwise from north.
+    return normalizeDeg(360 - e.alpha);
+  }
+  return null;
+}
 
 function loadNotifySilent(): boolean {
   try {
@@ -210,6 +234,10 @@ export function App(): ReactElement {
   const [geo, setGeo] = useState<GeoPoint | null>(null);
   const [geoLoading, setGeoLoading] = useState(false);
   const [geoMessage, setGeoMessage] = useState<string | null>(null);
+  const [headingDeg, setHeadingDeg] = useState<number | null>(null);
+  const [compassPermissionNeeded, setCompassPermissionNeeded] = useState(false);
+  const [compassError, setCompassError] = useState<string | null>(null);
+  const stopCompassRef = useRef<() => void>(() => {});
 
   const [themePref, setThemePref] = useState<ThemePreference>(() =>
     getStoredThemePreference()
@@ -470,6 +498,76 @@ export function App(): ReactElement {
     }
   };
 
+  const startCompassTracking = useCallback((): (() => void) => {
+    const onOrientation = (event: DeviceOrientationEvent): void => {
+      const heading = headingFromEvent(event as DeviceOrientationWithWebkit);
+      if (heading === null) return;
+      setHeadingDeg(heading);
+      setCompassError(null);
+    };
+    window.addEventListener("deviceorientationabsolute", onOrientation, true);
+    window.addEventListener("deviceorientation", onOrientation, true);
+    return () => {
+      window.removeEventListener(
+        "deviceorientationabsolute",
+        onOrientation,
+        true
+      );
+      window.removeEventListener("deviceorientation", onOrientation, true);
+    };
+  }, []);
+
+  const requestCompassPermission = useCallback(async (): Promise<void> => {
+    if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
+      setCompassError("Compass is not supported on this device/browser.");
+      return;
+    }
+    const ctor = window
+      .DeviceOrientationEvent as DeviceOrientationWithPermission;
+    if (typeof ctor.requestPermission !== "function") return;
+    try {
+      const permission = await ctor.requestPermission();
+      if (permission === "granted") {
+        setCompassPermissionNeeded(false);
+        setCompassError(null);
+        stopCompassRef.current();
+        stopCompassRef.current = startCompassTracking();
+      } else {
+        setCompassError("Compass permission was denied.");
+      }
+    } catch {
+      setCompassError("Could not enable compass access.");
+    }
+  }, [startCompassTracking]);
+
+  useEffect(() => {
+    if (activeTab !== "qibla") return;
+    if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
+      setCompassError("Compass is not supported on this device/browser.");
+      return;
+    }
+    const ctor = window
+      .DeviceOrientationEvent as DeviceOrientationWithPermission;
+    if (typeof ctor.requestPermission === "function") {
+      setCompassPermissionNeeded(true);
+      return;
+    }
+    setCompassPermissionNeeded(false);
+    stopCompassRef.current();
+    stopCompassRef.current = startCompassTracking();
+    return () => {
+      stopCompassRef.current();
+      stopCompassRef.current = () => {};
+    };
+  }, [activeTab, startCompassTracking]);
+
+  useEffect(() => {
+    return () => {
+      stopCompassRef.current();
+      stopCompassRef.current = () => {};
+    };
+  }, []);
+
   const hijriInfo = useMemo(() => {
     const date = new Date(dateInput + "T12:00:00");
     if (Number.isNaN(date.getTime())) return null;
@@ -505,6 +603,11 @@ export function App(): ReactElement {
     if (!geo) return null;
     return qiblaBearing(geo.latitude, geo.longitude);
   }, [geo]);
+  const qiblaNeedleDeg = useMemo(() => {
+    if (qiblaDeg === null) return null;
+    if (headingDeg === null) return qiblaDeg;
+    return normalizeDeg(qiblaDeg - headingDeg);
+  }, [qiblaDeg, headingDeg]);
 
   return (
     <>
@@ -827,6 +930,29 @@ export function App(): ReactElement {
       <div className="feature-grid feature-grid--stack">
         <div className="feature-card">
           <h3>{t("qiblaTitle")}</h3>
+          <div className="qibla-actions">
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => void onDetectLocation()}
+              disabled={geoLoading}
+            >
+              {geoLoading ? "Detecting location…" : "Use my location (GPS)"}
+            </button>
+            {compassPermissionNeeded ? (
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => {
+                  void requestCompassPermission();
+                }}
+              >
+                Enable compass
+              </button>
+            ) : null}
+          </div>
+          {geoMessage ? <p className="geo-msg">{geoMessage}</p> : null}
+          {compassError ? <p className="geo-msg">{compassError}</p> : null}
           {qiblaDeg === null ? (
             <p>{t("qiblaGpsHint")}</p>
           ) : (
@@ -836,15 +962,25 @@ export function App(): ReactElement {
                 role="img"
                 aria-label={t("qiblaBearing", { deg: Math.round(qiblaDeg) })}
               >
-                <span className="qibla-rose qibla-rose--n">N</span>
-                <span className="qibla-rose qibla-rose--e">E</span>
-                <span className="qibla-rose qibla-rose--s">S</span>
-                <span className="qibla-rose qibla-rose--w">W</span>
+                <div
+                  className="qibla-dial-face"
+                  style={{
+                    transform:
+                      headingDeg === null
+                        ? "rotate(0deg)"
+                        : `rotate(${-headingDeg}deg)`,
+                  }}
+                >
+                  <span className="qibla-rose qibla-rose--n">N</span>
+                  <span className="qibla-rose qibla-rose--e">E</span>
+                  <span className="qibla-rose qibla-rose--s">S</span>
+                  <span className="qibla-rose qibla-rose--w">W</span>
+                </div>
                 <div className="qibla-hub" aria-hidden="true" />
                 <div
                   className="qibla-pointer"
                   style={{
-                    transform: `translateX(-50%) rotate(${qiblaDeg}deg)`,
+                    transform: `translateX(-50%) rotate(${qiblaNeedleDeg ?? qiblaDeg}deg)`,
                   }}
                 >
                   <svg
@@ -865,6 +1001,11 @@ export function App(): ReactElement {
               <p className="qibla-bearing-text">
                 {t("qiblaBearing", { deg: Math.round(qiblaDeg) })}
               </p>
+              {headingDeg === null ? null : (
+                <p className="qibla-bearing-text">
+                  Heading: {Math.round(headingDeg)}°
+                </p>
+              )}
             </>
           )}
         </div>
