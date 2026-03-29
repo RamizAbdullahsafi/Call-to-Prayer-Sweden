@@ -9,6 +9,7 @@ import {
 } from "react";
 import { SWEDISH_MUNICIPALITIES } from "./data/swedishMunicipalities";
 import {
+  buildScheduleRows,
   fetchPrayerTimes,
   formatDateYMD,
   prayerInstant,
@@ -204,6 +205,10 @@ export function App(): ReactElement {
     getStoredThemePreference()
   );
 
+  const [activeTab, setActiveTab] = useState<
+    "prayer" | "qibla" | "calendar" | "settings"
+  >("prayer");
+
   useLayoutEffect(() => {
     applyEffectiveTheme(effectiveTheme(themePref));
   }, [themePref]);
@@ -270,6 +275,8 @@ export function App(): ReactElement {
           setError(t("errors.fetchFailed", { status }));
         } else if (e.message === "PRAYER_TIMES_PARSE") {
           setError(t("errors.parseFailed"));
+        } else if (e.message === "PRAYER_TIMES_EMPTY") {
+          setError(t("errors.cityNotFound"));
         } else {
           setError(t("errors.generic"));
         }
@@ -464,6 +471,18 @@ export function App(): ReactElement {
     return buildHijriMonthGrid(hijriViewAnchor, locale);
   }, [hijriViewAnchor, locale]);
 
+  const scheduleRows = useMemo(() => {
+    if (!scheduleDay) return [];
+    const d = new Date(scheduleDay.date + "T12:00:00");
+    return buildScheduleRows(scheduleDay, d);
+  }, [scheduleDay]);
+
+  const isRamadanGregorianDay = useMemo(() => {
+    if (!scheduleDay) return false;
+    const d = new Date(scheduleDay.date + "T12:00:00");
+    return hijriFromGregorian(d, locale).month === 9;
+  }, [scheduleDay, locale]);
+
   const qiblaDeg = useMemo(() => {
     if (!geo) return null;
     return qiblaBearing(geo.latitude, geo.longitude);
@@ -474,72 +493,73 @@ export function App(): ReactElement {
       <a href="#main-content" className="skip-link">
         {t("skipToContent")}
       </a>
-      <header className="app-header masjid-header">
+      <header className="app-header masjid-header app-header--brand">
         <h1>{t("appTitle")}</h1>
         <p className="tagline">{t("tagline")}</p>
-        <div
-          className="lang-bar"
-          role="group"
-          aria-label={t("language")}
-        >
-          <label className="lang-bar-label" htmlFor="app-locale">
-            {t("language")}
-          </label>
-          <select
-            id="app-locale"
-            className="lang-select"
-            value={locale}
-            aria-label={t("language")}
-            onChange={(e) => setLocale(e.target.value as Locale)}
-          >
-            {LOCALES.map((loc) => (
-              <option key={loc} value={loc}>
-                {LOCALE_LABELS[loc]}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div
-          className="theme-bar"
-          role="group"
-          aria-label={t("themeAppearance")}
-        >
-          <span className="theme-bar-label" id="theme-label">
-            {t("themeAppearance")}
-          </span>
-          <div
-            className="theme-segmented"
-            role="group"
-            aria-labelledby="theme-label"
-          >
-            <button
-              type="button"
-              className={`theme-option${themePref === "light" ? " theme-option--active" : ""}`}
-              aria-pressed={themePref === "light"}
-              onClick={() => onThemePreferenceChange("light")}
-            >
-              {t("themeDay")}
-            </button>
-            <button
-              type="button"
-              className={`theme-option${themePref === "dark" ? " theme-option--active" : ""}`}
-              aria-pressed={themePref === "dark"}
-              onClick={() => onThemePreferenceChange("dark")}
-            >
-              {t("themeNight")}
-            </button>
-            <button
-              type="button"
-              className={`theme-option${themePref === "system" ? " theme-option--active" : ""}`}
-              aria-pressed={themePref === "system"}
-              onClick={() => onThemePreferenceChange("system")}
-            >
-              {t("themeSystem")}
-            </button>
-          </div>
-        </div>
       </header>
 
+      <nav className="app-nav" aria-label={t("mainNavAria")}>
+        <div className="app-nav-inner" role="tablist">
+          <button
+            type="button"
+            id="tab-btn-prayer"
+            role="tab"
+            aria-selected={activeTab === "prayer"}
+            aria-controls="panel-prayer"
+            className={`app-nav-tab${activeTab === "prayer" ? " app-nav-tab--active" : ""}`}
+            onClick={() => setActiveTab("prayer")}
+          >
+            {t("tabPrayer")}
+          </button>
+          <button
+            type="button"
+            id="tab-btn-qibla"
+            role="tab"
+            aria-selected={activeTab === "qibla"}
+            aria-controls="panel-qibla"
+            className={`app-nav-tab${activeTab === "qibla" ? " app-nav-tab--active" : ""}`}
+            onClick={() => setActiveTab("qibla")}
+          >
+            {t("tabQibla")}
+          </button>
+          <button
+            type="button"
+            id="tab-btn-calendar"
+            role="tab"
+            aria-selected={activeTab === "calendar"}
+            aria-controls="panel-calendar"
+            className={`app-nav-tab${activeTab === "calendar" ? " app-nav-tab--active" : ""}`}
+            onClick={() => setActiveTab("calendar")}
+          >
+            {t("tabCalendar")}
+          </button>
+          <button
+            type="button"
+            id="tab-btn-settings"
+            role="tab"
+            aria-selected={activeTab === "settings"}
+            aria-controls="panel-settings"
+            className={`app-nav-tab${activeTab === "settings" ? " app-nav-tab--active" : ""}`}
+            onClick={() => setActiveTab("settings")}
+          >
+            {t("tabSettings")}
+          </button>
+        </div>
+      </nav>
+
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="app-main masjid-sanctuary app-main--shell"
+        aria-busy={loading}
+      >
+      <section
+        id="panel-prayer"
+        role="tabpanel"
+        aria-labelledby="tab-btn-prayer"
+        hidden={activeTab !== "prayer"}
+        className="app-tab-panel"
+      >
       <div className="controls masjid-panel" aria-label={t("controlsAria")}>
         <div>
           <label htmlFor="city">{t("city")}</label>
@@ -569,7 +589,6 @@ export function App(): ReactElement {
             onChange={(e) => setCityCustom(e.target.value)}
             onBlur={() => {
               persistCustomCity(cityCustom);
-              void loadPrayerTimes();
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -637,13 +656,140 @@ export function App(): ReactElement {
         </div>
       </div>
 
-      <main
-        id="main-content"
-        tabIndex={-1}
-        className="app-main masjid-sanctuary"
-        aria-busy={loading}
+      {error ? (
+        <div id="error" className="error" role="alert" tabIndex={-1}>
+          {error}
+        </div>
+      ) : null}
+
+      <div className="live-region-polite" aria-live="polite" aria-atomic="true">
+        {loading ? (
+          <span className="visually-hidden">{t("loadingTimesAria")}</span>
+        ) : null}
+      </div>
+
+      {!scheduleDay || !nextPrayer ? null : (
+        <div
+          id="next"
+          className="next-banner"
+          role="region"
+          aria-label={t("nextPrayer")}
+        >
+          <div className="label">{t("nextPrayer")}</div>
+          <div className="name">
+            {t(prayerMsg(nextPrayer.key, "prayer"))} ·{" "}
+            {scheduleDay.schedule[nextPrayer.key]}
+          </div>
+          <div className="countdown">
+            {formatCountdownI18n(
+              nextPrayer.at.getTime() - nowTick.getTime(),
+              t
+            )}
+          </div>
+        </div>
+      )}
+
+      <section
+        className="schedule-section"
+        aria-labelledby="schedule-heading"
       >
-      <section className="feature-grid">
+        <h2 id="schedule-heading" className="schedule-heading">
+          {t("scheduleHeading")}
+        </h2>
+        {scheduleDay && isRamadanGregorianDay ? (
+          <div
+            className="ramadan-card"
+            aria-label={t("ramadanCardTitle")}
+          >
+            <h3 className="ramadan-card-title">{t("ramadanCardTitle")}</h3>
+            <div className="ramadan-card-times">
+              <div className="ramadan-card-row">
+                <span className="ramadan-card-label">{t("imsakLabel")}</span>
+                <time
+                  className="ramadan-card-time"
+                  dateTime={`${scheduleDay.date}T${scheduleDay.schedule.fajr}`}
+                >
+                  {scheduleDay.schedule.fajr}
+                </time>
+              </div>
+              <div className="ramadan-card-row">
+                <span className="ramadan-card-label">{t("iftarLabel")}</span>
+                <time
+                  className="ramadan-card-time"
+                  dateTime={`${scheduleDay.date}T${scheduleDay.schedule.maghrib}`}
+                >
+                  {scheduleDay.schedule.maghrib}
+                </time>
+              </div>
+            </div>
+            <p className="ramadan-card-note">{t("ramadanCardNote")}</p>
+          </div>
+        ) : null}
+        {loading && !scheduleDay ? (
+          <ScheduleSkeleton />
+        ) : null}
+        <div
+          id="schedule"
+          className="schedule"
+          hidden={loading && !scheduleDay ? true : undefined}
+        >
+          {scheduleDay
+            ? scheduleRows.map((row) => {
+                if (row.kind === "jumuah") {
+                  return (
+                    <div
+                      key="jumuah"
+                      className="prayer-row prayer-row--jumuah"
+                      data-prayer="jumuah"
+                    >
+                      <div>
+                        <span className="name-sv">{t("prayer.jumuah")}</span>
+                        <span className="name-en">
+                          {t("prayerSecondary.jumuah")}
+                        </span>
+                        <span className="jumuah-hint">{t("jumuahHint")}</span>
+                      </div>
+                      <time dateTime={`${scheduleDay.date}T${row.time}`}>
+                        {row.time}
+                      </time>
+                    </div>
+                  );
+                }
+                const key = row.key;
+                const time = scheduleDay.schedule[key];
+                const isNext = nextPrayer?.key === key;
+                return (
+                  <div
+                    key={key}
+                    className={`prayer-row${isNext ? " is-next" : ""}`}
+                    data-prayer={key}
+                  >
+                    <div>
+                      <span className="name-sv">
+                        {t(prayerMsg(key, "prayer"))}
+                      </span>
+                      <span className="name-en">
+                        {t(prayerMsg(key, "prayerSecondary"))}
+                      </span>
+                    </div>
+                    <time dateTime={`${scheduleDay.date}T${time}`}>{time}</time>
+                  </div>
+                );
+              })
+            : null}
+        </div>
+      </section>
+
+      </section>
+
+      <section
+        id="panel-qibla"
+        role="tabpanel"
+        aria-labelledby="tab-btn-qibla"
+        hidden={activeTab !== "qibla"}
+        className="app-tab-panel"
+      >
+      <div className="feature-grid feature-grid--stack">
         <div className="feature-card">
           <h3>{t("qiblaTitle")}</h3>
           {qiblaDeg === null ? (
@@ -687,6 +833,18 @@ export function App(): ReactElement {
             </>
           )}
         </div>
+      </div>
+
+      </section>
+
+      <section
+        id="panel-calendar"
+        role="tabpanel"
+        aria-labelledby="tab-btn-calendar"
+        hidden={activeTab !== "calendar"}
+        className="app-tab-panel"
+      >
+      <div className="feature-grid feature-grid--calendar">
         <div className="feature-card feature-card--hijri-summary">
           <h3>{t("hijriSummaryTitle")}</h3>
           {!hijriInfo ? null : (
@@ -772,7 +930,79 @@ export function App(): ReactElement {
             </div>
           )}
         </div>
+      </div>
+
       </section>
+
+      <section
+        id="panel-settings"
+        role="tabpanel"
+        aria-labelledby="tab-btn-settings"
+        hidden={activeTab !== "settings"}
+        className="app-tab-panel app-tab-panel--settings"
+      >
+      <p className="settings-intro">{t("settingsSection")}</p>
+      <div
+        className="lang-bar lang-bar--in-panel"
+        role="group"
+        aria-label={t("language")}
+      >
+        <label className="lang-bar-label" htmlFor="app-locale">
+          {t("language")}
+        </label>
+        <select
+          id="app-locale"
+          className="lang-select"
+          value={locale}
+          aria-label={t("language")}
+          onChange={(e) => setLocale(e.target.value as Locale)}
+        >
+          {LOCALES.map((loc) => (
+            <option key={loc} value={loc}>
+              {LOCALE_LABELS[loc]}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div
+        className="theme-bar theme-bar--in-panel"
+        role="group"
+        aria-label={t("themeAppearance")}
+      >
+        <span className="theme-bar-label" id="theme-label">
+          {t("themeAppearance")}
+        </span>
+        <div
+          className="theme-segmented"
+          role="group"
+          aria-labelledby="theme-label"
+        >
+          <button
+            type="button"
+            className={`theme-option${themePref === "light" ? " theme-option--active" : ""}`}
+            aria-pressed={themePref === "light"}
+            onClick={() => onThemePreferenceChange("light")}
+          >
+            {t("themeDay")}
+          </button>
+          <button
+            type="button"
+            className={`theme-option${themePref === "dark" ? " theme-option--active" : ""}`}
+            aria-pressed={themePref === "dark"}
+            onClick={() => onThemePreferenceChange("dark")}
+          >
+            {t("themeNight")}
+          </button>
+          <button
+            type="button"
+            className={`theme-option${themePref === "system" ? " theme-option--active" : ""}`}
+            aria-pressed={themePref === "system"}
+            onClick={() => onThemePreferenceChange("system")}
+          >
+            {t("themeSystem")}
+          </button>
+        </div>
+      </div>
       <fieldset className="notify-fieldset">
         <legend>{t("reminders")}</legend>
         <p className="notify-hint">{t("remindersHint")}</p>
@@ -952,79 +1182,8 @@ export function App(): ReactElement {
         </p>
       </fieldset>
 
-      {error ? (
-        <div id="error" className="error" role="alert" tabIndex={-1}>
-          {error}
-        </div>
-      ) : null}
-
-      <div className="live-region-polite" aria-live="polite" aria-atomic="true">
-        {loading ? (
-          <span className="visually-hidden">{t("loadingTimesAria")}</span>
-        ) : null}
-      </div>
-
-      {!scheduleDay || !nextPrayer ? null : (
-        <div
-          id="next"
-          className="next-banner"
-          role="region"
-          aria-label={t("nextPrayer")}
-        >
-          <div className="label">{t("nextPrayer")}</div>
-          <div className="name">
-            {t(prayerMsg(nextPrayer.key, "prayer"))} ·{" "}
-            {scheduleDay.schedule[nextPrayer.key]}
-          </div>
-          <div className="countdown">
-            {formatCountdownI18n(
-              nextPrayer.at.getTime() - nowTick.getTime(),
-              t
-            )}
-          </div>
-        </div>
-      )}
-
-      <section
-        className="schedule-section"
-        aria-labelledby="schedule-heading"
-      >
-        <h2 id="schedule-heading" className="schedule-heading">
-          {t("scheduleHeading")}
-        </h2>
-        {loading && !scheduleDay ? (
-          <ScheduleSkeleton />
-        ) : null}
-        <div
-          id="schedule"
-          className="schedule"
-          hidden={loading && !scheduleDay ? true : undefined}
-        >
-          {scheduleDay
-            ? ORDER.map((key) => {
-                const time = scheduleDay.schedule[key];
-                const isNext = nextPrayer?.key === key;
-                return (
-                  <div
-                    key={key}
-                    className={`prayer-row${isNext ? " is-next" : ""}`}
-                    data-prayer={key}
-                  >
-                    <div>
-                      <span className="name-sv">
-                        {t(prayerMsg(key, "prayer"))}
-                      </span>
-                      <span className="name-en">
-                        {t(prayerMsg(key, "prayerSecondary"))}
-                      </span>
-                    </div>
-                    <time dateTime={`${scheduleDay.date}T${time}`}>{time}</time>
-                  </div>
-                );
-              })
-            : null}
-        </div>
       </section>
+
       </main>
 
       <footer className="app-footer">

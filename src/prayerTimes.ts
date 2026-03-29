@@ -1,3 +1,5 @@
+import { SWEDISH_MUNICIPALITIES } from "./data/swedishMunicipalities";
+
 export type PrayerKey = "fajr" | "sunrise" | "dhuhr" | "asr" | "maghrib" | "isha";
 
 export type PrayerSchedule = Record<PrayerKey, string>;
@@ -8,7 +10,6 @@ export type PrayerDay = {
   schedule: PrayerSchedule;
 };
 
-
 const PRAYER_KEYS: PrayerKey[] = [
   "fajr",
   "sunrise",
@@ -17,6 +18,30 @@ const PRAYER_KEYS: PrayerKey[] = [
   "maghrib",
   "isha",
 ];
+
+/** Rows for the daily schedule; on Fridays inserts Jumu’ah after Dhuhr (same published time as Dhuhr from IF). */
+export type ScheduleRow =
+  | { kind: "prayer"; key: PrayerKey }
+  | { kind: "jumuah"; time: string };
+
+export function buildScheduleRows(day: PrayerDay, date: Date): ScheduleRow[] {
+  const rows: ScheduleRow[] = PRAYER_KEYS.map((key) => ({
+    kind: "prayer",
+    key,
+  }));
+  if (date.getDay() === 5) {
+    const idx = rows.findIndex(
+      (r) => r.kind === "prayer" && r.key === "dhuhr"
+    );
+    if (idx >= 0) {
+      rows.splice(idx + 1, 0, {
+        kind: "jumuah",
+        time: day.schedule.dhuhr,
+      });
+    }
+  }
+  return rows;
+}
 
 /**
  * Format ort for Islamiska förbundets widget: Swedish title case per word
@@ -39,20 +64,115 @@ export function formatCityForWidget(city: string): string {
     .join("");
 }
 
+/** Remove duplicate country suffix if user pasted "Ort, SE". */
+function stripCountrySuffix(raw: string): string {
+  return raw
+    .replace(/,\s*(SE|Sweden|Sverige)\s*$/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Lowercase å/ä/ö for fuzzy match to official municipality names. */
+function foldSv(s: string): string {
+  return s
+    .toLocaleLowerCase("sv-SE")
+    .replace(/å/g, "a")
+    .replace(/ä/g, "a")
+    .replace(/ö/g, "o");
+}
+
+/** Common English (or ASCII) spellings → canonical name in SWEDISH_MUNICIPALITIES. */
+const ENGLISH_TO_MUNICIPALITY: Record<string, string> = {
+  gothenburg: "Göteborg",
+  goteborg: "Göteborg",
+  gothenberg: "Göteborg",
+  stockholm: "Stockholm",
+  malmo: "Malmö",
+  uppsala: "Uppsala",
+  linkoping: "Linköping",
+  norrkoping: "Norrköping",
+  jonkoping: "Jönköping",
+  orebro: "Örebro",
+  vastervik: "Västervik",
+  helsingborg: "Helsingborg",
+  lund: "Lund",
+  umea: "Umeå",
+  gavle: "Gävle",
+  boras: "Borås",
+  eskilstuna: "Eskilstuna",
+  halmstad: "Halmstad",
+  kalmar: "Kalmar",
+  karlstad: "Karlstad",
+  kristianstad: "Kristianstad",
+  lulea: "Luleå",
+  sodertalje: "Södertälje",
+  trelleborg: "Trelleborg",
+  uddevalla: "Uddevalla",
+  varnamo: "Värnamo",
+  vasteras: "Västerås",
+  falun: "Falun",
+  visby: "Gotland",
+  ystad: "Ystad",
+};
+
+/**
+ * Map free-text city to a name the IF widget understands (official seat / common ort).
+ * Handles English names, optional ", SE", å/ä/ö vs ASCII, and unique prefix matches.
+ */
+export function resolveCityForWidget(city: string): string {
+  const stripped = stripCountrySuffix(city.trim());
+  if (!stripped) return "";
+  const formatted = formatCityForWidget(stripped);
+
+  const alias = ENGLISH_TO_MUNICIPALITY[foldSv(formatted)];
+  if (alias) {
+    const found = SWEDISH_MUNICIPALITIES.find((m) => m === alias);
+    if (found) return found;
+  }
+
+  for (const m of SWEDISH_MUNICIPALITIES) {
+    if (foldSv(m) === foldSv(formatted)) return m;
+  }
+
+  const f = foldSv(formatted);
+  if (f.length >= 5) {
+    const prefixed = SWEDISH_MUNICIPALITIES.filter((m) =>
+      foldSv(m).startsWith(f)
+    );
+    if (prefixed.length === 1) return prefixed[0]!;
+  }
+
+  return formatted;
+}
+
 /** Six times in order Fajr … Isha from bönetider widget HTML (one HH:MM per `<li>`). */
 function extractPrayerTimesFromWidgetHtml(html: string): string[] {
+  const trimmed = html.trim();
+  if (
+    trimmed.length < 20 ||
+    !/<li\b/i.test(trimmed) ||
+    /<ul[^>]*>\s*<\/ul>/i.test(trimmed)
+  ) {
+    throw new Error("PRAYER_TIMES_EMPTY");
+  }
+
   const liBlocks = html.match(/<li\b[^>]*>[\s\S]*?<\/li>/gi) ?? [];
   const times: string[] = [];
   for (const li of liBlocks) {
     const span = li.match(/<span[^>]*>(\d{2}:\d{2})<\/span>/i);
-    if (span) times.push(span[1]!);
+    if (span) {
+      times.push(span[1]!);
+      continue;
+    }
+    const inLi = li.match(/\b(\d{2}:\d{2})\b/);
+    if (inLi) times.push(inLi[1]!);
   }
   if (times.length === 6) return times;
 
   const loose = html.match(/\d{2}:\d{2}/g);
   if (loose && loose.length >= 6) return loose.slice(0, 6);
 
-  throw new Error("Inga bönetider kunde läsas ur svaret.");
+  throw new Error("PRAYER_TIMES_PARSE");
 }
 
 export function formatDateYMD(d: Date): string {
@@ -96,7 +216,7 @@ export async function fetchPrayerTimes(
   city: string,
   date: Date = new Date()
 ): Promise<PrayerDay> {
-  const place = formatCityForWidget(city);
+  const place = resolveCityForWidget(city);
   const params = new URLSearchParams({
     ifis_bonetider_widget_city: `${place}, SE`,
     ifis_bonetider_widget_date: formatDateYMD(date),
@@ -116,7 +236,10 @@ export async function fetchPrayerTimes(
   let times: string[];
   try {
     times = extractPrayerTimesFromWidgetHtml(html);
-  } catch {
+  } catch (e) {
+    if (e instanceof Error && e.message === "PRAYER_TIMES_EMPTY") {
+      throw new Error("PRAYER_TIMES_EMPTY");
+    }
     throw new Error("PRAYER_TIMES_PARSE");
   }
 
@@ -132,4 +255,4 @@ export async function fetchPrayerTimes(
   };
 }
 
-export { SWEDISH_MUNICIPALITIES } from "./data/swedishMunicipalities";
+export { SWEDISH_MUNICIPALITIES };

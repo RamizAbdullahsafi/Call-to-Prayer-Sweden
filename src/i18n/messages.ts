@@ -9,6 +9,12 @@ export type MessageId =
   | "themeNight"
   | "themeSystem"
   | "controlsAria"
+  | "mainNavAria"
+  | "tabPrayer"
+  | "tabQibla"
+  | "tabCalendar"
+  | "tabSettings"
+  | "settingsSection"
   | "city"
   | "citySelectAria"
   | "cityCustom"
@@ -52,6 +58,7 @@ export type MessageId =
   | "errors.selectDate"
   | "errors.fetchFailed"
   | "errors.parseFailed"
+  | "errors.cityNotFound"
   | "errors.generic"
   | "prayer.fajr"
   | "prayer.sunrise"
@@ -59,12 +66,19 @@ export type MessageId =
   | "prayer.asr"
   | "prayer.maghrib"
   | "prayer.isha"
+  | "prayer.jumuah"
   | "prayerSecondary.fajr"
   | "prayerSecondary.sunrise"
   | "prayerSecondary.dhuhr"
   | "prayerSecondary.asr"
   | "prayerSecondary.maghrib"
   | "prayerSecondary.isha"
+  | "prayerSecondary.jumuah"
+  | "jumuahHint"
+  | "ramadanCardTitle"
+  | "imsakLabel"
+  | "iftarLabel"
+  | "ramadanCardNote"
   | "qiblaTitle"
   | "qiblaGpsHint"
   | "qiblaBearing"
@@ -85,6 +99,12 @@ const sv: Messages = {
   themeNight: "Natt",
   themeSystem: "System",
   controlsAria: "Ort och datum",
+  mainNavAria: "Huvudnavigering",
+  tabPrayer: "Bönetider",
+  tabQibla: "Qibla",
+  tabCalendar: "Kalender",
+  tabSettings: "Inställningar",
+  settingsSection: "Språk, utseende, aviseringar och adhan",
   city: "Ort",
   citySelectAria: "Välj ort",
   cityCustom: "Annan ort (valfritt)",
@@ -130,6 +150,8 @@ const sv: Messages = {
   "errors.fetchFailed": "Kunde inte hämta bönetider ({{status}}).",
   "errors.parseFailed":
     "Inga bönetider hittades. Kontrollera ortnamnet.",
+  "errors.cityNotFound":
+    "Ortnamnet hittades inte hos bönetiderna. Använd svenskt namn (t.ex. Göteborg), välj i listan eller tryck «Visa tider» när du skrivit klart.",
   "errors.generic": "Något gick fel.",
   "prayer.fajr": "Fajr",
   "prayer.sunrise": "Shuruk",
@@ -137,12 +159,21 @@ const sv: Messages = {
   "prayer.asr": "Asr",
   "prayer.maghrib": "Maghrib",
   "prayer.isha": "Isha",
+  "prayer.jumuah": "Fredagsbön (Jumu'ah)",
   "prayerSecondary.fajr": "Fajr",
   "prayerSecondary.sunrise": "Sunrise",
   "prayerSecondary.dhuhr": "Dhuhr",
   "prayerSecondary.asr": "Asr",
   "prayerSecondary.maghrib": "Maghrib",
   "prayerSecondary.isha": "Isha",
+  "prayerSecondary.jumuah": "Fredagsbön",
+  jumuahHint:
+    "Samma tid som Dhuhr för orten; lokala moskéer kan ha annan tid för jamaat.",
+  ramadanCardTitle: "Ramadan",
+  imsakLabel: "Imsak",
+  iftarLabel: "Iftar",
+  ramadanCardNote:
+    "Fajr ≈ imsak och maghrib ≈ iftar enligt dessa tider. Bekräfta vid din moské om det skiljer sig.",
   qiblaTitle: "Qibla",
   qiblaGpsHint: "Använd GPS ovan för riktning mot Kaba.",
   qiblaBearing: "Qibla: {{deg}}° från norr",
@@ -162,6 +193,12 @@ const en: Messages = {
   themeNight: "Night",
   themeSystem: "System",
   controlsAria: "Location and date",
+  mainNavAria: "Main navigation",
+  tabPrayer: "Prayer times",
+  tabQibla: "Qibla",
+  tabCalendar: "Calendar",
+  tabSettings: "Settings",
+  settingsSection: "Language, appearance, notifications, and adhan",
   city: "City",
   citySelectAria: "Select city",
   cityCustom: "Other city (optional)",
@@ -207,6 +244,8 @@ const en: Messages = {
   "errors.selectDate": "Choose a date.",
   "errors.fetchFailed": "Could not load prayer times ({{status}}).",
   "errors.parseFailed": "No prayer times found. Check the city name.",
+  "errors.cityNotFound":
+    "That place was not found. Use the Swedish name (e.g. Göteborg), pick from the list, or tap “Show times” when finished typing.",
   "errors.generic": "Something went wrong.",
   "prayer.fajr": "Fajr",
   "prayer.sunrise": "Shuruk",
@@ -214,12 +253,21 @@ const en: Messages = {
   "prayer.asr": "Asr",
   "prayer.maghrib": "Maghrib",
   "prayer.isha": "Isha",
+  "prayer.jumuah": "Jumu'ah (Friday prayer)",
   "prayerSecondary.fajr": "Fajr",
   "prayerSecondary.sunrise": "Sunrise",
   "prayerSecondary.dhuhr": "Dhuhr",
   "prayerSecondary.asr": "Asr",
   "prayerSecondary.maghrib": "Maghrib",
   "prayerSecondary.isha": "Isha",
+  "prayerSecondary.jumuah": "Friday congregational prayer",
+  jumuahHint:
+    "Shown at Dhuhr for this location; mosques may set a different jamaat time.",
+  ramadanCardTitle: "Ramadan",
+  imsakLabel: "Imsak (fast begins)",
+  iftarLabel: "Iftar (fast ends)",
+  ramadanCardNote:
+    "Fajr is shown as imsak and maghrib as iftar here; confirm with your mosque if needed.",
   qiblaTitle: "Qibla",
   qiblaGpsHint: "Use GPS above for direction to the Kaaba.",
   qiblaBearing: "Qibla: {{deg}}° from north",
@@ -239,6 +287,12 @@ const ar: Messages = {
   themeNight: "ليل",
   themeSystem: "النظام",
   controlsAria: "المدينة والتاريخ",
+  mainNavAria: "التنقل الرئيسي",
+  tabPrayer: "أوقات الصلاة",
+  tabQibla: "القبلة",
+  tabCalendar: "التقويم",
+  tabSettings: "الإعدادات",
+  settingsSection: "اللغة والمظهر والإشعارات والأذان",
   city: "المدينة",
   citySelectAria: "اختر المدينة",
   cityCustom: "مدينة أخرى (اختياري)",
@@ -284,6 +338,8 @@ const ar: Messages = {
   "errors.selectDate": "اختر تاريخاً.",
   "errors.fetchFailed": "تعذّر تحميل أوقات الصلاة ({{status}}).",
   "errors.parseFailed": "لم يُعثر على أوقات. تحقّق من اسم المدينة.",
+  "errors.cityNotFound":
+    "لم يُعثر على المدينة. استخدم الاسم السويدي أو اختر من القائمة أو اضغط عرض الأوقات بعد الانتهاء من الكتابة.",
   "errors.generic": "حدث خطأ ما.",
   "prayer.fajr": "الفجر",
   "prayer.sunrise": "الشروق",
@@ -291,12 +347,21 @@ const ar: Messages = {
   "prayer.asr": "العصر",
   "prayer.maghrib": "المغرب",
   "prayer.isha": "العشاء",
+  "prayer.jumuah": "الجمعة",
   "prayerSecondary.fajr": "Fajr",
   "prayerSecondary.sunrise": "Sunrise",
   "prayerSecondary.dhuhr": "Dhuhr",
   "prayerSecondary.asr": "Asr",
   "prayerSecondary.maghrib": "Maghrib",
   "prayerSecondary.isha": "Isha",
+  "prayerSecondary.jumuah": "صلاة الجمعة",
+  jumuahHint:
+    "تُعرض كوقت الظهر لهذه المدينة؛ قد يختلف وقت الجماعة في المسجد.",
+  ramadanCardTitle: "رمضان",
+  imsakLabel: "الإمساك",
+  iftarLabel: "الإفطار",
+  ramadanCardNote:
+    "الفجر يُعرض كوقت إمساك والمغرب كإفطار؛ تأكد من مسجدك عند الاختلاف.",
   qiblaTitle: "القبلة",
   qiblaGpsHint: "استخدم تحديد الموقع أعلاه للاتجاه نحو الكعبة.",
   qiblaBearing: "القبلة: {{deg}}° من الشمال",
@@ -316,6 +381,12 @@ const fa: Messages = {
   themeNight: "شب",
   themeSystem: "سیستم",
   controlsAria: "شهر و تاریخ",
+  mainNavAria: "ناوبری اصلی",
+  tabPrayer: "اوقات نماز",
+  tabQibla: "قبله",
+  tabCalendar: "تقویم",
+  tabSettings: "تنظیمات",
+  settingsSection: "زبان، ظاهر، اعلان‌ها و اذان",
   city: "شهر",
   citySelectAria: "انتخاب شهر",
   cityCustom: "شهر دیگر (اختیاری)",
@@ -361,6 +432,8 @@ const fa: Messages = {
   "errors.selectDate": "تاریخ را انتخاب کنید.",
   "errors.fetchFailed": "بارگذاری اوقات نماز ممکن نشد ({{status}}).",
   "errors.parseFailed": "اوقاتی یافت نشد. نام شهر را بررسی کنید.",
+  "errors.cityNotFound":
+    "شهر پیدا نشد. نام سوئدی را بنویسید، از فهرست انتخاب کنید یا پس از اتمام تایپ «نمایش اوقات» را بزنید.",
   "errors.generic": "خطایی رخ داد.",
   "prayer.fajr": "فجر",
   "prayer.sunrise": "طلوع",
@@ -368,12 +441,21 @@ const fa: Messages = {
   "prayer.asr": "عصر",
   "prayer.maghrib": "مغرب",
   "prayer.isha": "عشاء",
+  "prayer.jumuah": "نماز جمعه",
   "prayerSecondary.fajr": "Fajr",
   "prayerSecondary.sunrise": "Sunrise",
   "prayerSecondary.dhuhr": "Dhuhr",
   "prayerSecondary.asr": "Asr",
   "prayerSecondary.maghrib": "Maghrib",
   "prayerSecondary.isha": "Isha",
+  "prayerSecondary.jumuah": "نماز جماعت جمعه",
+  jumuahHint:
+    "مثل ظهر همان روز؛ زمان جماعت در مسجد ممکن است متفاوت باشد.",
+  ramadanCardTitle: "ماه رمضان",
+  imsakLabel: "إمساک (شروع روزه)",
+  iftarLabel: "إفطار (پایان روزه)",
+  ramadanCardNote:
+    "فجر تقریباً imsak و مغرب تقریباً iftar است؛ در صورت تفاوت با مسجد خود هماهنگ کنید.",
   qiblaTitle: "قبله",
   qiblaGpsHint: "برای جهت به سوی کعبه از موقعیت‌یاب بالا استفاده کنید.",
   qiblaBearing: "قبله: {{deg}}° از شمال",
@@ -396,6 +478,12 @@ const ku: Messages = {
   themeNight: "Şev",
   themeSystem: "Sîstem",
   controlsAria: "Bajar û roj",
+  mainNavAria: "Navîgasyona sereke",
+  tabPrayer: "Demên nimêjê",
+  tabQibla: "Qible",
+  tabCalendar: "Salname",
+  tabSettings: "Mîheng",
+  settingsSection: "Ziman, xuyang, ragihandin û ezan",
   city: "Bajar",
   citySelectAria: "Bajêr hilbijêre",
   cityCustom: "Bajarek din (bixweye)",
@@ -441,6 +529,8 @@ const ku: Messages = {
   "errors.selectDate": "Rojekê hilbijêre.",
   "errors.fetchFailed": "Demên nimêjê nehatin barkirin ({{status}}).",
   "errors.parseFailed": "Dem nehatin dîtin. Navê bajarê kontrol bike.",
+  "errors.cityNotFound":
+    "Bajar nehat dîtin. Navê swêdî bikar bîne, ji lîstikê hilbijêre an piştî nivîsandinê «Deman nîşan bide» bitikîne.",
   "errors.generic": "Çewtiyek derket.",
   "prayer.fajr": "Fecr",
   "prayer.sunrise": "Şerq",
@@ -448,12 +538,21 @@ const ku: Messages = {
   "prayer.asr": "Asr",
   "prayer.maghrib": "Magrib",
   "prayer.isha": "Îşa",
+  "prayer.jumuah": "Cuma",
   "prayerSecondary.fajr": "Fajr",
   "prayerSecondary.sunrise": "Sunrise",
   "prayerSecondary.dhuhr": "Dhuhr",
   "prayerSecondary.asr": "Asr",
   "prayerSecondary.maghrib": "Maghrib",
   "prayerSecondary.isha": "Isha",
+  "prayerSecondary.jumuah": "Nimêja Cumayê",
+  jumuahHint:
+    "Di heman dema nîvro de tê nîşandan; dibe ku mizgeft cuda be.",
+  ramadanCardTitle: "Remezan",
+  imsakLabel: "Îmsak",
+  iftarLabel: "Îftar",
+  ramadanCardNote:
+    "Fecr wek îmsak û magrib wek îftar tên nîşandan; li mizgeftê piştrast bike.",
   qiblaTitle: "Qible",
   qiblaGpsHint: "Ji bo berî Kaaba GPS li jor bikar bîne.",
   qiblaBearing: "Qible: {{deg}}° ji bakur",
@@ -473,6 +572,12 @@ const so: Messages = {
   themeNight: "Habeen",
   themeSystem: "Nidaamka",
   controlsAria: "Magaalo iyo taariikh",
+  mainNavAria: "Navigashada ugu weyn",
+  tabPrayer: "Waqtiga salaadda",
+  tabQibla: "Qibla",
+  tabCalendar: "Kalender",
+  tabSettings: "Dejinta",
+  settingsSection: "Luqad, muuqaal, ogeysiis iyo adaan",
   city: "Magaalo",
   citySelectAria: "Dooro magaalo",
   cityCustom: "Magaalo kale (ikhtiyaari)",
@@ -518,6 +623,8 @@ const so: Messages = {
   "errors.selectDate": "Dooro taariikh.",
   "errors.fetchFailed": "Lama soo dejin waqtiga salaadda ({{status}}).",
   "errors.parseFailed": "Waqtiyo lama helin. Hubi magaca magaalada.",
+  "errors.cityNotFound":
+    "Magaalada lama helin. Magaca Iswiidhishka isticmaal, liiska dooro ama «Muuji waqtiyada» taabo markaad dhammayso.",
   "errors.generic": "Waxbaa qaladay.",
   "prayer.fajr": "Subax",
   "prayer.sunrise": "Qorrax soo bax",
@@ -525,12 +632,21 @@ const so: Messages = {
   "prayer.asr": "Casar",
   "prayer.maghrib": "Magrib",
   "prayer.isha": "Cishaa",
+  "prayer.jumuah": "Jimcaha",
   "prayerSecondary.fajr": "Fajr",
   "prayerSecondary.sunrise": "Sunrise",
   "prayerSecondary.dhuhr": "Dhuhr",
   "prayerSecondary.asr": "Asr",
   "prayerSecondary.maghrib": "Maghrib",
   "prayerSecondary.isha": "Isha",
+  "prayerSecondary.jumuah": "Salaadda Jimcaha",
+  jumuahHint:
+    "Sida Duhur ee goobta; masaajidu way kala duwanaan karaan.",
+  ramadanCardTitle: "Ramadaan",
+  imsakLabel: "Imsak",
+  iftarLabel: "Iftaar",
+  ramadanCardNote:
+    "Fajr ≈ imsak, maghrib ≈ iftar; hubi masaajidkaaga haddii ay kala duwan yihiin.",
   qiblaTitle: "Qibla",
   qiblaGpsHint: "Isticmaal GPS kor ku xiga si aad u hesho jihada Kaaba.",
   qiblaBearing: "Qibla: {{deg}}° waqooyi",

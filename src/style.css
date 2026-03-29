@@ -1130,6 +1130,66 @@ button.secondary:disabled {
   color: var(--text);
 }
 
+.ramadan-card {
+  margin: 0 0 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.ramadan-card-title {
+  margin: 0 0 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ramadan-card-times {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 0.5rem;
+}
+
+.ramadan-card-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ramadan-card-label {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.ramadan-card-time {
+  font-variant-numeric: tabular-nums;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ramadan-card-note {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.prayer-row--jumuah {
+  border-style: dashed;
+}
+
+.jumuah-hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--muted);
+  font-weight: 400;
+}
+
 .schedule--skeleton {
   pointer-events: none;
 }
@@ -1219,4 +1279,115 @@ footer a:hover {
 /* Range slider — larger touch target on mobile */
 .azan-volume-row input[type="range"] {
   min-height: 2.25rem;
+}
+
+/* App shell — primary tab navigation */
+.app-header--brand {
+  padding-bottom: 1rem;
+  margin-bottom: 0;
+}
+
+.app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin: 0 0 0.85rem;
+  padding: 0.25rem 0 max(0.25rem, env(safe-area-inset-top));
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-nav-inner {
+  display: flex;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.25rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.app-nav-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 2.35rem;
+  padding: 0.4rem 0.2rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+@media (min-width: 400px) {
+  .app-nav-tab {
+    font-size: 0.75rem;
+    padding: 0.45rem 0.35rem;
+  }
+}
+
+.app-nav-tab:hover {
+  color: var(--text);
+  background: var(--list-hover);
+}
+
+.app-nav-tab--active {
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.app-main--shell {
+  padding-top: 0;
+}
+
+.app-tab-panel--settings .notify-fieldset,
+.app-tab-panel--settings .azan-fieldset {
+  margin-bottom: 1rem;
+}
+
+.settings-intro {
+  margin: 0 0 0.9rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.lang-bar--in-panel,
+.theme-bar--in-panel {
+  align-items: stretch;
+  width: 100%;
+  max-width: none;
+  margin-bottom: 0.75rem;
+}
+
+.lang-bar--in-panel .lang-select,
+.theme-bar--in-panel .theme-segmented {
+  max-width: none;
+  width: 100%;
+}
+
+.feature-grid--stack {
+  grid-template-columns: 1fr;
+}
+
+.feature-grid--calendar {
+  grid-template-columns: 1fr;
+}
+
+.feature-grid--calendar .feature-card--hijri-calendar {
+  grid-column: auto;
+}
+
+[dir="rtl"] .app-nav-inner {
+  flex-direction: row-reverse;
 }
