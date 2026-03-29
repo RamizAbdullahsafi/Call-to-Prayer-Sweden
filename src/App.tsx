@@ -58,6 +58,7 @@ import { detectCurrentPosition, reverseGeocodeCity, type GeoPoint } from "./loca
 import { qiblaBearing } from "./qibla";
 import { hijriFromGregorian, hijriImportantDay } from "./hijri";
 import { buildHijriMonthGrid, shiftHijriMonth } from "./hijriCalendar";
+import { AppDownloadBanner } from "./AppDownloadBanner";
 
 function prayerMsg(
   key: PrayerKey,
@@ -510,6 +511,7 @@ export function App(): ReactElement {
       <a href="#main-content" className="skip-link">
         {t("skipToContent")}
       </a>
+      <AppDownloadBanner t={t} />
       <header className="app-header masjid-header app-header--brand">
         <h1>{t("appTitle")}</h1>
         <p className="tagline">{t("tagline")}</p>

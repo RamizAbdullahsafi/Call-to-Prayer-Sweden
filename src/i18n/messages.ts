@@ -88,7 +88,11 @@ export type MessageId =
   | "hijriCalendarTitle"
   | "hijriSummaryTitle"
   | "calPrevMonth"
-  | "calNextMonth";
+  | "calNextMonth"
+  | "appDownloadBannerTitle"
+  | "appDownloadBannerBody"
+  | "appDownloadBannerCta"
+  | "appDownloadBannerDismiss";
 
 type Messages = Record<MessageId, string>;
 
@@ -187,6 +191,11 @@ const sv: Messages = {
   hijriSummaryTitle: "Hijridatum",
   calPrevMonth: "Föregående månad",
   calNextMonth: "Nästa månad",
+  appDownloadBannerTitle: "Finns som app",
+  appDownloadBannerBody:
+    "Installera Android-appen för snabbare åtkomst och aviseringar.",
+  appDownloadBannerCta: "Hämta i Play Butik",
+  appDownloadBannerDismiss: "Stäng",
 };
 
 const en: Messages = {
@@ -284,6 +293,11 @@ const en: Messages = {
   hijriSummaryTitle: "Islamic date (Hijri)",
   calPrevMonth: "Previous month",
   calNextMonth: "Next month",
+  appDownloadBannerTitle: "Get the app",
+  appDownloadBannerBody:
+    "Install the Android app for faster access and notifications.",
+  appDownloadBannerCta: "Get it on Google Play",
+  appDownloadBannerDismiss: "Dismiss",
 };
 
 const ar: Messages = {
@@ -381,6 +395,11 @@ const ar: Messages = {
   hijriSummaryTitle: "التاريخ الهجري",
   calPrevMonth: "الشهر السابق",
   calNextMonth: "الشهر التالي",
+  appDownloadBannerTitle: "احصل على التطبيق",
+  appDownloadBannerBody:
+    "ثبّت تطبيق أندرويد للوصول السريع والإشعارات.",
+  appDownloadBannerCta: "احصل عليه من Google Play",
+  appDownloadBannerDismiss: "إغلاق",
 };
 
 const fa: Messages = {
@@ -478,6 +497,11 @@ const fa: Messages = {
   hijriSummaryTitle: "تاریخ هجری",
   calPrevMonth: "ماه قبل",
   calNextMonth: "ماه بعد",
+  appDownloadBannerTitle: "برنامه را نصب کنید",
+  appDownloadBannerBody:
+    "برنامه اندروید را برای دسترسی سریع‌تر و اعلان‌ها نصب کنید.",
+  appDownloadBannerCta: "دریافت از Google Play",
+  appDownloadBannerDismiss: "بستن",
 };
 
 // Fix typo in fa - I duplicated errors.generic
@@ -578,6 +602,11 @@ const ku: Messages = {
   hijriSummaryTitle: "Roja Hicrî",
   calPrevMonth: "Meha berê",
   calNextMonth: "Meha din",
+  appDownloadBannerTitle: "Sepanê rake",
+  appDownloadBannerBody:
+    "Sepana Android-ê rake ji bo gihîştinek zûtir û ragihandinan.",
+  appDownloadBannerCta: "Li Google Play bistîne",
+  appDownloadBannerDismiss: "Bigire",
 };
 
 const so: Messages = {
@@ -675,6 +704,11 @@ const so: Messages = {
   hijriSummaryTitle: "Taariikhda Hijriga",
   calPrevMonth: "Bishii hore",
   calNextMonth: "Bishii xigta",
+  appDownloadBannerTitle: "Soo deji barnaamijka",
+  appDownloadBannerBody:
+    "Ku rakib barnaamijka Android si aad u hesho marin degdeg ah iyo ogeysiis.",
+  appDownloadBannerCta: "Ka hel Google Play",
+  appDownloadBannerDismiss: "Xir",
 };
 
 export const MESSAGES: Record<Locale, Messages> = {
