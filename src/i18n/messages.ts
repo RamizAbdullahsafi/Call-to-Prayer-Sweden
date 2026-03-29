@@ -91,7 +91,8 @@ export type MessageId =
   | "calNextMonth"
   | "appDownloadBannerTitle"
   | "appDownloadBannerBody"
-  | "appDownloadBannerCta"
+  | "appDownloadBannerIosBody"
+  | "appDownloadBannerInstall"
   | "appDownloadBannerDismiss";
 
 type Messages = Record<MessageId, string>;
@@ -191,10 +192,12 @@ const sv: Messages = {
   hijriSummaryTitle: "Hijridatum",
   calPrevMonth: "Föregående månad",
   calNextMonth: "Nästa månad",
-  appDownloadBannerTitle: "Finns som app",
+  appDownloadBannerTitle: "Installera på mobilen",
   appDownloadBannerBody:
-    "Installera Android-appen för snabbare åtkomst och aviseringar.",
-  appDownloadBannerCta: "Hämta i Play Butik",
+    "Använd webbläsarens «Installera» / «Lägg till på hemskärmen» — samma app som på webben, utan appbutik.",
+  appDownloadBannerIosBody:
+    "På iPhone eller iPad: tryck Dela (□↑) och välj «Lägg till på hemskärmen».",
+  appDownloadBannerInstall: "Installera",
   appDownloadBannerDismiss: "Stäng",
 };
 
@@ -293,10 +296,12 @@ const en: Messages = {
   hijriSummaryTitle: "Islamic date (Hijri)",
   calPrevMonth: "Previous month",
   calNextMonth: "Next month",
-  appDownloadBannerTitle: "Get the app",
+  appDownloadBannerTitle: "Install this app",
   appDownloadBannerBody:
-    "Install the Android app for faster access and notifications.",
-  appDownloadBannerCta: "Get it on Google Play",
+    "Use your browser’s Install or Add to Home screen option — same web app, no app store.",
+  appDownloadBannerIosBody:
+    "On iPhone or iPad: tap Share, then Add to Home Screen.",
+  appDownloadBannerInstall: "Install",
   appDownloadBannerDismiss: "Dismiss",
 };
 
@@ -395,10 +400,12 @@ const ar: Messages = {
   hijriSummaryTitle: "التاريخ الهجري",
   calPrevMonth: "الشهر السابق",
   calNextMonth: "الشهر التالي",
-  appDownloadBannerTitle: "احصل على التطبيق",
+  appDownloadBannerTitle: "ثبّت التطبيق",
   appDownloadBannerBody:
-    "ثبّت تطبيق أندرويد للوصول السريع والإشعارات.",
-  appDownloadBannerCta: "احصل عليه من Google Play",
+    "استخدم «تثبيت» أو «إضافة إلى الشاشة الرئيسية» من المتصفح — نفس الموقع دون متجر تطبيقات.",
+  appDownloadBannerIosBody:
+    "على آيفون أو آيباد: اضغط مشاركة ثم «إضافة إلى الشاشة الرئيسية».",
+  appDownloadBannerInstall: "تثبيت",
   appDownloadBannerDismiss: "إغلاق",
 };
 
@@ -497,10 +504,12 @@ const fa: Messages = {
   hijriSummaryTitle: "تاریخ هجری",
   calPrevMonth: "ماه قبل",
   calNextMonth: "ماه بعد",
-  appDownloadBannerTitle: "برنامه را نصب کنید",
+  appDownloadBannerTitle: "نصب برنامه",
   appDownloadBannerBody:
-    "برنامه اندروید را برای دسترسی سریع‌تر و اعلان‌ها نصب کنید.",
-  appDownloadBannerCta: "دریافت از Google Play",
+    "از مرورگر گزینه «نصب» یا «افزودن به صفحه اصلی» را بزنید — همان وب‌اپ، بدون فروشگاه.",
+  appDownloadBannerIosBody:
+    "روی آیفون یا آیپد: اشتراک‌گذاری را بزنید، سپس «افزودن به صفحه اصلی».",
+  appDownloadBannerInstall: "نصب",
   appDownloadBannerDismiss: "بستن",
 };
 
@@ -604,8 +613,10 @@ const ku: Messages = {
   calNextMonth: "Meha din",
   appDownloadBannerTitle: "Sepanê rake",
   appDownloadBannerBody:
-    "Sepana Android-ê rake ji bo gihîştinek zûtir û ragihandinan.",
-  appDownloadBannerCta: "Li Google Play bistîne",
+    "Sepana gerokê «Rake» an «Li ser ekrana malê zêde bike» — heman malper, bê firotgeh.",
+  appDownloadBannerIosBody:
+    "Li iPhone an iPad: Parve bike, paşê «Li ser ekrana malê zêde bike».",
+  appDownloadBannerInstall: "Rake",
   appDownloadBannerDismiss: "Bigire",
 };
 
@@ -704,10 +715,12 @@ const so: Messages = {
   hijriSummaryTitle: "Taariikhda Hijriga",
   calPrevMonth: "Bishii hore",
   calNextMonth: "Bishii xigta",
-  appDownloadBannerTitle: "Soo deji barnaamijka",
+  appDownloadBannerTitle: "Ku rakib barnaamijka",
   appDownloadBannerBody:
-    "Ku rakib barnaamijka Android si aad u hesho marin degdeg ah iyo ogeysiis.",
-  appDownloadBannerCta: "Ka hel Google Play",
+    "Isticmaal «Rakib» ama «Ku dar bogga guriga» ee browserka — isla webka, oo aan Play Store.",
+  appDownloadBannerIosBody:
+    "iPhone ama iPad: taabo Share, ka dibna Add to Home Screen.",
+  appDownloadBannerInstall: "Rakib",
   appDownloadBannerDismiss: "Xir",
 };
 
