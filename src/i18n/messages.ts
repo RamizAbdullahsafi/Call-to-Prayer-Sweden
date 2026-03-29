@@ -51,6 +51,9 @@ export type MessageId =
   | "footerAttribution"
   | "footerLinkLabel"
   | "privacy"
+  | "terms"
+  | "cookiesPolicy"
+  | "disclaimer"
   | "countdownNow"
   | "countdownHoursShort"
   | "countdownMinShort"
@@ -142,6 +145,9 @@ const sv: Messages = {
   footerAttribution: "Bönetider: ",
   footerLinkLabel: "Islamiska förbundet",
   privacy: "Integritet",
+  terms: "Villkor",
+  cookiesPolicy: "Cookies",
+  disclaimer: "Ansvar",
   countdownNow: "Nu",
   countdownHoursShort: "t",
   countdownMinShort: "min",
@@ -237,6 +243,9 @@ const en: Messages = {
   footerAttribution: "Prayer times: ",
   footerLinkLabel: "Islamiska förbundet",
   privacy: "Privacy",
+  terms: "Terms",
+  cookiesPolicy: "Cookies",
+  disclaimer: "Disclaimer",
   countdownNow: "Now",
   countdownHoursShort: "h",
   countdownMinShort: "min",
@@ -331,6 +340,9 @@ const ar: Messages = {
   footerAttribution: "أوقات الصلاة: ",
   footerLinkLabel: "الاتحاد الإسلامي في السويد",
   privacy: "الخصوصية",
+  terms: "الشروط",
+  cookiesPolicy: "ملفات تعريف الارتباط",
+  disclaimer: "إخلاء المسؤولية",
   countdownNow: "الآن",
   countdownHoursShort: "س",
   countdownMinShort: "د",
@@ -425,6 +437,9 @@ const fa: Messages = {
   footerAttribution: "اوقات نماز: ",
   footerLinkLabel: "اتحادیه اسلامی سوئد",
   privacy: "حریم خصوصی",
+  terms: "شرایط",
+  cookiesPolicy: "کوکی‌ها",
+  disclaimer: "سلب مسئولیت",
   countdownNow: "اکنون",
   countdownHoursShort: "س",
   countdownMinShort: "د",
@@ -522,6 +537,9 @@ const ku: Messages = {
   footerAttribution: "Demên nimêjê: ",
   footerLinkLabel: "Yekîtiya Îslamî ya Swêdê",
   privacy: "Nepenîtî",
+  terms: "Mercên karanînê",
+  cookiesPolicy: "Cookies",
+  disclaimer: "Bersiv",
   countdownNow: "Niha",
   countdownHoursShort: "s",
   countdownMinShort: "dq",
@@ -616,6 +634,9 @@ const so: Messages = {
   footerAttribution: "Waqtiga salaadda: ",
   footerLinkLabel: "Ururka Islaamka ee Iswiidhanka",
   privacy: "Asturnaanta",
+  terms: "Shuruudaha",
+  cookiesPolicy: "Cookies",
+  disclaimer: "Mas'uul ka noqoshada",
   countdownNow: "Hadda",
   countdownHoursShort: "s",
   countdownMinShort: "daq",

@@ -149,6 +149,15 @@ function setToPrayerKeys(keys: Set<PrayerKey>): PrayerKey[] {
   return [...keys];
 }
 
+function normalizeCityName(input: string): string {
+  return input
+    .trim()
+    .toLocaleLowerCase("sv-SE")
+    .replace(/å/g, "a")
+    .replace(/ä/g, "a")
+    .replace(/ö/g, "o");
+}
+
 function ScheduleSkeleton(): ReactElement {
   return (
     <div
@@ -425,6 +434,14 @@ export function App(): ReactElement {
     setThemePref(pref);
   };
 
+  const municipalityByNormalized = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const name of SWEDISH_MUNICIPALITIES) {
+      m.set(normalizeCityName(name), name);
+    }
+    return m;
+  }, []);
+
   const onDetectLocation = async (): Promise<void> => {
     setGeoLoading(true);
     setGeoMessage(null);
@@ -568,7 +585,11 @@ export function App(): ReactElement {
             aria-label={t("citySelectAria")}
             value={city}
             onChange={(e) => {
-              setCity(e.target.value);
+              const next = e.target.value;
+              setCity(next);
+              setCityCustom(next);
+              persistCustomCity(next);
+              void loadPrayerTimes();
             }}
           >
             {SWEDISH_MUNICIPALITIES.map((c) => (
@@ -583,10 +604,17 @@ export function App(): ReactElement {
           <input
             type="text"
             id="cityCustom"
+            list="city-custom-options"
             autoComplete="address-level2"
             placeholder={t("cityCustomPlaceholder")}
             value={cityCustom}
-            onChange={(e) => setCityCustom(e.target.value)}
+            onChange={(e) => {
+              const next = e.target.value;
+              setCityCustom(next);
+              const normalized = normalizeCityName(next);
+              const matched = municipalityByNormalized.get(normalized);
+              if (matched) setCity(matched);
+            }}
             onBlur={() => {
               persistCustomCity(cityCustom);
             }}
@@ -598,6 +626,11 @@ export function App(): ReactElement {
               }
             }}
           />
+          <datalist id="city-custom-options">
+            {SWEDISH_MUNICIPALITIES.map((name) => (
+              <option key={name} value={name} />
+            ))}
+          </datalist>
         </div>
         <div className="controls-row control-actions">
           <button
@@ -1197,8 +1230,14 @@ export function App(): ReactElement {
             {t("footerLinkLabel")}
           </a>
         </p>
-        <p className="footer-privacy">
+        <p className="footer-legal">
+          <a href="/terms.html">{t("terms")}</a>
+          {" · "}
           <a href="/privacy.html">{t("privacy")}</a>
+          {" · "}
+          <a href="/cookies.html">{t("cookiesPolicy")}</a>
+          {" · "}
+          <a href="/disclaimer.html">{t("disclaimer")}</a>
         </p>
       </footer>
     </>

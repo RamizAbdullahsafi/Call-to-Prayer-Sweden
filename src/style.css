@@ -1257,13 +1257,21 @@ footer a:hover {
   text-decoration: underline;
 }
 
-.footer-privacy {
+.footer-legal {
   margin: 0.75rem 0 0;
   font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--muted);
 }
 
-.footer-privacy a {
+.footer-legal a {
   color: var(--muted);
+  text-decoration: none;
+}
+
+.footer-legal a:hover {
+  color: var(--accent);
+  text-decoration: underline;
 }
 
 .app-footer {
