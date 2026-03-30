@@ -3,8 +3,10 @@ import { LocalNotifications } from "@capacitor/local-notifications";
 import type { PrayerDay, PrayerKey } from "./prayerTimes";
 import { prayerInstant } from "./prayerTimes";
 
-const CHANNEL_LOUD = "prayer-times";
-const CHANNEL_QUIET = "prayer-times-quiet";
+// Versioned IDs: Android channels keep sound settings after creation.
+// Bumping IDs ensures users get updated channel sound behavior.
+const CHANNEL_LOUD = "prayer-times-v2";
+const CHANNEL_QUIET = "prayer-times-quiet-v2";
 
 const ORDER: PrayerKey[] = [
   "fajr",
@@ -56,6 +58,14 @@ export async function requestNativeNotificationPermissions(): Promise<void> {
   const { display } = await LocalNotifications.requestPermissions();
   if (display !== "granted") return;
   await ensureChannels();
+}
+
+export async function getNativeNotificationDisplayPermission(): Promise<
+  "granted" | "denied" | "prompt" | "prompt-with-rationale"
+> {
+  if (!isNativeLocalNotificationsAvailable()) return "denied";
+  const { display } = await LocalNotifications.checkPermissions();
+  return display;
 }
 
 export async function cancelAllNativePrayerNotifications(): Promise<void> {

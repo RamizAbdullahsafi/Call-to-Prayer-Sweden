@@ -43,6 +43,7 @@ import {
 } from "./notifications";
 import {
   cancelAllNativePrayerNotifications,
+  getNativeNotificationDisplayPermission,
   isNativeLocalNotificationsAvailable,
   requestNativeNotificationPermissions,
   scheduleNativePrayerNotifications,
@@ -346,14 +347,29 @@ export function App(): ReactElement {
   }, []);
 
   const [permRevision, setPermRevision] = useState(0);
+  const nativeNotificationsEnabled =
+    Capacitor.isNativePlatform() && isNativeLocalNotificationsAvailable();
+  const [nativePerm, setNativePerm] = useState<
+    "granted" | "denied" | "prompt" | "prompt-with-rationale"
+  >("prompt");
+
+  useEffect(() => {
+    if (!nativeNotificationsEnabled) return;
+    void getNativeNotificationDisplayPermission().then((p) => setNativePerm(p));
+  }, [nativeNotificationsEnabled, permRevision]);
 
   const permStatus = useMemo((): string => {
+    if (nativeNotificationsEnabled) {
+      if (nativePerm === "granted") return t("permGranted");
+      if (nativePerm === "denied") return t("permDenied");
+      return t("permDefault");
+    }
     if (!notificationsSupported()) return t("permNotSupported");
     const p = Notification.permission;
     if (p === "granted") return t("permGranted");
     if (p === "denied") return t("permDenied");
     return t("permDefault");
-  }, [permRevision, t]);
+  }, [nativeNotificationsEnabled, nativePerm, permRevision, t]);
 
   const nextPrayer = useMemo(() => {
     if (!scheduleDay) return null;
@@ -386,29 +402,18 @@ export function App(): ReactElement {
       }
     };
 
-    if (!notificationsSupported() || Notification.permission !== "granted") {
-      cleanupNative();
-      return;
-    }
-    if (!scheduleDay) {
-      cleanupNative();
-      return;
-    }
-    if (scheduleDay.date !== formatDateYMD(new Date())) {
-      cleanupNative();
-      return;
-    }
-    if (notifyKeySet.size === 0) {
-      cleanupNative();
-      return;
-    }
-
-    saveNotifyKeys(notifyKeySet);
-
     if (
       Capacitor.isNativePlatform() &&
       isNativeLocalNotificationsAvailable()
     ) {
+      if (!scheduleDay || scheduleDay.date !== formatDateYMD(new Date())) {
+        cleanupNative();
+        return;
+      }
+      if (notifyKeySet.size === 0) {
+        cleanupNative();
+        return;
+      }
       void scheduleNativePrayerNotifications({
         day: scheduleDay,
         keys: notifyKeySet,
@@ -421,6 +426,15 @@ export function App(): ReactElement {
         cleanupNative();
       };
     }
+
+    if (!notificationsSupported() || Notification.permission !== "granted") {
+      return;
+    }
+    if (!scheduleDay) return;
+    if (scheduleDay.date !== formatDateYMD(new Date())) return;
+    if (notifyKeySet.size === 0) return;
+
+    saveNotifyKeys(notifyKeySet);
 
     const dispose = startPrayerNotifications(
       scheduleDay,
@@ -455,6 +469,7 @@ export function App(): ReactElement {
       return;
     }
     let sub: { remove: () => Promise<void> } | undefined;
+    let actionSub: { remove: () => Promise<void> } | undefined;
     void LocalNotifications.addListener(
       "localNotificationReceived",
       (notification) => {
@@ -471,8 +486,22 @@ export function App(): ReactElement {
     ).then((handle) => {
       sub = handle;
     });
+    void LocalNotifications.addListener(
+      "localNotificationActionPerformed",
+      (event) => {
+        const key = event.notification.extra?.key as PrayerKey | undefined;
+        if (!key) return;
+        if (!loadAzanPlayEnabled()) return;
+        if (loadAzanVolume() <= 0) return;
+        if (!loadAzanPrayerKeys().has(key)) return;
+        playAzanFromVoiceId(loadAzanVoiceId());
+      }
+    ).then((handle) => {
+      actionSub = handle;
+    });
     return () => {
       void sub?.remove();
+      void actionSub?.remove();
     };
   }, [notifyMode]);
 
@@ -510,12 +539,15 @@ export function App(): ReactElement {
   };
 
   const requestPerm = async (): Promise<void> => {
-    await requestNotificationPermission();
-    await requestNativeNotificationPermissions();
+    if (nativeNotificationsEnabled) {
+      await requestNativeNotificationPermissions();
+    } else {
+      await requestNotificationPermission();
+    }
     setPermRevision((n) => n + 1);
   };
 
-  const notifyPermDisabled = !notificationsSupported();
+  const notifyPermDisabled = !nativeNotificationsEnabled && !notificationsSupported();
 
   const onThemePreferenceChange = (pref: ThemePreference): void => {
     saveThemePreference(pref);
