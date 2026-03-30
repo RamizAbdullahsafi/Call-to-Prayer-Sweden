@@ -145,8 +145,42 @@ export function resolveCityForWidget(city: string): string {
   return formatted;
 }
 
-/** Six times in order Fajr … Isha from bönetider widget HTML (one HH:MM per `<li>`). */
-function extractPrayerTimesFromWidgetHtml(html: string): string[] {
+function normalizeLabel(input: string): string {
+  return input
+    .toLocaleLowerCase("sv-SE")
+    .replace(/[\u2019'`]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function prayerKeyFromLabel(label: string): PrayerKey | null {
+  const l = normalizeLabel(label);
+  if (l.includes("fajr")) return "fajr";
+  if (
+    l.includes("shuruk") ||
+    l.includes("shuruq") ||
+    l.includes("sunrise") ||
+    l.includes("soluppgang")
+  ) {
+    return "sunrise";
+  }
+  if (
+    l.includes("dhohr") ||
+    l.includes("dhuhr") ||
+    l.includes("zuhr") ||
+    l.includes("zohor") ||
+    l.includes("middag")
+  ) {
+    return "dhuhr";
+  }
+  if (l.includes("asr")) return "asr";
+  if (l.includes("magrib") || l.includes("maghrib")) return "maghrib";
+  if (l.includes("isha") || l.includes("isha'a")) return "isha";
+  return null;
+}
+
+/** Parse IF widget rows by prayer label (stable even if extra rows are inserted). */
+function extractPrayerTimesFromWidgetHtml(html: string): PrayerSchedule {
   const trimmed = html.trim();
   if (
     trimmed.length < 20 ||
@@ -157,21 +191,35 @@ function extractPrayerTimesFromWidgetHtml(html: string): string[] {
   }
 
   const liBlocks = html.match(/<li\b[^>]*>[\s\S]*?<\/li>/gi) ?? [];
-  const times: string[] = [];
+  const out: Partial<PrayerSchedule> = {};
   for (const li of liBlocks) {
-    const span = li.match(/<span[^>]*>(\d{2}:\d{2})<\/span>/i);
-    if (span) {
-      times.push(span[1]!);
-      continue;
-    }
-    const inLi = li.match(/\b(\d{2}:\d{2})\b/);
-    if (inLi) times.push(inLi[1]!);
+    const timeMatch =
+      li.match(/<span[^>]*>\s*(\d{2}:\d{2})\s*<\/span>/i) ??
+      li.match(/\b(\d{2}:\d{2})\b/);
+    if (!timeMatch) continue;
+    const time = timeMatch[1]!;
+
+    // Remove tags, punctuation, and trailing time to isolate the label.
+    const text = li.replace(/<[^>]*>/g, " ");
+    const label = text
+      .replace(/\d{2}:\d{2}/g, " ")
+      .replace(/[—–-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const key = prayerKeyFromLabel(label);
+    if (key && !out[key]) out[key] = time;
   }
-  if (times.length === 6) return times;
 
-  const loose = html.match(/\d{2}:\d{2}/g);
-  if (loose && loose.length >= 6) return loose.slice(0, 6);
-
+  if (
+    out.fajr &&
+    out.sunrise &&
+    out.dhuhr &&
+    out.asr &&
+    out.maghrib &&
+    out.isha
+  ) {
+    return out as PrayerSchedule;
+  }
   throw new Error("PRAYER_TIMES_PARSE");
 }
 
@@ -233,20 +281,15 @@ export async function fetchPrayerTimes(
   }
 
   const html = await res.text();
-  let times: string[];
+  let schedule: PrayerSchedule;
   try {
-    times = extractPrayerTimesFromWidgetHtml(html);
+    schedule = extractPrayerTimesFromWidgetHtml(html);
   } catch (e) {
     if (e instanceof Error && e.message === "PRAYER_TIMES_EMPTY") {
       throw new Error("PRAYER_TIMES_EMPTY");
     }
     throw new Error("PRAYER_TIMES_PARSE");
   }
-
-  const schedule = PRAYER_KEYS.reduce((acc, key, i) => {
-    acc[key] = times[i]!;
-    return acc;
-  }, {} as PrayerSchedule);
 
   return {
     city: place,
