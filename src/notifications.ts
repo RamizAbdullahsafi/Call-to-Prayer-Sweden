@@ -1,5 +1,6 @@
 import type { PrayerDay, PrayerKey } from "./prayerTimes";
 import { formatDateYMD, prayerInstant } from "./prayerTimes";
+import { logNotificationDebug } from "./notificationDebug";
 
 const STORAGE_KEYS = "ctp.notify.keys";
 const FIRED_PREFIX = "ctp.fired.";
@@ -100,6 +101,14 @@ function tick(
     const delta = now.getTime() - at.getTime();
     if (delta >= 0 && delta < FIRE_WINDOW_MS) {
       markFired(day.date, key);
+      logNotificationDebug(
+        "web Notification fired",
+        key,
+        day.date,
+        day.schedule[key],
+        "deltaMs",
+        delta
+      );
       const label =
         options?.prayerLabel?.(key) ??
         (key === "sunrise"

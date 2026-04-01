@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.1'
+        classpath 'com.android.tools.build:gradle:9.1.0'
         classpath 'com.google.gms:google-services:4.4.0'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -26,4 +26,32 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// Capacitor AARs still ship proguard-android.txt; AGP 9+ needs proguard-android-optimize.txt.
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                if (it.hasProperty('buildTypes')) {
+                    buildTypes.all { buildType ->
+                        def currentFiles = buildType.proguardFiles
+                        // Check if any of the files are the deprecated proguard-android.txt
+                        def hasLegacy = currentFiles.any { f -> 
+                            def fileName = (f instanceof File) ? f.name : f.toString()
+                            return fileName.contains('proguard-android.txt')
+                        }
+                        
+                        if (hasLegacy) {
+                            // Clear and replace with the optimized version
+                            buildType.setProguardFiles([
+                                project.file(getDefaultProguardFile('proguard-android-optimize.txt')),
+                                'proguard-rules.pro'
+                            ])
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

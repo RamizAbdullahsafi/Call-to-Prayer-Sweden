@@ -31,6 +31,7 @@ import {
   setAzanPlaybackListener,
   stopAzan,
 } from "./azan";
+import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import {
@@ -41,12 +42,15 @@ import {
   saveNotifyKeys,
   startPrayerNotifications,
 } from "./notifications";
+import { logNotificationDebug } from "./notificationDebug";
 import {
   cancelAllNativePrayerNotifications,
+  getAndroidExactAlarmPermission,
   getNativeNotificationDisplayPermission,
   isNativeLocalNotificationsAvailable,
+  openAndroidExactAlarmSettings,
   requestNativeNotificationPermissions,
-  scheduleNativePrayerNotifications,
+  scheduleNativePrayerNotificationsAhead,
 } from "./nativePrayerNotifications";
 import {
   applyEffectiveTheme,
@@ -352,11 +356,41 @@ export function App(): ReactElement {
   const [nativePerm, setNativePerm] = useState<
     "granted" | "denied" | "prompt" | "prompt-with-rationale"
   >("prompt");
+  const [nativeRescheduleTick, setNativeRescheduleTick] = useState(0);
+  const [androidExactAlarm, setAndroidExactAlarm] = useState<
+    "granted" | "denied" | "unsupported"
+  >("unsupported");
 
   useEffect(() => {
     if (!nativeNotificationsEnabled) return;
     void getNativeNotificationDisplayPermission().then((p) => setNativePerm(p));
   }, [nativeNotificationsEnabled, permRevision]);
+
+  useEffect(() => {
+    if (!nativeNotificationsEnabled || Capacitor.getPlatform() !== "android") {
+      setAndroidExactAlarm("unsupported");
+      return;
+    }
+    void getAndroidExactAlarmPermission().then((s) => setAndroidExactAlarm(s));
+  }, [nativeNotificationsEnabled, permRevision, nativeRescheduleTick]);
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform() || !isNativeLocalNotificationsAvailable()) {
+      return;
+    }
+    let sub: { remove: () => Promise<void> } | undefined;
+    void CapacitorApp.addListener("appStateChange", ({ isActive }) => {
+      if (isActive) {
+        logNotificationDebug("app foreground — reschedule native notifications");
+        setNativeRescheduleTick((n) => n + 1);
+      }
+    }).then((handle) => {
+      sub = handle;
+    });
+    return () => {
+      void sub?.remove();
+    };
+  }, []);
 
   const permStatus = useMemo((): string => {
     if (nativeNotificationsEnabled) {
@@ -406,21 +440,19 @@ export function App(): ReactElement {
       Capacitor.isNativePlatform() &&
       isNativeLocalNotificationsAvailable()
     ) {
-      if (!scheduleDay || scheduleDay.date !== formatDateYMD(new Date())) {
-        cleanupNative();
-        return;
-      }
       if (notifyKeySet.size === 0) {
         cleanupNative();
         return;
       }
-      void scheduleNativePrayerNotifications({
-        day: scheduleDay,
+      const cityVal = cityCustomRef.current.trim() || city;
+      void scheduleNativePrayerNotificationsAhead({
+        city: cityVal,
         keys: notifyKeySet,
         notificationSilent: notifySilent,
         title: t("appTitle"),
         prayerLabel: (key) => t(prayerMsg(key, "prayer")),
       });
+      saveNotifyKeys(notifyKeySet);
       disposeNotifyRef.current = cleanupNative;
       return () => {
         cleanupNative();
@@ -462,7 +494,16 @@ export function App(): ReactElement {
     return () => {
       dispose();
     };
-  }, [scheduleDay, notifyKeySet, notifySilent, notifyMode, permRevision, t]);
+  }, [
+    city,
+    nativeRescheduleTick,
+    scheduleDay,
+    notifyKeySet,
+    notifySilent,
+    notifyMode,
+    permRevision,
+    t,
+  ]);
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform() || !isNativeLocalNotificationsAvailable()) {
@@ -474,6 +515,12 @@ export function App(): ReactElement {
       "localNotificationReceived",
       (notification) => {
         const key = notification.extra?.key as PrayerKey | undefined;
+        logNotificationDebug(
+          "localNotificationReceived",
+          notification.id,
+          key,
+          notification.title
+        );
         if (!key) return;
         if (notifyMode === "vibrate" && "vibrate" in navigator) {
           navigator.vibrate?.([220, 120, 220]);
@@ -490,6 +537,11 @@ export function App(): ReactElement {
       "localNotificationActionPerformed",
       (event) => {
         const key = event.notification.extra?.key as PrayerKey | undefined;
+        logNotificationDebug(
+          "localNotificationActionPerformed",
+          event.notification.id,
+          key
+        );
         if (!key) return;
         if (!loadAzanPlayEnabled()) return;
         if (loadAzanVolume() <= 0) return;
@@ -1288,6 +1340,11 @@ export function App(): ReactElement {
       <fieldset className="notify-fieldset">
         <legend>{t("reminders")}</legend>
         <p className="notify-hint">{t("remindersHint")}</p>
+        {nativeNotificationsEnabled ? (
+          <p className="notify-hint notify-hint--native">
+            {t("notificationsNativeReliability")}
+          </p>
+        ) : null}
         <div className="notify-actions">
           <button
             type="button"
@@ -1301,6 +1358,31 @@ export function App(): ReactElement {
             {permStatus}
           </span>
         </div>
+        {nativeNotificationsEnabled && Capacitor.getPlatform() === "android" ? (
+          <div className="notify-actions notify-actions--exact">
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => {
+                void openAndroidExactAlarmSettings().then(() =>
+                  setPermRevision((n) => n + 1)
+                );
+              }}
+            >
+              {t("androidExactAlarmsOpen")}
+            </button>
+            <span className="perm-status" aria-live="polite">
+              {androidExactAlarm === "granted"
+                ? t("exactAlarmsGranted")
+                : androidExactAlarm === "denied"
+                  ? t("exactAlarmsDenied")
+                  : ""}
+            </span>
+          </div>
+        ) : null}
+        {nativeNotificationsEnabled && Capacitor.getPlatform() === "android" ? (
+          <p className="notify-hint">{t("androidExactAlarmsHint")}</p>
+        ) : null}
         <div className="notify-grid" id="notify-grid">
           {ORDER.map((key) => (
             <label key={key} className="notify-item">

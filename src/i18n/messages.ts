@@ -25,6 +25,11 @@ export type MessageId =
   | "language"
   | "reminders"
   | "remindersHint"
+  | "notificationsNativeReliability"
+  | "androidExactAlarmsHint"
+  | "androidExactAlarmsOpen"
+  | "exactAlarmsGranted"
+  | "exactAlarmsDenied"
   | "allowNotifications"
   | "permNotSupported"
   | "permGranted"
@@ -125,6 +130,13 @@ const sv: Messages = {
   reminders: "Påminnelser",
   remindersHint:
     "Avisering när det är dags att be (dagens datum). Låt gärna sidan vara öppen.",
+  notificationsNativeReliability:
+    "I appen planeras påminnelser långt fram i tiden (Android: upp till ca 60 dagar; iPhone: begränsat). Android kan förnya schemat ungefär en gång per dygn i bakgrunden om appen byggts med rätt webbadress (VITE_API_ORIGIN). Tillåt aviseringar och exakta larm; stäng av batterioptimering om tiderna blir försenade (Inställningar → Appar → Prayer Sweden → Batteri / Aviseringar).",
+  androidExactAlarmsHint:
+    "På Android 12 och senare behöver appen tillåtelse för exakta larm så att påminnelser kommer vid rätt bönetid (inte bara ungefär).",
+  androidExactAlarmsOpen: "Exakta larm (Android)",
+  exactAlarmsGranted: "Exakta larm: på.",
+  exactAlarmsDenied: "Exakta larm: av — tryck knappen och tillåt i systeminställningarna.",
   allowNotifications: "Tillåt aviseringar",
   permNotSupported: "Stöds inte i den här webbläsaren.",
   permGranted: "Aviseringar är på.",
@@ -231,6 +243,13 @@ const en: Messages = {
   reminders: "Reminders",
   remindersHint:
     "Notifications when it is time to pray (today’s date). Keep the page open if you can.",
+  notificationsNativeReliability:
+    "Native app: reminders are scheduled well ahead (Android: up to about 60 days; iPhone: limited). Android can refresh about once a day in the background if you built with VITE_API_ORIGIN set to your live site. Allow notifications and exact alarms; turn off battery optimization if alerts are delayed (Settings → Apps → Prayer Sweden → Battery / Notifications).",
+  androidExactAlarmsHint:
+    "On Android 12+, the app needs permission for exact alarms so reminders fire at prayer time (not only approximately).",
+  androidExactAlarmsOpen: "Exact alarms (Android)",
+  exactAlarmsGranted: "Exact alarms: on.",
+  exactAlarmsDenied: "Exact alarms: off — use the button and allow in system settings.",
   allowNotifications: "Allow notifications",
   permNotSupported: "Not supported in this browser.",
   permGranted: "Notifications are on.",
@@ -337,6 +356,13 @@ const ar: Messages = {
   reminders: "التذكيرات",
   remindersHint:
     "إشعار عند وقت الصلاة (تاريخ اليوم). يُفضّل إبقاء الصفحة مفتوحة.",
+  notificationsNativeReliability:
+    "التطبيق يجدول التذكيرات لأسابيع مسبقاً (أندرويد: حتى نحو 60 يوماً؛ آيفون: بحد أقصى أقل). يمكن لأندرويد التحديث يومياً في الخلفية إذا بُني التطبيق بعنوان API صحيح. اسمح بالإشعارات والمنبهات الدقيقة وأوقف تحسين البطارية عند التأخير (الإعدادات → التطبيقات → Prayer Sweden).",
+  androidExactAlarmsHint:
+    "على أندرويد 12 فما فوق، يحتاج التطبيق إذن المنبهات الدقيقة ليصل التذكير في وقت الصلاة.",
+  androidExactAlarmsOpen: "منبهات دقيقة (أندرويد)",
+  exactAlarmsGranted: "المنبهات الدقيقة: مفعّلة.",
+  exactAlarmsDenied: "المنبهات الدقيقة: غير مفعّلة — استخدم الزر والسماح من إعدادات النظام.",
   allowNotifications: "السماح بالإشعارات",
   permNotSupported: "غير مدعوم في هذا المتصفح.",
   permGranted: "الإشعارات مفعّلة.",
@@ -443,6 +469,13 @@ const fa: Messages = {
   reminders: "یادآورها",
   remindersHint:
     "اعلان هنگام وقت نماز (تاریخ امروز). بهتر است صفحه باز بماند.",
+  notificationsNativeReliability:
+    "در نسخهٔ اپ یادآورها تا هفته‌ها جلو زمان‌بندی می‌شوند (اندروید: حدود 60 روز؛ آیفون: محدود). اندروید می‌تواند روزانه در پس‌زمینه تازه کند اگر با VITE_API_ORIGIN درست بیلد شده باشد. اعلان و زنگ دقیق را مجاز کنید؛ در صورت تأخیر بهینه‌سازی باتری را خاموش کنید.",
+  androidExactAlarmsHint:
+    "در اندروید 12 به بالا، برنامه برای زنگ دقیق در وقت نماز به اجازه نیاز دارد.",
+  androidExactAlarmsOpen: "زنگ‌های دقیق (اندروید)",
+  exactAlarmsGranted: "زنگ‌های دقیق: روشن.",
+  exactAlarmsDenied: "زنگ‌های دقیق: خاموش — دکمه را بزنید و در تنظیمات سیستم اجازه دهید.",
   allowNotifications: "اجازه اعلان‌ها",
   permNotSupported: "در این مرورگر پشتیبانی نمی‌شود.",
   permGranted: "اعلان‌ها فعال است.",
@@ -552,6 +585,13 @@ const ku: Messages = {
   reminders: "Bîranîn",
   remindersHint:
     "Dema nimêjê ragihandin (roja îro). Rûpelê vekirî bihêle heke dikarî.",
+  notificationsNativeReliability:
+    "Di sepanê de bîranîn pir berê tên plansazîkirin (Android: heta ~60 rojan; iPhone: sînorkirî). Android dikare rojane di paşperdê de nû bike ger bi VITE_API_ORIGIN hatibe avakirin. Destûrê bide ragihandin û alarmên rast; optimîzasyona batterê veke ger dem dereng be.",
+  androidExactAlarmsHint:
+    "Li Android 12+ sepan ji bo alarmên rast ji bo dema nimêjê destûrê hewce dike.",
+  androidExactAlarmsOpen: "Alarmên rast (Android)",
+  exactAlarmsGranted: "Alarmên rast: çalak.",
+  exactAlarmsDenied: "Alarmên rast: ne çalak — bişkoja bikar bîne û di mîhengên pergalê de destûrê bide.",
   allowNotifications: "Destûrê bide ragihandinan",
   permNotSupported: "Di vê gerokê de nayê piştgirîkirin.",
   permGranted: "Ragihandin çalak in.",
@@ -658,6 +698,13 @@ const so: Messages = {
   reminders: "Xusuusin",
   remindersHint:
     "Ogeysiis marka salaaddu tahay (taariikhda maanta). Bogga furo haddii suurtagal tahay.",
+  notificationsNativeReliability:
+    "Barnaamijka wuxuu xusuusin u qorsheeyaa muddo dheer mustaqbalka (Android ~60 maalmood; iPhone xadidan). Android wuxuu cusboonaysiin karaa maalin walba haddii la dhiso VITE_API_ORIGIN. U oggolow ogeysiisyada iyo digniin sax; ka dami hagaajinta batteriga haddii dib u dhac dhaco.",
+  androidExactAlarmsHint:
+    "Android 12+ barnaamijka wuxuu u baahan yahay oggolaanshaha digniinta saxda ah ee salaadda.",
+  androidExactAlarmsOpen: "Digniin sax (Android)",
+  exactAlarmsGranted: "Digniin sax: shid.",
+  exactAlarmsDenied: "Digniin sax: dami — badhanka taabo oo ku oggolow dejinta nidaamka.",
   allowNotifications: "U oggolow ogeysiisyada",
   permNotSupported: "Kuma taageero biraawsarkan.",
   permGranted: "Ogeysiisyadu waa shaqeynayaan.",

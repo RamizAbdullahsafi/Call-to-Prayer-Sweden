@@ -255,6 +255,16 @@ function bonetiderFetchUrl(): string {
 }
 
 /**
+ * Absolute bönetider URL for persistence / Android background worker.
+ * Empty if `VITE_API_ORIGIN` was not set at build time (worker cannot fetch).
+ */
+export function getAbsoluteBonetiderFetchUrl(): string {
+  const raw = import.meta.env.VITE_API_ORIGIN?.trim() ?? "";
+  const base = raw.replace(/\/$/, "");
+  return base.length > 0 ? `${base}/api/bonetider` : "";
+}
+
+/**
  * Bönetider från Islamiska förbundets webb-widget (IF i Sverige). På webb går
  * anrop via `/api/bonetider`
  * (Vite-proxy lokalt, Netlify Function i produktion). För Android bygger du med

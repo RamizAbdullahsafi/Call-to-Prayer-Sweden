@@ -1,6 +1,8 @@
 node_modules
 dist
+# Local overrides (e.g. .env.local with VITE_API_ORIGIN) — do not commit secrets
 *.local
+.env.*.local
 
 # Android (Capacitor) — keep source; ignore local machine / build outputs
 android/.gradle
