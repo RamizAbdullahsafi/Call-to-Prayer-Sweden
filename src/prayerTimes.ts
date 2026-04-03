@@ -1,4 +1,21 @@
+import { Capacitor } from "@capacitor/core";
 import { SWEDISH_MUNICIPALITIES } from "./data/swedishMunicipalities";
+
+/**
+ * Live site that hosts `/api/bonetider` (Netlify Function). Used when the app runs
+ * in a native WebView, where relative `/api/*` has no server — and as a fallback if
+ * `VITE_API_ORIGIN` was not set at build time.
+ */
+const DEFAULT_PRODUCTION_API_ORIGIN = "https://call-to-prayer-sweden.netlify.app";
+
+function resolveApiOriginBase(): string {
+  const fromEnv = import.meta.env.VITE_API_ORIGIN?.trim() ?? "";
+  if (fromEnv) return fromEnv.replace(/\/$/, "");
+  if (typeof window !== "undefined" && Capacitor.isNativePlatform()) {
+    return DEFAULT_PRODUCTION_API_ORIGIN.replace(/\/$/, "");
+  }
+  return "";
+}
 
 export type PrayerKey = "fajr" | "sunrise" | "dhuhr" | "asr" | "maghrib" | "isha";
 
@@ -249,18 +266,17 @@ export function prayerInstant(day: PrayerDay, key: PrayerKey): Date {
 }
 
 function bonetiderFetchUrl(): string {
-  const raw = import.meta.env.VITE_API_ORIGIN?.trim() ?? "";
-  const base = raw.replace(/\/$/, "");
-  return base.length > 0 ? `${base}/api/bonetider` : "/api/bonetider";
+  const base = resolveApiOriginBase();
+  if (base.length > 0) return `${base}/api/bonetider`;
+  return "/api/bonetider";
 }
 
 /**
  * Absolute bönetider URL for persistence / Android background worker.
- * Empty if `VITE_API_ORIGIN` was not set at build time (worker cannot fetch).
+ * Empty only on web when no env and not native (uses relative `/api/bonetider` instead).
  */
 export function getAbsoluteBonetiderFetchUrl(): string {
-  const raw = import.meta.env.VITE_API_ORIGIN?.trim() ?? "";
-  const base = raw.replace(/\/$/, "");
+  const base = resolveApiOriginBase();
   return base.length > 0 ? `${base}/api/bonetider` : "";
 }
 
@@ -269,6 +285,7 @@ export function getAbsoluteBonetiderFetchUrl(): string {
  * anrop via `/api/bonetider`
  * (Vite-proxy lokalt, Netlify Function i produktion). För Android bygger du med
  * `VITE_API_ORIGIN=https://din-sida.netlify.app` så anropen träffar samma backend.
+ * Native builds fall back to the default Netlify origin if env is unset.
  */
 export async function fetchPrayerTimes(
   city: string,
