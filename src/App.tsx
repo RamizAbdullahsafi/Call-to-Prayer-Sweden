@@ -1570,6 +1570,7 @@ export function App(): ReactElement {
             {t("footerLinkLabel")}
           </a>
         </p>
+        <p className="footer-credit">{t("footerCreatedBy")}</p>
         <p className="footer-legal">
           <a href="/terms.html">{t("terms")}</a>
           {" · "}

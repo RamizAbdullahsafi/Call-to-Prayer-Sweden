@@ -1390,6 +1390,14 @@ footer a:hover {
   text-decoration: underline;
 }
 
+.footer-credit {
+  margin: 0.65rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+
 .footer-legal {
   margin: 0.75rem 0 0;
   font-size: 0.75rem;
