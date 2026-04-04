@@ -17,20 +17,20 @@ import {
   type PrayerKey,
 } from "./prayerTimes";
 import {
-  ADHAN_VOICES,
-  DEFAULT_ADHAN_PRAYER_KEYS,
-  loadAdhanPlayEnabled,
-  loadAdhanPrayerKeys,
-  loadAdhanVolume,
-  loadAdhanVoiceId,
-  playAdhanFromVoiceId,
-  saveAdhanPlayEnabled,
-  saveAdhanPrayerKeys,
-  saveAdhanVolume,
-  saveAdhanVoiceId,
-  setAdhanPlaybackListener,
-  stopAdhan,
-} from "./adhan";
+  AZAN_VOICES,
+  DEFAULT_AZAN_PRAYER_KEYS,
+  loadAzanPlayEnabled,
+  loadAzanPrayerKeys,
+  loadAzanVolume,
+  loadAzanVoiceId,
+  playAzanFromVoiceId,
+  saveAzanPlayEnabled,
+  saveAzanPrayerKeys,
+  saveAzanVolume,
+  saveAzanVoiceId,
+  setAzanPlaybackListener,
+  stopAzan,
+} from "./azan";
 import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
@@ -201,6 +201,10 @@ function ScheduleSkeleton(): ReactElement {
 
 export function App(): ReactElement {
   const { t, locale, setLocale } = useI18n();
+  /** Latest `t` for async callbacks without retriggering `loadPrayerTimes` when only language changes. */
+  const tRef = useRef(t);
+  tRef.current = t;
+
   const defaultCity = "Stockholm";
   const [city, setCity] = useState(defaultCity);
   const [cityCustom, setCityCustom] = useState(loadSavedCustomCity);
@@ -215,22 +219,22 @@ export function App(): ReactElement {
   const [notifyKeys, setNotifyKeys] = useState<PrayerKey[]>(() =>
     setToPrayerKeys(loadNotifyKeys())
   );
-  const [adhanPrayerKeys, setAdhanPrayerKeys] = useState<PrayerKey[]>(() =>
-    setToPrayerKeys(loadAdhanPrayerKeys())
+  const [azanPrayerKeys, setAzanPrayerKeys] = useState<PrayerKey[]>(() =>
+    setToPrayerKeys(loadAzanPrayerKeys())
   );
-  const [adhanVoiceId, setAdhanVoiceId] = useState(loadAdhanVoiceId);
-  const [adhanPlay, setAdhanPlay] = useState(loadAdhanPlayEnabled);
-  const [adhanVolumePct, setAdhanVolumePct] = useState(() =>
-    Math.round(loadAdhanVolume() * 100)
+  const [azanVoiceId, setAzanVoiceId] = useState(loadAzanVoiceId);
+  const [azanPlay, setAzanPlay] = useState(loadAzanPlayEnabled);
+  const [azanVolumePct, setAzanVolumePct] = useState(() =>
+    Math.round(loadAzanVolume() * 100)
   );
   const [notifySilent, setNotifySilent] = useState(loadNotifySilent);
   const [notifyMode, setNotifyMode] = useState<NotifyMode>(() => {
-    if (loadAdhanPlayEnabled()) return "full";
+    if (loadAzanPlayEnabled()) return "full";
     if (loadNotifySilent()) return "silent";
     return "notify_only";
   });
-  const [adhanPlaying, setAdhanPlaying] = useState(false);
-  const [adhanPlayError, setAdhanPlayError] = useState<string | null>(null);
+  const [azanPlaying, setAzanPlaying] = useState(false);
+  const [azanPlayError, setAzanPlayError] = useState<string | null>(null);
   const [nowTick, setNowTick] = useState(() => new Date());
   const [geo, setGeo] = useState<GeoPoint | null>(null);
   const [geoLoading, setGeoLoading] = useState(false);
@@ -264,28 +268,28 @@ export function App(): ReactElement {
     if (notifyMode === "silent") {
     setNotifySilent(true);
     saveNotifySilent(true);
-    saveAdhanPlayEnabled(false);
-    setAdhanPlay(false);
+    saveAzanPlayEnabled(false);
+    setAzanPlay(false);
     return;
   }
   if (notifyMode === "notify_only") {
     setNotifySilent(false);
     saveNotifySilent(false);
-    saveAdhanPlayEnabled(false);
-    setAdhanPlay(false);
+    saveAzanPlayEnabled(false);
+    setAzanPlay(false);
     return;
   }
   if (notifyMode === "vibrate") {
     setNotifySilent(true);
     saveNotifySilent(true);
-    saveAdhanPlayEnabled(false);
-    setAdhanPlay(false);
+    saveAzanPlayEnabled(false);
+    setAzanPlay(false);
     return;
   }
   setNotifySilent(false);
   saveNotifySilent(false);
-  saveAdhanPlayEnabled(true);
-  setAdhanPlay(true);
+  saveAzanPlayEnabled(true);
+  setAzanPlay(true);
 }, [notifyMode]);
 
   const notifySilentRef = useRef(notifySilent);
@@ -295,12 +299,13 @@ export function App(): ReactElement {
   const prevCountdownDiffRef = useRef<number | null>(null);
 
   const loadPrayerTimes = useCallback(async (): Promise<void> => {
+    const tr = tRef.current;
     setError(null);
     setLoading(true);
     setScheduleDay(null);
     const d = new Date(dateInput + "T12:00:00");
     if (Number.isNaN(d.getTime())) {
-      setError(t("errors.selectDate"));
+      setError(tr("errors.selectDate"));
       setLoading(false);
       return;
     }
@@ -312,25 +317,29 @@ export function App(): ReactElement {
       if (e instanceof Error) {
         if (e.message.startsWith("PRAYER_TIMES_HTTP_")) {
           const status = e.message.slice("PRAYER_TIMES_HTTP_".length);
-          setError(t("errors.fetchFailed", { status }));
+          setError(tr("errors.fetchFailed", { status }));
         } else if (e.message === "PRAYER_TIMES_PARSE") {
-          setError(t("errors.parseFailed"));
+          setError(tr("errors.parseFailed"));
         } else if (e.message === "PRAYER_TIMES_EMPTY") {
-          setError(t("errors.cityNotFound"));
+          setError(tr("errors.cityNotFound"));
         } else {
-          setError(t("errors.generic"));
+          setError(tr("errors.generic"));
         }
       } else {
-        setError(t("errors.generic"));
+        setError(tr("errors.generic"));
       }
     } finally {
       setLoading(false);
     }
-  }, [dateInput, city, geo, t]);
+  }, [dateInput, city]);
 
   useEffect(() => {
     void loadPrayerTimes();
   }, [loadPrayerTimes]);
+
+  useEffect(() => {
+    setError(null);
+  }, [locale]);
 
   useEffect(() => {
     const id = window.setInterval(() => setNowTick(new Date()), 1000);
@@ -339,15 +348,15 @@ export function App(): ReactElement {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
-      if (e.key === "Escape") stopAdhan();
+      if (e.key === "Escape") stopAzan();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
   useEffect(() => {
-    setAdhanPlaybackListener((playing) => setAdhanPlaying(playing));
-    return () => setAdhanPlaybackListener(null);
+    setAzanPlaybackListener((playing) => setAzanPlaying(playing));
+    return () => setAzanPlaybackListener(null);
   }, []);
 
   const [permRevision, setPermRevision] = useState(0);
@@ -379,14 +388,19 @@ export function App(): ReactElement {
       return;
     }
     let sub: { remove: () => Promise<void> } | undefined;
-    void CapacitorApp.addListener("appStateChange", ({ isActive }) => {
+    const handleStateChange = ({ isActive }: { isActive: boolean }) => {
       if (isActive) {
         logNotificationDebug("app foreground — reschedule native notifications");
         setNativeRescheduleTick((n) => n + 1);
       }
-    }).then((handle) => {
-      sub = handle;
-    });
+    };
+
+    if (CapacitorApp && typeof CapacitorApp.addListener === "function") {
+      void CapacitorApp.addListener("appStateChange", handleStateChange).then((handle) => {
+        sub = handle;
+      });
+    }
+
     return () => {
       void sub?.remove();
     };
@@ -424,7 +438,7 @@ export function App(): ReactElement {
   }, [scheduleDay, nextPrayer, nowTick, loadPrayerTimes]);
 
   const notifyKeySet = useMemo(() => new Set(notifyKeys), [notifyKeys]);
-  const adhanKeySet = useMemo(() => new Set(adhanPrayerKeys), [adhanPrayerKeys]);
+  const adhanKeySet = useMemo(() => new Set(azanPrayerKeys), [azanPrayerKeys]);
 
   useEffect(() => {
     disposeNotifyRef.current();
@@ -480,10 +494,10 @@ export function App(): ReactElement {
           if (notifyMode === "vibrate" && "vibrate" in navigator) {
             navigator.vibrate?.([220, 120, 220]);
           }
-          if (!loadAdhanPlayEnabled()) return;
-          if (loadAdhanVolume() <= 0) return;
-          if (!loadAdhanPrayerKeys().has(key)) return;
-          playAdhanFromVoiceId(loadAdhanVoiceId());
+          if (!loadAzanPlayEnabled()) return;
+          if (loadAzanVolume() <= 0) return;
+          if (!loadAzanPrayerKeys().has(key)) return;
+          playAzanFromVoiceId(loadAzanVoiceId());
         },
         getNotificationSilent: () => notifySilentRef.current,
         notificationTitle: t("appTitle"),
@@ -525,10 +539,10 @@ export function App(): ReactElement {
         if (notifyMode === "vibrate" && "vibrate" in navigator) {
           navigator.vibrate?.([220, 120, 220]);
         }
-        if (!loadAdhanPlayEnabled()) return;
-        if (loadAdhanVolume() <= 0) return;
-        if (!loadAdhanPrayerKeys().has(key)) return;
-        playAdhanFromVoiceId(loadAdhanVoiceId());
+        if (!loadAzanPlayEnabled()) return;
+        if (loadAzanVolume() <= 0) return;
+        if (!loadAzanPrayerKeys().has(key)) return;
+        playAzanFromVoiceId(loadAzanVoiceId());
       }
     ).then((handle) => {
       sub = handle;
@@ -543,10 +557,10 @@ export function App(): ReactElement {
           key
         );
         if (!key) return;
-        if (!loadAdhanPlayEnabled()) return;
-        if (loadAdhanVolume() <= 0) return;
-        if (!loadAdhanPrayerKeys().has(key)) return;
-        playAdhanFromVoiceId(loadAdhanVoiceId());
+        if (!loadAzanPlayEnabled()) return;
+        if (loadAzanVolume() <= 0) return;
+        if (!loadAzanPrayerKeys().has(key)) return;
+        playAzanFromVoiceId(loadAzanVoiceId());
       }
     ).then((handle) => {
       actionSub = handle;
@@ -571,23 +585,23 @@ export function App(): ReactElement {
     });
   };
 
-  const onAdhanPrayerChange = (key: PrayerKey, checked: boolean): void => {
-    setAdhanPrayerKeys((prev) => {
+  const onAzanPrayerChange = (key: PrayerKey, checked: boolean): void => {
+    setAzanPrayerKeys((prev) => {
       const s = new Set(prev);
       if (checked) s.add(key);
       else s.delete(key);
       let next = [...s];
       if (next.length === 0) {
-        next = [...DEFAULT_ADHAN_PRAYER_KEYS];
+        next = [...DEFAULT_AZAN_PRAYER_KEYS];
       }
-      saveAdhanPrayerKeys(new Set(next));
+      saveAzanPrayerKeys(new Set(next));
       return next;
     });
   };
 
-  const syncAdhanFromNotify = (): void => {
-    setAdhanPrayerKeys([...notifyKeys]);
-    saveAdhanPrayerKeys(new Set(notifyKeys));
+  const syncAzanFromNotify = (): void => {
+    setAzanPrayerKeys([...notifyKeys]);
+    saveAzanPrayerKeys(new Set(notifyKeys));
   };
 
   const requestPerm = async (): Promise<void> => {
@@ -912,13 +926,13 @@ export function App(): ReactElement {
             {geoLoading ? "Detecting location…" : "Use my location (GPS)"}
           </button>
           <label className="mode-label" htmlFor="notifyMode">
-          Adhan mode
+          Azan mode
           <select
             id="notifyMode"
             value={notifyMode}
             onChange={(e) => setNotifyMode(e.target.value as NotifyMode)}
           >
-            <option value="full">Full Adhan</option>
+            <option value="full">Full Azan</option>
             <option value="notify_only">Notification only</option>
             <option value="vibrate">Vibration only</option>
             <option value="silent">Silent</option>
@@ -1418,15 +1432,15 @@ export function App(): ReactElement {
             <select
               id="adhan-voice"
               aria-label={t("voiceSelectAria")}
-              value={adhanVoiceId}
+              value={azanVoiceId}
               onChange={(e) => {
                 const v = e.target.value;
-                setAdhanVoiceId(v);
-                saveAdhanVoiceId(v);
-                setAdhanPlayError(null);
+                setAzanVoiceId(v);
+                saveAzanVoiceId(v);
+                setAzanPlayError(null);
               }}
             >
-              {ADHAN_VOICES.map((vo) => (
+              {AZAN_VOICES.map((vo) => (
                 <option key={vo.id} value={vo.id}>
                   {vo.reciter} — {vo.label}
                 </option>
@@ -1438,11 +1452,11 @@ export function App(): ReactElement {
               type="button"
               className="secondary"
               onClick={() => {
-                saveAdhanVoiceId(adhanVoiceId);
+                saveAzanVoiceId(azanVoiceId);
                 setError(null);
-                setAdhanPlayError(null);
-                playAdhanFromVoiceId(adhanVoiceId, () =>
-                  setAdhanPlayError(t("adhanPlaybackFailed"))
+                setAzanPlayError(null);
+                playAzanFromVoiceId(azanVoiceId, () =>
+                  setAzanPlayError(t("adhanPlaybackFailed"))
                 );
               }}
             >
@@ -1451,36 +1465,36 @@ export function App(): ReactElement {
             <button
               type="button"
               className="secondary"
-              disabled={!adhanPlaying}
-              onClick={() => stopAdhan()}
+              disabled={!azanPlaying}
+              onClick={() => stopAzan()}
             >
               {t("stop")}
             </button>
           </div>
         </div>
-        {adhanPlayError ? (
+        {azanPlayError ? (
           <p className="adhan-playback-error" role="alert">
-            {adhanPlayError}
+            {azanPlayError}
           </p>
         ) : null}
         <div className="adhan-volume-row">
           <label htmlFor="adhan-volume">
             {t("volume")}{" "}
-            <span id="adhan-volume-label">{adhanVolumePct}%</span>
+            <span id="adhan-volume-label">{azanVolumePct}%</span>
           </label>
           <input
             type="range"
             id="adhan-volume"
             min={0}
             max={100}
-            value={adhanVolumePct}
+            value={azanVolumePct}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-valuenow={adhanVolumePct}
+            aria-valuenow={azanVolumePct}
             onChange={(e) => {
               const pct = Number(e.target.value);
-              setAdhanVolumePct(pct);
-              saveAdhanVolume(pct / 100);
+              setAzanVolumePct(pct);
+              saveAzanVolume(pct / 100);
             }}
           />
         </div>
@@ -1492,7 +1506,7 @@ export function App(): ReactElement {
                 type="checkbox"
                 className="adhan-prayer"
                 checked={adhanKeySet.has(key)}
-                onChange={(e) => onAdhanPrayerChange(key, e.target.checked)}
+                onChange={(e) => onAzanPrayerChange(key, e.target.checked)}
               />
               {t(prayerMsg(key, "prayer"))}
             </label>
@@ -1502,7 +1516,7 @@ export function App(): ReactElement {
           <button
             type="button"
             className="secondary"
-            onClick={syncAdhanFromNotify}
+            onClick={syncAzanFromNotify}
           >
             {t("syncAdhanWithNotify")}
           </button>
@@ -1510,16 +1524,16 @@ export function App(): ReactElement {
         <label className="adhan-play-toggle">
           <input
             type="checkbox"
-            checked={adhanPlay}
+            checked={azanPlay}
             onChange={(e) => {
               const v = e.target.checked;
-              setAdhanPlay(v);
-              saveAdhanPlayEnabled(v);
+              setAzanPlay(v);
+              saveAzanPlayEnabled(v);
             }}
           />
           {t("playAdhanOnNotify")}
         </label>
-        {!adhanPlaying ? null : (
+        {!azanPlaying ? null : (
           <div
             id="adhan-playing"
             className="adhan-playing"

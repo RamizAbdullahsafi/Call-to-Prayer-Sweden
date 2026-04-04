@@ -134,6 +134,15 @@ html[lang="fa"] .next-banner .label {
   z-index: 1;
 }
 
+/* Some Android WebViews paint an empty layer when <html dir="rtl">; keep content visible. */
+html[dir="rtl"] #app {
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
 /* Skip link — keyboard UX */
 .skip-link {
   position: absolute;
