@@ -74,6 +74,7 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 html[data-theme="dark"] {
@@ -98,6 +99,7 @@ body {
   background: var(--bg);
   color: var(--text);
   transition: background-color 0.25s ease, color 0.18s ease;
+  overflow-x: hidden;
 }
 
 html[lang="ar"] body,
@@ -122,11 +124,15 @@ html[lang="fa"] .next-banner .label {
 
 #app {
   position: relative;
+  box-sizing: border-box;
+  width: 100%;
   max-width: 560px;
-  margin: 0 auto;
-  padding: 1.5rem max(1rem, env(safe-area-inset-left))
-    max(2.5rem, env(safe-area-inset-bottom))
-    max(1rem, env(safe-area-inset-right));
+  min-width: 0;
+  margin-inline: auto;
+  padding-block-start: 1.5rem;
+  padding-block-end: max(2.5rem, env(safe-area-inset-bottom, 0px));
+  /* Single inline value keeps block centered in LTR and RTL (avoids asymmetric physical padding). */
+  padding-inline: max(1rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
 }
 
 #app > * {
@@ -143,10 +149,11 @@ html[dir="rtl"] #app {
   -webkit-backface-visibility: hidden;
 }
 
-/* Skip link — keyboard UX */
+/* Skip link — keyboard UX (never use huge negative *horizontal* offset: it widens scroll width in RTL WebViews). */
 .skip-link {
   position: absolute;
-  left: -9999px;
+  top: -100vh;
+  inset-inline-start: max(1rem, env(safe-area-inset-left, 0px));
   z-index: 100;
   padding: 0.65rem 1rem;
   background: var(--accent);
@@ -154,11 +161,11 @@ html[dir="rtl"] #app {
   font-weight: 600;
   border-radius: var(--radius);
   text-decoration: none;
+  max-width: calc(100vw - 2rem);
 }
 
 .skip-link:focus {
-  left: max(1rem, env(safe-area-inset-left));
-  top: max(1rem, env(safe-area-inset-top));
+  top: max(1rem, env(safe-area-inset-top, 0px));
   outline: none;
 }
 
