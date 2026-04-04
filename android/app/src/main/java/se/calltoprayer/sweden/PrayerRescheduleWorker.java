@@ -91,13 +91,10 @@ public class PrayerRescheduleWorker extends Worker {
         NotificationStorage storage = new NotificationStorage(ctx);
         LocalNotificationManager manager = new LocalNotificationManager(storage, null, ctx, CapConfig.loadDefault(ctx));
 
-        PrayerNotificationHelper.cancelAllScheduled(ctx);
-
         Date now = new Date();
         List<LocalNotification> notifications = new ArrayList<>();
 
         Calendar dayCursor = Calendar.getInstance();
-
         for (int offset = 0; offset < daysAhead; offset++) {
             if (offset > 0) {
                 dayCursor.add(Calendar.DAY_OF_MONTH, 1);
@@ -122,7 +119,7 @@ public class PrayerRescheduleWorker extends Worker {
                     if (at.getTime() <= now.getTime()) continue;
 
                     String label = labels != null ? labels.optString(key, key) : key;
-                    String body = label + " — " + day.city + " (" + timeStr + ")";
+                    String body = label + " (" + timeStr + ")";
 
                     int id = nativeNotificationId(ymd, key);
                     String channelId = silent ? CHANNEL_QUIET : CHANNEL_LOUD;
@@ -152,6 +149,10 @@ public class PrayerRescheduleWorker extends Worker {
         if (notifications.isEmpty()) {
             return Result.success();
         }
+
+        // Only clear old notifications if we successfully fetched new ones to replace them.
+        // This keeps the app working offline if a background refresh fails.
+        PrayerNotificationHelper.cancelAllScheduled(ctx);
 
         final int chunk = 40;
         try {

@@ -1339,12 +1339,6 @@ export function App(): ReactElement {
       </div>
       <fieldset className="notify-fieldset">
         <legend>{t("reminders")}</legend>
-        <p className="notify-hint">{t("remindersHint")}</p>
-        {nativeNotificationsEnabled ? (
-          <p className="notify-hint notify-hint--native">
-            {t("notificationsNativeReliability")}
-          </p>
-        ) : null}
         <div className="notify-actions">
           <button
             type="button"
@@ -1379,9 +1373,6 @@ export function App(): ReactElement {
                   : ""}
             </span>
           </div>
-        ) : null}
-        {nativeNotificationsEnabled && Capacitor.getPlatform() === "android" ? (
-          <p className="notify-hint">{t("androidExactAlarmsHint")}</p>
         ) : null}
         <div className="notify-grid" id="notify-grid">
           {ORDER.map((key) => (

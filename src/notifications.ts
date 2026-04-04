@@ -117,7 +117,7 @@ function tick(
       const silent = options?.getNotificationSilent?.() ?? false;
       const title = options?.notificationTitle ?? "Call to Prayer Sweden";
       new Notification(title, {
-        body: `${label} — ${day.city} (${day.schedule[key]})`,
+        body: `${label} (${day.schedule[key]})`,
         tag: `ctp-${day.date}-${key}`,
         silent,
       });

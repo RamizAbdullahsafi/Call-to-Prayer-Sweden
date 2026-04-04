@@ -148,7 +148,7 @@ function buildDayNotifications(
     out.push({
       id: nativeNotificationId(day.date, key),
       title,
-      body: `${prayerLabel(key)} — ${day.city} (${day.schedule[key]})`,
+      body: `${prayerLabel(key)} (${day.schedule[key]})`,
       channelId,
       schedule: {
         at,
