@@ -12,7 +12,7 @@ const config: CapacitorConfig = {
   },
   plugins: {
     LocalNotifications: {
-      sound: "adhan_notify.wav",
+      sound: "azan_notify.wav",
       iconColor: "#2563EB",
     },
   },

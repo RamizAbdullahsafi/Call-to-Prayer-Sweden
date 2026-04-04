@@ -22,25 +22,64 @@ const MONTH_NAMES = [
 ];
 
 export function hijriFromGregorian(date: Date, locale: string = "en"): HijriInfo {
-  const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
-    day: "numeric",
-    month: "numeric",
-    year: "numeric",
-  }).formatToParts(date);
+  let day = 1;
+  let month = 1;
+  let year = 1445;
+  let monthName = MONTH_NAMES[0]!;
+  let label = `${day} ${monthName} ${year}`;
 
-  const day = Number(parts.find((p) => p.type === "day")?.value ?? "1");
-  const month = Number(parts.find((p) => p.type === "month")?.value ?? "1");
-  const year = Number(parts.find((p) => p.type === "year")?.value ?? "1440");
-  const monthName =
-    new Intl.DateTimeFormat(`${locale}-u-ca-islamic-umalqura`, {
-      month: "long",
-    }).format(date) || MONTH_NAMES[Math.max(0, Math.min(11, month - 1))]!;
+  try {
+    try {
+      const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
+        day: "numeric",
+        month: "numeric",
+        year: "numeric",
+      }).formatToParts(date);
 
-  const label = new Intl.DateTimeFormat(`${locale}-u-ca-islamic-umalqura`, {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
+      day = Number(parts.find((p) => p.type === "day")?.value ?? "1");
+      month = Number(parts.find((p) => p.type === "month")?.value ?? "1");
+      year = Number(parts.find((p) => p.type === "year")?.value ?? "1445");
+    } catch {
+      /* ignore - uses defaults */
+    }
+
+    try {
+      monthName =
+        new Intl.DateTimeFormat(`${locale}-u-ca-islamic-umalqura`, {
+          month: "long",
+        }).format(date);
+    } catch {
+      try {
+        // Fallback to English if the specific locale-u-ca combo fails
+        monthName = new Intl.DateTimeFormat(`en-u-ca-islamic-umalqura`, {
+          month: "long",
+        }).format(date);
+      } catch {
+        monthName = MONTH_NAMES[Math.max(0, Math.min(11, month - 1))]!;
+      }
+    }
+
+    try {
+      label = new Intl.DateTimeFormat(`${locale}-u-ca-islamic-umalqura`, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(date);
+    } catch {
+      try {
+        // Fallback to English if the specific locale-u-ca combo fails
+        label = new Intl.DateTimeFormat(`en-u-ca-islamic-umalqura`, {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }).format(date);
+      } catch {
+        label = `${day} ${monthName} ${year}`;
+      }
+    }
+  } catch {
+    /* Fallback if Intl or Islamic calendar is completely unsupported */
+  }
 
   return {
     day,

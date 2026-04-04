@@ -11,9 +11,8 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
-import com.getcapacitor.community.localnotifications.NotificationStorage
-import com.getcapacitor.community.localnotifications.TimedNotificationPublisher
-import java.util.*
+import com.capacitorjs.plugins.localnotifications.NotificationStorage
+import com.capacitorjs.plugins.localnotifications.TimedNotificationPublisher
 
 /**
  * Cancels all Capacitor-local-notification alarms (same storage as JS) so background
@@ -21,12 +20,6 @@ import java.util.*
  */
 object PrayerNotificationHelper {
 
-    /**
-     * Matches Capacitor-community-local-notifications storage.
-     * Note: Capacitor 6 uses com.getcapacitor.community.localnotifications
-     * while older versions might use com.capacitorjs.plugins.localnotifications.
-     * Based on previous Java code, it was using com.capacitorjs.plugins.localnotifications.
-     */
     @JvmStatic
     fun cancelAllScheduled(context: Context) {
         val storage = NotificationStorage(context)

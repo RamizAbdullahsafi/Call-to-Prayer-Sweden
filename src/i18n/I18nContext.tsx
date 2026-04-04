@@ -12,9 +12,10 @@ import { getInitialLocale, saveLocale } from "./storage";
 import { LOCALE_HTML_LANG, RTL_LOCALES, type Locale } from "./types";
 
 function interpolate(
-  template: string,
+  template: string | undefined,
   vars?: Record<string, string | number>
 ): string {
+  if (typeof template !== "string") return "";
   if (!vars) return template;
   let s = template;
   for (const [k, v] of Object.entries(vars)) {
@@ -50,8 +51,14 @@ export function I18nProvider({ children }: { children: ReactNode }): ReactElemen
   }, [locale]);
 
   const t = useMemo((): TFunction => {
-    const table = MESSAGES[locale];
-    return (id, vars) => interpolate(table[id], vars);
+    const table = MESSAGES[locale] || {};
+    return (id, vars) => {
+      const val = table[id];
+      if (val === undefined) {
+        return id;
+      }
+      return interpolate(val, vars);
+    };
   }, [locale]);
 
   const value = useMemo(

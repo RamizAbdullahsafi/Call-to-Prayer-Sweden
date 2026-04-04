@@ -1,11 +1,11 @@
 import type { PrayerKey } from "./prayerTimes";
 
-const STORAGE_VOICE = "ctp.adhan.voice";
-const STORAGE_PLAY = "ctp.adhan.play";
-const STORAGE_VOLUME = "ctp.adhan.volume";
-const STORAGE_ADHAN_KEYS = "ctp.adhan.prayerKeys";
+const STORAGE_VOICE = "ctp.azan.voice";
+const STORAGE_PLAY = "ctp.azan.play";
+const STORAGE_VOLUME = "ctp.azan.volume";
+const STORAGE_ADHAN_KEYS = "ctp.azan.prayerKeys";
 
-export type AdhanVoiceDef = {
+export type AzanVoiceDef = {
   id: string;
   label: string;
   reciter: string;
@@ -17,7 +17,7 @@ export type AdhanVoiceDef = {
  * Mishary Alafasy and other muezzins: public MP3s from AlAdhan’s CDN
  * (same files as https://www.aladhan.com/download-adhans).
  */
-const ALADHAN_VOICES: AdhanVoiceDef[] = [
+const ALADHAN_VOICES: AzanVoiceDef[] = [
   {
     id: "mishary-dubai",
     label: "Dubai One TV",
@@ -70,7 +70,7 @@ const ALADHAN_VOICES: AdhanVoiceDef[] = [
 ];
 
 /** Additional freely licensed recordings (Wikimedia Commons). */
-const WIKIMEDIA_VOICES: AdhanVoiceDef[] = [
+const WIKIMEDIA_VOICES: AzanVoiceDef[] = [
   {
     id: "sabah-fakhry",
     label: "Klassisk (1985)",
@@ -108,7 +108,7 @@ const WIKIMEDIA_VOICES: AdhanVoiceDef[] = [
   },
 ];
 
-export const ADHAN_VOICES: AdhanVoiceDef[] = [...ALADHAN_VOICES, ...WIKIMEDIA_VOICES];
+export const AZAN_VOICES: AzanVoiceDef[] = [...ALADHAN_VOICES, ...WIKIMEDIA_VOICES];
 
 const DEFAULT_VOICE_ID = "mishary-dubai";
 
@@ -121,8 +121,8 @@ const ALL_PRAYER_KEYS: PrayerKey[] = [
   "isha",
 ];
 
-/** Default: adhan for same prayers as default notifications (usually not Shuruk). */
-export const DEFAULT_ADHAN_PRAYER_KEYS: PrayerKey[] = [
+/** Default: azan for same prayers as default notifications (usually not Shuruk). */
+export const DEFAULT_AZAN_PRAYER_KEYS: PrayerKey[] = [
   "fajr",
   "dhuhr",
   "asr",
@@ -133,10 +133,10 @@ export const DEFAULT_ADHAN_PRAYER_KEYS: PrayerKey[] = [
 let currentAudio: HTMLAudioElement | null = null;
 let wakeLock: WakeLockSentinel | null = null;
 let playbackListener: ((playing: boolean) => void) | null = null;
-/** Invalidates in-flight playback when stop or new play starts. */
-let adhanSession = 0;
+/** Invalidate in-flight playback when stop or new play starts. */
+let azanSession = 0;
 
-export function setAdhanPlaybackListener(
+export function setAzanPlaybackListener(
   cb: ((playing: boolean) => void) | null
 ): void {
   playbackListener = cb;
@@ -182,14 +182,14 @@ function applyMediaSession(title: string, artist: string): void {
       album: "Call to Prayer Sweden",
     });
     navigator.mediaSession.setActionHandler("stop", () => {
-      stopAdhan();
+      stopAzan();
     });
   } catch {
     /* ignore */
   }
 }
 
-export function loadAdhanPlayEnabled(): boolean {
+export function loadAzanPlayEnabled(): boolean {
   try {
     const raw = localStorage.getItem(STORAGE_PLAY);
     if (raw === null) return true;
@@ -199,7 +199,7 @@ export function loadAdhanPlayEnabled(): boolean {
   }
 }
 
-export function saveAdhanPlayEnabled(on: boolean): void {
+export function saveAzanPlayEnabled(on: boolean): void {
   try {
     localStorage.setItem(STORAGE_PLAY, on ? "1" : "0");
   } catch {
@@ -208,7 +208,7 @@ export function saveAdhanPlayEnabled(on: boolean): void {
 }
 
 /** 0–1 */
-export function loadAdhanVolume(): number {
+export function loadAzanVolume(): number {
   try {
     const raw = localStorage.getItem(STORAGE_VOLUME);
     if (raw === null) return 0.92;
@@ -220,7 +220,7 @@ export function loadAdhanVolume(): number {
   return 0.92;
 }
 
-export function saveAdhanVolume(v: number): void {
+export function saveAzanVolume(v: number): void {
   const x = Math.min(1, Math.max(0, v));
   try {
     localStorage.setItem(STORAGE_VOLUME, String(x));
@@ -230,23 +230,23 @@ export function saveAdhanVolume(v: number): void {
   if (currentAudio) currentAudio.volume = x;
 }
 
-export function loadAdhanPrayerKeys(): Set<PrayerKey> {
+export function loadAzanPrayerKeys(): Set<PrayerKey> {
   try {
     const raw = localStorage.getItem(STORAGE_ADHAN_KEYS);
-    if (!raw) return new Set(DEFAULT_ADHAN_PRAYER_KEYS);
+    if (!raw) return new Set(DEFAULT_AZAN_PRAYER_KEYS);
     const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return new Set(DEFAULT_ADHAN_PRAYER_KEYS);
+    if (!Array.isArray(parsed)) return new Set(DEFAULT_AZAN_PRAYER_KEYS);
     const next = new Set<PrayerKey>();
     for (const k of parsed) {
       if (ALL_PRAYER_KEYS.includes(k as PrayerKey)) next.add(k as PrayerKey);
     }
-    return next.size > 0 ? next : new Set(DEFAULT_ADHAN_PRAYER_KEYS);
+    return next.size > 0 ? next : new Set(DEFAULT_AZAN_PRAYER_KEYS);
   } catch {
-    return new Set(DEFAULT_ADHAN_PRAYER_KEYS);
+    return new Set(DEFAULT_AZAN_PRAYER_KEYS);
   }
 }
 
-export function saveAdhanPrayerKeys(keys: Set<PrayerKey>): void {
+export function saveAzanPrayerKeys(keys: Set<PrayerKey>): void {
   try {
     localStorage.setItem(STORAGE_ADHAN_KEYS, JSON.stringify([...keys]));
   } catch {
@@ -254,28 +254,28 @@ export function saveAdhanPrayerKeys(keys: Set<PrayerKey>): void {
   }
 }
 
-export function loadAdhanVoiceId(): string {
+export function loadAzanVoiceId(): string {
   try {
     const raw = localStorage.getItem(STORAGE_VOICE);
     if (raw === "custom") {
       try {
-        localStorage.removeItem("ctp.adhan.customUrl");
+        localStorage.removeItem("ctp.azan.customUrl");
         localStorage.setItem(STORAGE_VOICE, DEFAULT_VOICE_ID);
       } catch {
         /* ignore */
       }
       return DEFAULT_VOICE_ID;
     }
-    if (raw && ADHAN_VOICES.some((v) => v.id === raw)) return raw;
+    if (raw && AZAN_VOICES.some((v) => v.id === raw)) return raw;
   } catch {
     /* ignore */
   }
   return DEFAULT_VOICE_ID;
 }
 
-export function saveAdhanVoiceId(id: string): void {
+export function saveAzanVoiceId(id: string): void {
   try {
-    if (ADHAN_VOICES.some((v) => v.id === id)) {
+    if (AZAN_VOICES.some((v) => v.id === id)) {
       localStorage.setItem(STORAGE_VOICE, id);
     }
   } catch {
@@ -283,44 +283,44 @@ export function saveAdhanVoiceId(id: string): void {
   }
 }
 
-function resolveAdhanUrl(voiceId: string): string | null {
-  const def = ADHAN_VOICES.find((v) => v.id === voiceId);
+function resolveAzanUrl(voiceId: string): string | null {
+  const def = AZAN_VOICES.find((v) => v.id === voiceId);
   return def?.url ?? null;
 }
 
 function getVoiceMeta(voiceId: string): { title: string; artist: string } {
-  const def = ADHAN_VOICES.find((v) => v.id === voiceId);
-  if (def) return { title: "Adhan", artist: `${def.reciter} — ${def.label}` };
-  return { title: "Adhan", artist: "Call to Prayer Sweden" };
+  const def = AZAN_VOICES.find((v) => v.id === voiceId);
+  if (def) return { title: "Azan", artist: `${def.reciter} — ${def.label}` };
+  return { title: "Azan", artist: "Call to Prayer Sweden" };
 }
 
-export function playAdhanFromVoiceId(
+export function playAzanFromVoiceId(
   voiceId: string,
   onPlaybackError?: () => void
 ): void {
-  const url = resolveAdhanUrl(voiceId);
-  if (url) playAdhanUrl(url, getVoiceMeta(voiceId), onPlaybackError);
+  const url = resolveAzanUrl(voiceId);
+  if (url) playAzanUrl(url, getVoiceMeta(voiceId), onPlaybackError);
 }
 
-export function playAdhanUrl(
+export function playAzanUrl(
   url: string,
   meta?: { title: string; artist: string },
   onPlaybackError?: () => void
 ): void {
-  stopAdhan();
-  const session = adhanSession;
+  stopAzan();
+  const session = azanSession;
   const a = new Audio(url);
-  a.volume = loadAdhanVolume();
+  a.volume = loadAzanVolume();
   a.preload = "auto";
   currentAudio = a;
 
-  const m = meta ?? { title: "Adhan", artist: "Call to Prayer Sweden" };
+  const m = meta ?? { title: "Azan", artist: "Call to Prayer Sweden" };
   applyMediaSession(m.title, m.artist);
   void acquireWakeLock();
   emitPlayback(true);
 
   const onEnd = (): void => {
-    if (session !== adhanSession) return;
+    if (session !== azanSession) return;
     releaseWakeLock();
     clearMediaSession();
     if (currentAudio === a) currentAudio = null;
@@ -329,7 +329,7 @@ export function playAdhanUrl(
 
   let failureReported = false;
   const onPlaybackFailed = (): void => {
-    if (session !== adhanSession || failureReported) return;
+    if (session !== azanSession || failureReported) return;
     failureReported = true;
     releaseWakeLock();
     clearMediaSession();
@@ -346,8 +346,8 @@ export function playAdhanUrl(
   });
 }
 
-export function stopAdhan(): void {
-  adhanSession++;
+export function stopAzan(): void {
+  azanSession++;
   if (!currentAudio) {
     releaseWakeLock();
     clearMediaSession();

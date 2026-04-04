@@ -65,34 +65,67 @@ export function buildHijriMonthGrid(
   cells: (HijriMonthCell | null)[];
   weekdayLabels: string[];
 } {
-  const first = findFirstDayOfHijriMonth(anchor, locale);
-  const h = hijriFromGregorian(first, locale);
-  const days = listDaysInHijriMonth(anchor, locale);
+  try {
+    const first = findFirstDayOfHijriMonth(anchor, locale);
+    const h = hijriFromGregorian(first, locale);
+    const days = listDaysInHijriMonth(anchor, locale);
 
-  const monthTitle = new Intl.DateTimeFormat(`${locale}-u-ca-islamic-umalqura`, {
-    month: "long",
-    year: "numeric",
-  }).format(first);
+    let monthTitle = "";
+    try {
+      monthTitle = new Intl.DateTimeFormat(`${locale}-u-ca-islamic-umalqura`, {
+        month: "long",
+        year: "numeric",
+      }).format(first);
+    } catch {
+      try {
+        // Fallback to English locale for formatting if the requested locale fails
+        monthTitle = new Intl.DateTimeFormat(`en-u-ca-islamic-umalqura`, {
+          month: "long",
+          year: "numeric",
+        }).format(first);
+      } catch {
+        monthTitle = `${h.monthName} ${h.year}`;
+      }
+    }
 
-  const firstDowMon0 = (first.getDay() + 6) % 7;
-  const cells: (HijriMonthCell | null)[] = [];
-  for (let i = 0; i < firstDowMon0; i++) cells.push(null);
-  for (const cell of days) cells.push(cell);
-  const totalCells = Math.ceil(cells.length / 7) * 7;
-  while (cells.length < totalCells) cells.push(null);
+    const firstDowMon0 = (first.getDay() + 6) % 7;
+    const cells: (HijriMonthCell | null)[] = [];
+    for (let i = 0; i < firstDowMon0; i++) cells.push(null);
+    for (const cell of days) cells.push(cell);
+    const totalCells = Math.ceil(cells.length / 7) * 7;
+    while (cells.length < totalCells) cells.push(null);
 
-  const weekdayLabels = [0, 1, 2, 3, 4, 5, 6].map((i) => {
-    const ref = new Date(2024, 0, 1 + i);
-    return new Intl.DateTimeFormat(locale, { weekday: "short" }).format(ref);
-  });
+    const weekdayLabels = [0, 1, 2, 3, 4, 5, 6].map((i) => {
+      const ref = new Date(2024, 0, 1 + i);
+      try {
+        return new Intl.DateTimeFormat(locale, { weekday: "short" }).format(ref);
+      } catch {
+        try {
+          return new Intl.DateTimeFormat("en", { weekday: "short" }).format(ref);
+        } catch {
+          return ["M", "T", "W", "T", "F", "S", "S"][i]!;
+        }
+      }
+    });
 
-  return {
-    monthTitle,
-    year: h.year,
-    month: h.month,
-    cells,
-    weekdayLabels,
-  };
+    return {
+      monthTitle,
+      year: h.year,
+      month: h.month,
+      cells,
+      weekdayLabels,
+    };
+  } catch (err) {
+    // Ultimate fallback to prevent the entire app from crashing if calendar logic fails
+    console.error("Critical failure in buildHijriMonthGrid:", err);
+    return {
+      monthTitle: "Calendar Error",
+      year: 1445,
+      month: 1,
+      cells: [],
+      weekdayLabels: ["M", "T", "W", "T", "F", "S", "S"],
+    };
+  }
 }
 
 export function hijriInfoForCell(cell: HijriMonthCell, locale: string): HijriInfo {

@@ -52,7 +52,7 @@ async function ensureChannels(): Promise<void> {
     description: "Alerts when it is time to pray (with sound).",
     importance: 5,
     vibration: true,
-    sound: "adhan_notify.wav",
+    sound: "azan_notify.wav",
   });
   await LocalNotifications.createChannel({
     id: CHANNEL_QUIET,
