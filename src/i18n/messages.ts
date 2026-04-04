@@ -45,7 +45,7 @@ export type MessageId =
   | "stop"
   | "volume"
   | "adhanForPrayers"
-  | "syncAzanWithNotify"
+  | "syncAdhanWithNotify"
   | "playAdhanOnNotify"
   | "adhanPlaying"
   | "adhanPlaybackFailed"
@@ -153,7 +153,7 @@ const sv: Messages = {
   stop: "Stoppa",
   volume: "Volym",
   adhanForPrayers: "Adhan vid dessa böner",
-  syncAzanWithNotify: "Samma böner som påminnelser",
+  syncAdhanWithNotify: "Samma böner som påminnelser",
   playAdhanOnNotify: "Spela adhan vid påminnelse",
   adhanPlaying: "Adhan spelas…",
   adhanPlaybackFailed:
@@ -268,7 +268,7 @@ const en: Messages = {
   stop: "Stop",
   volume: "Volume",
   adhanForPrayers: "Adhan for these prayers",
-  syncAzanWithNotify: "Same prayers as reminders",
+  syncAdhanWithNotify: "Same prayers as reminders",
   playAdhanOnNotify: "Play adhan with reminder",
   adhanPlaying: "Playing adhan…",
   adhanPlaybackFailed:
@@ -382,7 +382,7 @@ const ar: Messages = {
   stop: "إيقاف",
   volume: "الصوت",
   adhanForPrayers: "أذان لهذه الصلوات",
-  syncAzanWithNotify: "نفس الصلوات كالتذكيرات",
+  syncAdhanWithNotify: "نفس الصلوات كالتذكيرات",
   playAdhanOnNotify: "تشغيل الأذان مع التذكير",
   adhanPlaying: "جارٍ تشغيل الأذان…",
   adhanPlaybackFailed:
@@ -496,7 +496,7 @@ const fa: Messages = {
   stop: "توقف",
   volume: "ولوم",
   adhanForPrayers: "اذان برای این نمازها",
-  syncAzanWithNotify: "همان نمازها مانند یادآورها",
+  syncAdhanWithNotify: "همان نمازها مانند یادآورها",
   playAdhanOnNotify: "پخش اذان با یادآور",
   adhanPlaying: "در حال پخش اذان…",
   adhanPlaybackFailed:
@@ -613,7 +613,7 @@ const ku: Messages = {
   stop: "Rawestîne",
   volume: "Deng",
   adhanForPrayers: "Ezan ji bo van nimêjan",
-  syncAzanWithNotify: "Heman nimêj wek bîranîn",
+  syncAdhanWithNotify: "Heman nimêj wek bîranîn",
   playAdhanOnNotify: "Ezan bi bîranînê re bilêxe",
   adhanPlaying: "Ezan tê lêxistin…",
   adhanPlaybackFailed:
@@ -727,7 +727,7 @@ const so: Messages = {
   stop: "Jooji",
   volume: "Codka",
   adhanForPrayers: "Adaan salaadahaas",
-  syncAzanWithNotify: "Isla salaadaha xusuusinta",
+  syncAdhanWithNotify: "Isla salaadaha xusuusinta",
   playAdhanOnNotify: "Ku ciyaar adaan marka xusuusinta",
   adhanPlaying: "Adaan ayaa la ciyaarayaa…",
   adhanPlaybackFailed:

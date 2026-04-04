@@ -395,7 +395,7 @@ html[data-theme="light"] .app-download-banner {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .azan-row {
+[dir="rtl"] .adhan-row {
   flex-direction: row-reverse;
 }
 
@@ -705,7 +705,7 @@ button.secondary:disabled {
   cursor: pointer;
 }
 
-.azan-fieldset {
+.adhan-fieldset {
   margin: 0 0 1.25rem;
   padding: 1rem 1rem 1.1rem;
   border: 1px solid var(--border);
@@ -984,21 +984,21 @@ button.secondary:disabled {
   font-weight: 700;
 }
 
-.azan-fieldset legend {
+.adhan-fieldset legend {
   padding: 0 0.25rem;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text);
 }
 
-.azan-hint {
+.adhan-hint {
   margin: 0 0 0.85rem;
   font-size: 0.85rem;
   color: var(--muted);
   line-height: 1.45;
 }
 
-.azan-row {
+.adhan-row {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
@@ -1006,15 +1006,15 @@ button.secondary:disabled {
   margin-bottom: 0.75rem;
 }
 
-.azan-row-top {
+.adhan-row-top {
   align-items: flex-end;
 }
 
-.azan-volume-row {
+.adhan-volume-row {
   margin-bottom: 0.85rem;
 }
 
-.azan-volume-row input[type="range"] {
+.adhan-volume-row input[type="range"] {
   width: 100%;
   margin-top: 0.35rem;
   height: 0.45rem;
@@ -1022,51 +1022,51 @@ button.secondary:disabled {
   cursor: pointer;
 }
 
-.azan-volume-row label {
+.adhan-volume-row label {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 0.5rem;
 }
 
-.azan-volume-row #azan-volume-label {
+.adhan-volume-row #adhan-volume-label {
   font-variant-numeric: tabular-nums;
   color: var(--muted);
   font-weight: 600;
 }
 
-.azan-sublegend {
+.adhan-sublegend {
   margin: 0 0 0.45rem;
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--muted);
 }
 
-.azan-prayer-grid {
+.adhan-prayer-grid {
   margin-bottom: 0.65rem;
 }
 
-.azan-sync-row {
+.adhan-sync-row {
   margin-bottom: 0.85rem;
 }
 
-.azan-sync-row .secondary {
+.adhan-sync-row .secondary {
   width: 100%;
 }
 
 @media (min-width: 480px) {
-  .azan-sync-row .secondary {
+  .adhan-sync-row .secondary {
     width: auto;
   }
 }
 
-.azan-actions-btns {
+.adhan-actions-btns {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.azan-playing {
+.adhan-playing {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1079,15 +1079,15 @@ button.secondary:disabled {
   border-radius: var(--radius);
 }
 
-.azan-playing-dot {
+.adhan-playing-dot {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
   background: var(--next);
-  animation: azan-pulse 1.2s ease-in-out infinite;
+  animation: adhan-pulse 1.2s ease-in-out infinite;
 }
 
-@keyframes azan-pulse {
+@keyframes adhan-pulse {
   0%,
   100% {
     opacity: 1;
@@ -1100,24 +1100,24 @@ button.secondary:disabled {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .azan-playing-dot {
+  .adhan-playing-dot {
     animation: none;
     opacity: 0.85;
   }
 }
 
-.azan-grow {
+.adhan-grow {
   flex: 1 1 12rem;
   min-width: 0;
 }
 
-.azan-actions {
+.adhan-actions {
   flex: 0 0 auto;
   display: flex;
   align-items: flex-end;
 }
 
-.azan-play-toggle {
+.adhan-play-toggle {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1129,30 +1129,30 @@ button.secondary:disabled {
   margin: 0 0 0.65rem;
 }
 
-.azan-play-toggle input {
+.adhan-play-toggle input {
   width: 1rem;
   height: 1rem;
   accent-color: var(--accent);
   cursor: pointer;
 }
 
-.azan-attrib {
+.adhan-attrib {
   margin: 0;
   font-size: 0.75rem;
   color: var(--muted);
   line-height: 1.45;
 }
 
-.azan-attrib a {
+.adhan-attrib a {
   color: var(--accent);
   text-decoration: none;
 }
 
-.azan-attrib a:hover {
+.adhan-attrib a:hover {
   text-decoration: underline;
 }
 
-.azan-playback-error {
+.adhan-playback-error {
   margin: 0.35rem 0 0;
   font-size: 0.8125rem;
   line-height: 1.45;
@@ -1426,7 +1426,7 @@ footer a:hover {
 }
 
 /* Range slider — larger touch target on mobile */
-.azan-volume-row input[type="range"] {
+.adhan-volume-row input[type="range"] {
   min-height: 2.25rem;
 }
 
@@ -1498,7 +1498,7 @@ footer a:hover {
 }
 
 .app-tab-panel--settings .notify-fieldset,
-.app-tab-panel--settings .azan-fieldset {
+.app-tab-panel--settings .adhan-fieldset {
   margin-bottom: 1rem;
 }
 
