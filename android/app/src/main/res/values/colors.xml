@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Masjid-inspired blue & white (matches web CSS tokens) -->
+    <color name="colorPrimary">#1D4ED8</color>
+    <color name="colorPrimaryDark">#1E3A8A</color>
+    <color name="colorAccent">#2563EB</color>
+    <color name="splash_background">#E8F0FE</color>
+    <color name="navigation_bar_color">#FFFFFF</color>
+</resources>

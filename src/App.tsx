@@ -19,6 +19,7 @@ import {
 import {
   AZAN_VOICES,
   DEFAULT_AZAN_PRAYER_KEYS,
+  getAzanStreamUrl,
   loadAzanPlayEnabled,
   loadAzanPrayerKeys,
   loadAzanVolume,
@@ -37,10 +38,13 @@ import { LocalNotifications } from "@capacitor/local-notifications";
 import {
   DEFAULT_NOTIFY_KEYS,
   loadNotifyKeys,
+  loadNotifyMode,
   notificationsSupported,
   requestNotificationPermission,
   saveNotifyKeys,
+  saveNotifyMode,
   startPrayerNotifications,
+  type NotifyMode,
 } from "./notifications";
 import { logNotificationDebug } from "./notificationDebug";
 import {
@@ -118,7 +122,6 @@ const ORDER: PrayerKey[] = [
 
 const CITY_CUSTOM_KEY = "ctp.ort.custom";
 const NOTIFY_SILENT_KEY = "ctp.notify.silent";
-type NotifyMode = "full" | "notify_only" | "vibrate" | "silent";
 type DeviceOrientationWithPermission = typeof DeviceOrientationEvent & {
   requestPermission?: () => Promise<"granted" | "denied">;
 };
@@ -231,11 +234,7 @@ export function App(): ReactElement {
     Math.round(loadAzanVolume() * 100)
   );
   const [notifySilent, setNotifySilent] = useState(loadNotifySilent);
-  const [notifyMode, setNotifyMode] = useState<NotifyMode>(() => {
-    if (loadAzanPlayEnabled()) return "full";
-    if (loadNotifySilent()) return "silent";
-    return "notify_only";
-  });
+  const [notifyMode, setNotifyMode] = useState<NotifyMode>(() => loadNotifyMode());
   const [azanPlaying, setAzanPlaying] = useState(false);
   const [azanPlayError, setAzanPlayError] = useState<string | null>(null);
   const [nowTick, setNowTick] = useState(() => new Date());
@@ -268,32 +267,33 @@ export function App(): ReactElement {
   }, [themePref]);
 
   useEffect(() => {
+    saveNotifyMode(notifyMode);
     if (notifyMode === "silent") {
-    setNotifySilent(true);
-    saveNotifySilent(true);
-    saveAzanPlayEnabled(false);
-    setAzanPlay(false);
-    return;
-  }
-  if (notifyMode === "notify_only") {
+      setNotifySilent(true);
+      saveNotifySilent(true);
+      saveAzanPlayEnabled(false);
+      setAzanPlay(false);
+      return;
+    }
+    if (notifyMode === "notify_only") {
+      setNotifySilent(false);
+      saveNotifySilent(false);
+      saveAzanPlayEnabled(false);
+      setAzanPlay(false);
+      return;
+    }
+    if (notifyMode === "vibrate") {
+      setNotifySilent(true);
+      saveNotifySilent(true);
+      saveAzanPlayEnabled(false);
+      setAzanPlay(false);
+      return;
+    }
     setNotifySilent(false);
     saveNotifySilent(false);
-    saveAzanPlayEnabled(false);
-    setAzanPlay(false);
-    return;
-  }
-  if (notifyMode === "vibrate") {
-    setNotifySilent(true);
-    saveNotifySilent(true);
-    saveAzanPlayEnabled(false);
-    setAzanPlay(false);
-    return;
-  }
-  setNotifySilent(false);
-  saveNotifySilent(false);
-  saveAzanPlayEnabled(true);
-  setAzanPlay(true);
-}, [notifyMode]);
+    saveAzanPlayEnabled(true);
+    setAzanPlay(true);
+  }, [notifyMode]);
 
   const notifySilentRef = useRef(notifySilent);
   notifySilentRef.current = notifySilent;
@@ -467,9 +467,18 @@ export function App(): ReactElement {
       void scheduleNativePrayerNotificationsAhead({
         city: cityVal,
         keys: notifyKeySet,
-        notificationSilent: notifySilent,
+        notifyMode,
         title: t("appTitle"),
         prayerLabel: (key) => t(prayerMsg(key, "prayer")),
+        androidAzan:
+          Capacitor.getPlatform() === "android"
+            ? {
+                enabled: notifyMode === "full",
+                audioUrl: getAzanStreamUrl(loadAzanVoiceId()) ?? "",
+                volume: loadAzanVolume(),
+                prayerKeys: loadAzanPrayerKeys(),
+              }
+            : undefined,
       });
       saveNotifyKeys(notifyKeySet);
       disposeNotifyRef.current = cleanupNative;
@@ -544,6 +553,7 @@ export function App(): ReactElement {
         if (notifyMode === "vibrate" && "vibrate" in navigator) {
           navigator.vibrate?.([220, 120, 220]);
         }
+        if (Capacitor.getPlatform() === "android") return;
         if (!loadAzanPlayEnabled()) return;
         if (loadAzanVolume() <= 0) return;
         if (!loadAzanPrayerKeys().has(key)) return;
@@ -562,6 +572,10 @@ export function App(): ReactElement {
           key
         );
         if (!key) return;
+        if (notifyMode === "vibrate" && "vibrate" in navigator) {
+          navigator.vibrate?.([220, 120, 220]);
+        }
+        if (Capacitor.getPlatform() === "android") return;
         if (!loadAzanPlayEnabled()) return;
         if (loadAzanVolume() <= 0) return;
         if (!loadAzanPrayerKeys().has(key)) return;
@@ -642,13 +656,16 @@ export function App(): ReactElement {
       const cityName = await reverseGeocodeCity(point.latitude, point.longitude);
       if (cityName) {
         setCityCustom(cityName);
+        cityCustomRef.current = cityName;
         persistCustomCity(cityName);
+        const normalized = normalizeCityName(cityName);
+        const matched = municipalityByNormalized.get(normalized);
+        if (matched) setCity(matched);
+        setGeoMessage(`Location found: ${cityName}`);
+        void loadPrayerTimes();
+      } else {
+        setGeoMessage("Location found.");
       }
-      setGeoMessage(
-        cityName
-          ? `Location found: ${cityName}`
-          : "Location found."
-      );
     } catch (e) {
       const msg =
         e instanceof Error && e.message === "GEO_DENIED"

@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.getcapacitor.BridgeActivity
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -79,7 +80,9 @@ class BatteryOptimizationPlugin : Plugin() {
 
 class MainActivity : BridgeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         registerPlugin(BatteryOptimizationPlugin::class.java)
+        registerPlugin(NativeAzanPlugin::class.java)
         super.onCreate(savedInstanceState)
         PrayerScheduleBootstrap.register(this)
     }

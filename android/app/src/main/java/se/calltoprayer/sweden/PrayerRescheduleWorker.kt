@@ -10,6 +10,7 @@ import com.getcapacitor.Logger
 import com.capacitorjs.plugins.localnotifications.LocalNotificationManager
 import com.capacitorjs.plugins.localnotifications.LocalNotificationSchedule
 import com.capacitorjs.plugins.localnotifications.NotificationStorage
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.ParseException
@@ -24,8 +25,9 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
     companion object {
         private const val PREFS = "CapacitorStorage"
         private const val CONFIG_KEY = "ctp.prayerScheduleConfig.v1"
-        private const val CHANNEL_LOUD = "prayer-times-v2"
-        private const val CHANNEL_QUIET = "prayer-times-quiet-v2"
+        private const val CHANNEL_LOUD = "ctp-prayer-alarm-v1"
+        private const val CHANNEL_QUIET = "ctp-prayer-quiet-v1"
+        private const val CHANNEL_VIBRATE = "ctp-prayer-vibrate-v1"
         private val KEY_ORDER = arrayOf("fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha")
 
         private fun formatYmd(cal: Calendar): String {
@@ -95,6 +97,7 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
         }
 
         val silent = cfg.optBoolean("notificationSilent", false)
+        val notifyMode = cfg.optString("notifyMode", "")
         val title = cfg.optString("title", "Prayer Sweden")
         val daysAhead = cfg.optInt("daysAhead", 60)
 
@@ -104,6 +107,19 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
         }
 
         val labels = cfg.optJSONObject("labels")
+
+        val azanEnabled = cfg.optBoolean("azanPlayEnabled", false)
+        val azanUrl = cfg.optString("azanAudioUrl", "")
+        val azanVol = cfg.optDouble("azanVolume", 0.92).toFloat()
+        val azanKeysJson = cfg.optJSONArray("azanKeys")
+        val azanKeysSet = mutableSetOf<String>()
+        if (azanKeysJson != null) {
+            for (ai in 0 until azanKeysJson.length()) {
+                val k = azanKeysJson.optString(ai, "")
+                if (k.isNotEmpty()) azanKeysSet.add(k)
+            }
+        }
+        val azanAlarms = JSONArray()
 
         if (!PrayerNotificationHelper.areNotificationsEnabled(ctx)) {
             return Result.success()
@@ -143,13 +159,29 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
                     val body = "$label ($timeStr)"
 
                     val id = nativeNotificationId(ymd, key)
-                    val channelId = if (silent) CHANNEL_QUIET else CHANNEL_LOUD
+                    if (azanEnabled && azanUrl.isNotEmpty() && azanKeysSet.contains(key)) {
+                        val ao = JSONObject()
+                        ao.put("id", AzanAlarmScheduler.AZAN_ALARM_ID_OFFSET + id)
+                        ao.put("atMs", at.time)
+                        ao.put("key", key)
+                        azanAlarms.put(ao)
+                    }
+                    val channelId = when {
+                        notifyMode == "vibrate" -> CHANNEL_VIBRATE
+                        notifyMode == "silent" -> CHANNEL_QUIET
+                        notifyMode == "full" || notifyMode == "notify_only" -> CHANNEL_LOUD
+                        notifyMode.isEmpty() && silent -> CHANNEL_QUIET
+                        else -> CHANNEL_LOUD
+                    }
 
                     val json = JSObject()
                     json.put("id", id)
                     json.put("title", title)
                     json.put("body", body)
                     json.put("channelId", channelId)
+                    if (channelId == CHANNEL_LOUD) {
+                        json.put("sound", "azan_notify.wav")
+                    }
                     val sched = JSObject()
                     sched.put("at", formatUtcIso(at))
                     sched.put("allowWhileIdle", true)
@@ -168,6 +200,7 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
         }
 
         if (notifications.isEmpty()) {
+            AzanAlarmScheduler.cancelAll(ctx)
             return Result.success()
         }
 
@@ -186,6 +219,12 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
         } catch (e: Exception) {
             Logger.error(Logger.tags("CTP"), "schedule failed", e)
             return Result.failure()
+        }
+
+        if (azanEnabled && azanUrl.isNotEmpty()) {
+            AzanAlarmScheduler.scheduleFromJs(ctx, azanUrl, azanVol, azanAlarms)
+        } else {
+            AzanAlarmScheduler.cancelAll(ctx)
         }
 
         return Result.success()

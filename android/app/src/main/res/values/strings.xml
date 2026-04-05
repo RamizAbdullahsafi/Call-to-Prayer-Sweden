@@ -4,4 +4,8 @@
     <string name="title_activity_main">Prayer Sweden</string>
     <string name="package_name">se.calltoprayer.sweden</string>
     <string name="custom_url_scheme">se.calltoprayer.sweden</string>
+    <string name="azan_playback_title">Prayer time</string>
+    <string name="azan_playback_body">Playing azan (%1$s)</string>
+    <string name="azan_playback_channel_name">Azan playback</string>
+    <string name="azan_playback_channel_desc">Shown while the call to prayer audio plays</string>
 </resources>

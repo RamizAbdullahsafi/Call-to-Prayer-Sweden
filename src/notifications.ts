@@ -5,6 +5,47 @@ import { logNotificationDebug } from "./notificationDebug";
 const STORAGE_KEYS = "ctp.notify.keys";
 const FIRED_PREFIX = "ctp.fired.";
 
+/** Persisted Azan mode (must match App settings dropdown). */
+export type NotifyMode = "full" | "notify_only" | "vibrate" | "silent";
+
+const NOTIFY_MODE_KEY = "ctp.notify.mode";
+const ALL_NOTIFY_MODES: readonly NotifyMode[] = [
+  "full",
+  "notify_only",
+  "vibrate",
+  "silent",
+];
+
+export function loadNotifyMode(): NotifyMode {
+  try {
+    const raw = localStorage.getItem(NOTIFY_MODE_KEY);
+    if (raw && ALL_NOTIFY_MODES.includes(raw as NotifyMode)) {
+      return raw as NotifyMode;
+    }
+  } catch {
+    /* ignore */
+  }
+  try {
+    if (localStorage.getItem("ctp.azan.play") === "1") {
+      return "full";
+    }
+    if (localStorage.getItem("ctp.notify.silent") === "1") {
+      return "silent";
+    }
+  } catch {
+    /* ignore */
+  }
+  return "notify_only";
+}
+
+export function saveNotifyMode(mode: NotifyMode): void {
+  try {
+    localStorage.setItem(NOTIFY_MODE_KEY, mode);
+  } catch {
+    /* ignore */
+  }
+}
+
 const ALL_KEYS: PrayerKey[] = [
   "fajr",
   "sunrise",

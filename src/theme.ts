@@ -33,7 +33,7 @@ export function applyEffectiveTheme(effective: "light" | "dark"): void {
   if (meta) {
     meta.setAttribute(
       "content",
-      effective === "dark" ? "#0c1814" : "#f2ebe0"
+      effective === "dark" ? "#0c1929" : "#e8f2ff"
     );
   }
 }

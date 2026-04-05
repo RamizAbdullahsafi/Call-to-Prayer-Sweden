@@ -43,6 +43,7 @@ object PrayerNotificationHelper {
             }
             storage.deleteNotification(idStr)
         }
+        AzanAlarmScheduler.cancelAll(context)
     }
 
     @JvmStatic
@@ -70,11 +71,11 @@ object PrayerNotificationHelper {
             .build()
 
         val loud = NotificationChannel(
-            "prayer-times-v2",
-            "Prayer times",
+            "ctp-prayer-alarm-v1",
+            "Prayer times (azan)",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "Alerts when it is time to pray (with sound)."
+            description = "Short sound at prayer time (full azan uses separate playback)."
             enableVibration(true)
             if (soundUri != null) {
                 setSound(soundUri, audioAttributes)
@@ -83,14 +84,25 @@ object PrayerNotificationHelper {
         nm.createNotificationChannel(loud)
 
         val quiet = NotificationChannel(
-            "prayer-times-quiet-v2",
+            "ctp-prayer-quiet-v1",
             "Prayer times (quiet)",
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "Visual reminder without notification sound."
+            description = "On-screen reminder only; no sound."
             enableVibration(false)
             setSound(null, null)
         }
         nm.createNotificationChannel(quiet)
+
+        val vibrate = NotificationChannel(
+            "ctp-prayer-vibrate-v1",
+            "Prayer times (vibrate)",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Vibration without sound or full azan."
+            enableVibration(true)
+            setSound(null, null)
+        }
+        nm.createNotificationChannel(vibrate)
     }
 }

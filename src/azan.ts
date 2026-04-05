@@ -288,6 +288,11 @@ function resolveAzanUrl(voiceId: string): string | null {
   return def?.url ?? null;
 }
 
+/** Stream URL for the selected voice (used by Android native azan alarms). */
+export function getAzanStreamUrl(voiceId: string): string | null {
+  return resolveAzanUrl(voiceId);
+}
+
 function getVoiceMeta(voiceId: string): { title: string; artist: string } {
   const def = AZAN_VOICES.find((v) => v.id === voiceId);
   if (def) return { title: "Azan", artist: `${def.reciter} — ${def.label}` };

@@ -1,67 +1,67 @@
-/* Design tokens — calm, minimal UI */
+/* Design tokens — masjid-inspired blue & white */
 html {
   --radius: 8px;
   --font: "DM Sans", system-ui, sans-serif;
   --font-display: "DM Sans", system-ui, sans-serif;
   --touch-min: 2.5rem;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 14px rgba(30, 58, 138, 0.1);
 }
 
 html[data-theme="dark"] {
-  --bg: #111318;
-  --surface: #181b21;
-  --surface-hover: #1f232b;
-  --border: #2c323c;
-  --text: #eceef1;
-  --muted: #8b919c;
-  --accent: #c9a43a;
-  --accent-soft: rgba(201, 164, 58, 0.12);
-  --accent-line: rgba(201, 164, 58, 0.35);
-  --primary-fg: #121418;
-  --next: #5cad8f;
-  --next-soft-bg: rgba(92, 173, 143, 0.1);
-  --next-soft-border: rgba(92, 173, 143, 0.28);
-  --error: #e07070;
-  --error-soft-bg: rgba(224, 112, 112, 0.1);
-  --error-soft-border: rgba(224, 112, 112, 0.28);
-  --focus: #d4b84a;
-  --fieldset-tint: #181b21;
-  --list-hover: rgba(255, 255, 255, 0.04);
-  --spinner-track: rgba(255, 255, 255, 0.12);
-  --header-bg: #181b21;
-  --header-border: #2c323c;
-  --header-glow: var(--shadow-sm);
-  --panel-bg: #181b21;
+  --bg: #0c1929;
+  --surface: #152a45;
+  --surface-hover: #1a3352;
+  --border: #2d4a6e;
+  --text: #f0f7ff;
+  --muted: #94b0d4;
+  --accent: #3b82f6;
+  --accent-soft: rgba(59, 130, 246, 0.18);
+  --accent-line: rgba(96, 165, 250, 0.45);
+  --primary-fg: #ffffff;
+  --next: #38bdf8;
+  --next-soft-bg: rgba(56, 189, 248, 0.14);
+  --next-soft-border: rgba(56, 189, 248, 0.38);
+  --error: #f87171;
+  --error-soft-bg: rgba(248, 113, 113, 0.12);
+  --error-soft-border: rgba(248, 113, 113, 0.35);
+  --focus: #93c5fd;
+  --fieldset-tint: #152a45;
+  --list-hover: rgba(255, 255, 255, 0.06);
+  --spinner-track: rgba(255, 255, 255, 0.15);
+  --header-bg: #152a45;
+  --header-border: #2d4a6e;
+  --header-glow: 0 1px 0 rgba(59, 130, 246, 0.15);
+  --panel-bg: #152a45;
   --panel-shadow: var(--shadow-sm);
 }
 
 html[data-theme="light"] {
-  --bg: #f4f5f6;
+  --bg: #e8f0fe;
   --surface: #ffffff;
-  --surface-hover: #f0f1f3;
-  --border: #dfe2e6;
-  --text: #1c1f26;
-  --muted: #5c6370;
-  --accent: #8f7324;
-  --accent-soft: rgba(143, 115, 36, 0.1);
-  --accent-line: rgba(143, 115, 36, 0.3);
-  --primary-fg: #1a160c;
-  --next: #2d7a5e;
-  --next-soft-bg: rgba(45, 122, 94, 0.08);
-  --next-soft-border: rgba(45, 122, 94, 0.22);
-  --error: #b54545;
-  --error-soft-bg: rgba(181, 69, 69, 0.08);
-  --error-soft-border: rgba(181, 69, 69, 0.22);
-  --focus: #7a6318;
-  --fieldset-tint: #ffffff;
-  --list-hover: rgba(0, 0, 0, 0.04);
-  --spinner-track: rgba(0, 0, 0, 0.12);
+  --surface-hover: #f0f6ff;
+  --border: #bfdbfe;
+  --text: #0f172a;
+  --muted: #475569;
+  --accent: #1d4ed8;
+  --accent-soft: rgba(29, 78, 216, 0.12);
+  --accent-line: rgba(29, 78, 216, 0.32);
+  --primary-fg: #ffffff;
+  --next: #0369a1;
+  --next-soft-bg: rgba(3, 105, 161, 0.1);
+  --next-soft-border: rgba(3, 105, 161, 0.28);
+  --error: #b91c1c;
+  --error-soft-bg: rgba(185, 28, 28, 0.08);
+  --error-soft-border: rgba(185, 28, 28, 0.22);
+  --focus: #2563eb;
+  --fieldset-tint: #fafcff;
+  --list-hover: rgba(29, 78, 216, 0.06);
+  --spinner-track: rgba(15, 23, 42, 0.12);
   --header-bg: #ffffff;
-  --header-border: #dfe2e6;
-  --header-glow: var(--shadow-sm);
+  --header-border: #bfdbfe;
+  --header-glow: 0 1px 0 rgba(37, 99, 235, 0.08);
   --panel-bg: #ffffff;
-  --panel-shadow: var(--shadow-sm);
+  --panel-shadow: var(--shadow-md);
 }
 
 *,
@@ -100,6 +100,32 @@ body {
   color: var(--text);
   transition: background-color 0.25s ease, color 0.18s ease;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Soft “dome light” — calm masjid atmosphere */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+html[data-theme="light"] body::before {
+  background: radial-gradient(
+    ellipse 120% 55% at 50% -15%,
+    rgba(37, 99, 235, 0.11),
+    transparent 52%
+  );
+}
+
+html[data-theme="dark"] body::before {
+  background: radial-gradient(
+    ellipse 110% 50% at 50% -12%,
+    rgba(59, 130, 246, 0.14),
+    transparent 50%
+  );
 }
 
 html[lang="ar"] body,
@@ -332,7 +358,8 @@ html[data-theme="light"] .app-download-banner {
   border-radius: var(--radius);
   background: var(--header-bg);
   border: 1px solid var(--header-border);
-  box-shadow: var(--header-glow);
+  box-shadow: var(--header-glow), var(--shadow-sm);
+  border-top: 3px solid var(--accent);
 }
 
 .app-header h1 {
@@ -1279,6 +1306,12 @@ button.secondary:disabled {
   margin-bottom: 1.15rem;
   text-align: center;
   box-shadow: var(--shadow-sm);
+  border-top: 2px solid var(--accent);
+  background: linear-gradient(
+    180deg,
+    var(--accent-soft) 0%,
+    var(--surface) 42%
+  );
 }
 
 .next-banner .label {
@@ -1590,9 +1623,14 @@ footer a:hover {
 }
 
 .app-nav-tab--active {
-  color: var(--text);
-  background: var(--bg);
-  box-shadow: inset 0 0 0 1px var(--border);
+  color: var(--primary-fg);
+  background: var(--accent);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+.app-nav-tab--active:hover {
+  color: var(--primary-fg);
+  filter: brightness(1.05);
 }
 
 .app-main--shell {
