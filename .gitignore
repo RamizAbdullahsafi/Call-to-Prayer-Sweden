@@ -4,6 +4,9 @@ dist
 *.local
 .env.*.local
 
+# Optional local duplicate of the Android project (Capacitor uses `android/`)
+Prayer/
+
 # Android (Capacitor) — keep source; ignore local machine / build outputs
 android/.gradle
 android/app/build
