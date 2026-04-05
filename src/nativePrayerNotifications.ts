@@ -1,4 +1,4 @@
-import { Capacitor } from "@capacitor/core";
+import { Capacitor, registerPlugin } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import type { PrayerDay, PrayerKey } from "./prayerTimes";
 import { fetchPrayerTimes, prayerInstant } from "./prayerTimes";
@@ -8,9 +8,25 @@ import {
   persistPrayerScheduleConfig,
 } from "./schedulePersistence";
 
+export interface BatteryOptimizationPlugin {
+  isIgnoringBatteryOptimizations(): Promise<{ isIgnoring: boolean }>;
+  openSettings(): Promise<void>;
+}
+
+const BatteryOptimization = registerPlugin<BatteryOptimizationPlugin>(
+  "BatteryOptimization"
+);
+
 // Versioned IDs: Android channels keep sound settings after creation.
-const CHANNEL_LOUD = "prayer-times-v2";
-const CHANNEL_QUIET = "prayer-times-quiet-v2";
+// Bump when changing sound/importance so devices pick up new channel defaults.
+const CHANNEL_LOUD = "ctp-prayer-alarm-v1";
+const CHANNEL_QUIET = "ctp-prayer-quiet-v1";
+
+/** Old channel ids (pre alarm-style audio); delete so Android recreates with patched plugin behavior. */
+const LEGACY_CHANNEL_IDS = [
+  "prayer-times-v2",
+  "prayer-times-quiet-v2",
+];
 
 /** Apple limits pending local notifications (≈64); stay under with margin. */
 const MAX_IOS_PENDING_NOTIFICATIONS = 60;
@@ -46,19 +62,29 @@ let channelsReady = false;
 
 async function ensureChannels(): Promise<void> {
   if (channelsReady) return;
+  for (const id of LEGACY_CHANNEL_IDS) {
+    try {
+      await LocalNotifications.deleteChannel({ id });
+    } catch {
+      /* channel may not exist */
+    }
+  }
   await LocalNotifications.createChannel({
     id: CHANNEL_LOUD,
-    name: "Prayer times",
-    description: "Alerts when it is time to pray (with sound).",
+    name: "Prayer times (azan)",
+    description:
+      "Plays the bundled azan sound at prayer time, including when the screen is off.",
     importance: 5,
+    visibility: 1,
     vibration: true,
     sound: "azan_notify.wav",
   });
   await LocalNotifications.createChannel({
     id: CHANNEL_QUIET,
     name: "Prayer times (quiet)",
-    description: "Visual reminder without notification sound.",
+    description: "On-screen reminder only; no sound when silent mode is selected.",
     importance: 2,
+    visibility: 1,
     vibration: false,
   });
   channelsReady = true;
@@ -110,6 +136,26 @@ export async function openAndroidExactAlarmSettings(): Promise<void> {
   await LocalNotifications.changeExactNotificationSetting();
 }
 
+/** Opens battery optimization settings for the app (Android). */
+export async function openAndroidBatteryOptimizationSettings(): Promise<void> {
+  if (Capacitor.getPlatform() !== "android") return;
+  try {
+    await BatteryOptimization.openSettings();
+  } catch (e) {
+    console.warn("BatteryOptimization plugin not available", e);
+  }
+}
+
+export async function isIgnoringBatteryOptimizations(): Promise<boolean> {
+  if (Capacitor.getPlatform() !== "android") return true;
+  try {
+    const { isIgnoring } = await BatteryOptimization.isIgnoringBatteryOptimizations();
+    return !!isIgnoring;
+  } catch {
+    return true;
+  }
+}
+
 export async function cancelAllNativePrayerNotifications(): Promise<void> {
   if (!isNativeLocalNotificationsAvailable()) return;
   const pending = await LocalNotifications.getPending();
@@ -128,6 +174,8 @@ type SchedulePayload = {
   title: string;
   body: string;
   channelId: string;
+  /** Android: bundled `res/raw` sound; required for audible alerts when the app/WebView is not running. */
+  sound?: string;
   schedule: { at: Date; allowWhileIdle: boolean };
   extra: { ctp: boolean; key: PrayerKey };
 };
@@ -150,6 +198,7 @@ function buildDayNotifications(
       title,
       body: `${prayerLabel(key)} (${day.schedule[key]})`,
       channelId,
+      sound: notificationSilent ? undefined : "azan_notify.wav",
       schedule: {
         at,
         allowWhileIdle: true,

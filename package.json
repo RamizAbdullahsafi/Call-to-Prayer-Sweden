@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "postinstall": "patch-package",
     "android:sync": "npm run build && npx cap sync android",
     "android:open": "npx cap open android"
   },
@@ -26,6 +27,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "patch-package": "^8.0.1",
     "typescript": "~5.7.2",
     "vite": "^6.0.3"
   }

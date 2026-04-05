@@ -1,0 +1,38 @@
+diff --git a/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/LocalNotificationManager.java b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/LocalNotificationManager.java
+index a1c896f..3781d4c 100644
+--- a/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/LocalNotificationManager.java
++++ b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/LocalNotificationManager.java
+@@ -170,7 +170,8 @@ public class LocalNotificationManager {
+             .setContentText(localNotification.getBody())
+             .setAutoCancel(localNotification.isAutoCancel())
+             .setOngoing(localNotification.isOngoing())
+-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
++            .setPriority(NotificationCompat.PRIORITY_MAX)
++            .setCategory(NotificationCompat.CATEGORY_ALARM)
+             .setGroupSummary(localNotification.isGroupSummary());
+ 
+         if (localNotification.getLargeBody() != null) {
+@@ -211,8 +212,8 @@ public class LocalNotificationManager {
+             }
+         }
+ 
+-        mBuilder.setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
+-        mBuilder.setOnlyAlertOnce(true);
++        mBuilder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
++        mBuilder.setOnlyAlertOnce(false);
+ 
+         mBuilder.setSmallIcon(localNotification.getSmallIcon(context, getDefaultSmallIcon(context)));
+         mBuilder.setLargeIcon(localNotification.getLargeIcon(context));
+diff --git a/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/NotificationChannelManager.java b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/NotificationChannelManager.java
+index b2ea880..ff49799 100644
+--- a/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/NotificationChannelManager.java
++++ b/node_modules/@capacitor/local-notifications/android/src/main/java/com/capacitorjs/plugins/localnotifications/NotificationChannelManager.java
+@@ -95,7 +95,7 @@ public class NotificationChannelManager {
+                 }
+                 AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
++                    .setUsage(AudioAttributes.USAGE_ALARM)
+                     .build();
+                 Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getPackageName() + "/raw/" + sound);
+                 notificationChannel.setSound(soundUri, audioAttributes);
