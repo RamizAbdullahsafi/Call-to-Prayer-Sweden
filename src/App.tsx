@@ -47,7 +47,10 @@ import {
   cancelAllNativePrayerNotifications,
   getAndroidExactAlarmPermission,
   getNativeNotificationDisplayPermission,
+  isIgnoringBatteryOptimizations,
   isNativeLocalNotificationsAvailable,
+  openAndroidAppNotificationSettings,
+  openAndroidBatteryOptimizationSettings,
   openAndroidExactAlarmSettings,
   requestNativeNotificationPermissions,
   scheduleNativePrayerNotificationsAhead,
@@ -369,6 +372,7 @@ export function App(): ReactElement {
   const [androidExactAlarm, setAndroidExactAlarm] = useState<
     "granted" | "denied" | "unsupported"
   >("unsupported");
+  const [batteryOptimizationIgnored, setBatteryOptimizationIgnored] = useState(false);
 
   useEffect(() => {
     if (!nativeNotificationsEnabled) return;
@@ -381,6 +385,7 @@ export function App(): ReactElement {
       return;
     }
     void getAndroidExactAlarmPermission().then((s) => setAndroidExactAlarm(s));
+    void isIgnoringBatteryOptimizations().then((ignored) => setBatteryOptimizationIgnored(ignored));
   }, [nativeNotificationsEnabled, permRevision, nativeRescheduleTick]);
 
   useEffect(() => {
@@ -1358,41 +1363,99 @@ export function App(): ReactElement {
       </div>
       <fieldset className="notify-fieldset">
         <legend>{t("reminders")}</legend>
-        <div className="notify-actions">
-          <button
-            type="button"
-            className="secondary"
-            disabled={notifyPermDisabled}
-            onClick={() => void requestPerm()}
-          >
-            {t("allowNotifications")}
-          </button>
-          <span className="perm-status" aria-live="polite">
-            {permStatus}
-          </span>
-        </div>
         {nativeNotificationsEnabled && Capacitor.getPlatform() === "android" ? (
-          <div className="notify-actions notify-actions--exact">
+          <div
+            className="android-setup"
+            role="region"
+            aria-label={t("androidSetupTitle")}
+          >
+            <h3 className="android-setup__title">{t("androidSetupTitle")}</h3>
+            <p className="android-setup__intro">{t("androidSetupIntro")}</p>
+            <ol className="android-setup__list">
+              <li className="android-setup__row">
+                <p className="android-setup__hint">{t("androidSetupStepNotifications")}</p>
+                <div className="android-setup__actions">
+                  <button
+                    type="button"
+                    className="primary android-setup__btn"
+                    onClick={() => {
+                      void (async () => {
+                        await requestNativeNotificationPermissions();
+                        setPermRevision((n) => n + 1);
+                        await openAndroidAppNotificationSettings();
+                      })();
+                    }}
+                  >
+                    {t("allowNotifications")}
+                  </button>
+                  <span className="perm-status android-setup__status" aria-live="polite">
+                    {permStatus}
+                  </span>
+                </div>
+              </li>
+              <li className="android-setup__row">
+                <p className="android-setup__hint">{t("androidSetupStepExact")}</p>
+                <p className="android-setup__subhint">{t("androidExactAlarmsHint")}</p>
+                <div className="android-setup__actions">
+                  <button
+                    type="button"
+                    className="primary android-setup__btn"
+                    onClick={() => {
+                      void openAndroidExactAlarmSettings().then(() =>
+                        setPermRevision((n) => n + 1)
+                      );
+                    }}
+                  >
+                    {t("androidExactAlarmsOpen")}
+                  </button>
+                  <span className="perm-status android-setup__status" aria-live="polite">
+                    {androidExactAlarm === "unsupported"
+                      ? ""
+                      : androidExactAlarm === "granted"
+                        ? t("exactAlarmsGranted")
+                        : t("exactAlarmsDenied")}
+                  </span>
+                </div>
+              </li>
+              <li className="android-setup__row">
+                <p className="android-setup__hint">{t("androidSetupStepBattery")}</p>
+                <p className="android-setup__subhint">{t("batteryOptimizationHint")}</p>
+                <div className="android-setup__actions">
+                  <button
+                    type="button"
+                    className="primary android-setup__btn"
+                    onClick={() => {
+                      void openAndroidBatteryOptimizationSettings().then(() =>
+                        setNativeRescheduleTick((n) => n + 1)
+                      );
+                    }}
+                  >
+                    {t("androidSetupBatteryButton")}
+                  </button>
+                  <span className="perm-status android-setup__status" aria-live="polite">
+                    {batteryOptimizationIgnored
+                      ? t("batteryUnrestrictedOk")
+                      : ""}
+                  </span>
+                </div>
+              </li>
+            </ol>
+          </div>
+        ) : (
+          <div className="notify-actions">
             <button
               type="button"
               className="secondary"
-              onClick={() => {
-                void openAndroidExactAlarmSettings().then(() =>
-                  setPermRevision((n) => n + 1)
-                );
-              }}
+              disabled={notifyPermDisabled}
+              onClick={() => void requestPerm()}
             >
-              {t("androidExactAlarmsOpen")}
+              {t("allowNotifications")}
             </button>
             <span className="perm-status" aria-live="polite">
-              {androidExactAlarm === "granted"
-                ? t("exactAlarmsGranted")
-                : androidExactAlarm === "denied"
-                  ? t("exactAlarmsDenied")
-                  : ""}
+              {permStatus}
             </span>
           </div>
-        ) : null}
+        )}
         <div className="notify-grid" id="notify-grid">
           {ORDER.map((key) => (
             <label key={key} className="notify-item">

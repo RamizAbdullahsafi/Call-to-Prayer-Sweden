@@ -100,7 +100,16 @@ export type MessageId =
   | "appDownloadBannerBody"
   | "appDownloadBannerIosBody"
   | "appDownloadBannerInstall"
-  | "appDownloadBannerDismiss";
+  | "appDownloadBannerDismiss"
+  | "batteryOptimizationHint"
+  | "batteryOptimizationOpen"
+  | "androidSetupTitle"
+  | "androidSetupIntro"
+  | "androidSetupStepNotifications"
+  | "androidSetupStepExact"
+  | "androidSetupStepBattery"
+  | "androidSetupBatteryButton"
+  | "batteryUnrestrictedOk";
 
 type Messages = Record<MessageId, string>;
 
@@ -216,6 +225,19 @@ const sv: Messages = {
     "På iPhone eller iPad: tryck Dela (□↑) och välj «Lägg till på hemskärmen».",
   appDownloadBannerInstall: "Installera",
   appDownloadBannerDismiss: "Stäng",
+  batteryOptimizationHint: "För att påminnelser ska fungera tillförlitligt när telefonen inte används, stäng av batterioptimering för Prayer Sweden (välj 'Obegränsad' eller 'Optimera inte').",
+  batteryOptimizationOpen: "Batteriinställningar",
+  androidSetupTitle: "Tre steg för pålitliga bönelarm (Android)",
+  androidSetupIntro:
+    "Tryck på varje knapp och följ skärmen. Då kan aviseringar och azan spelas även när telefonen vilar.",
+  androidSetupStepNotifications:
+    "Aviseringar — tillåt att appen visar påminnelser.",
+  androidSetupStepExact:
+    "Exakta larm — behövs så bönetiden inte bara blir ungefärlig.",
+  androidSetupStepBattery:
+    "Batteri — låt inte systemet stänga av appen i bakgrunden.",
+  androidSetupBatteryButton: "Öppna app- och batteriinställningar",
+  batteryUnrestrictedOk: "Batteri: ej begränsat (bra) ✓",
 };
 
 const en: Messages = {
@@ -330,6 +352,19 @@ const en: Messages = {
     "On iPhone or iPad: tap Share, then Add to Home Screen.",
   appDownloadBannerInstall: "Install",
   appDownloadBannerDismiss: "Dismiss",
+  batteryOptimizationHint: "To ensure reminders fire reliably while the phone is idle, disable battery optimization for Prayer Sweden (select 'Unrestricted' or 'Don't optimize').",
+  batteryOptimizationOpen: "Battery settings",
+  androidSetupTitle: "Three steps for reliable prayer alerts (Android)",
+  androidSetupIntro:
+    "Tap each button and follow the screen. This lets reminders and azan play even when your phone is idle.",
+  androidSetupStepNotifications:
+    "Notifications — allow this app to show alerts.",
+  androidSetupStepExact:
+    "Exact alarms — needed so prayer times ring on time, not roughly.",
+  androidSetupStepBattery:
+    "Battery — stop the system from putting the app to sleep.",
+  androidSetupBatteryButton: "Open app & battery settings",
+  batteryUnrestrictedOk: "Battery: unrestricted ✓",
 };
 
 const ar: Messages = {
@@ -444,6 +479,17 @@ const ar: Messages = {
     "على آيفون أو آيباد: اضغط مشاركة ثم «إضافة إلى الشاشة الرئيسية».",
   appDownloadBannerInstall: "تثبيت",
   appDownloadBannerDismiss: "إغلاق",
+  batteryOptimizationHint: "لضمان عمل التذكيرات بشكل موثوق عندما يكون الهاتف في وضع السكون، قم بإيقاف تحسين البطارية لـ Prayer Sweden (اختر 'غير مقيد').",
+  batteryOptimizationOpen: "إعدادات البطارية",
+  androidSetupTitle: "ثلاث خطوات لتنبيهات موثوقة (أندرويد)",
+  androidSetupIntro:
+    "اضغط كل زر واتبع الشاشة. يسمح ذلك للتنبيهات والأذان بالعمل حتى عندما يكون الهاتف في وضع السكون.",
+  androidSetupStepNotifications: "الإشعارات — اسمح للتطبيق بعرض التنبيهات.",
+  androidSetupStepExact:
+    "المنبهات الدقيقة — مطلوبة حتى تصل أوقات الصلاة في وقتها.",
+  androidSetupStepBattery: "البطارية — لا تدع النظام يوقف التطبيق في الخلفية.",
+  androidSetupBatteryButton: "فتح إعدادات التطبيق والبطارية",
+  batteryUnrestrictedOk: "البطارية: غير مقيدة ✓",
 };
 
 const fa: Messages = {
@@ -558,6 +604,17 @@ const fa: Messages = {
     "روی آیفون یا آیپد: اشتراک‌گذاری را بزنید، سپس «افزودن به صفحه اصلی».",
   appDownloadBannerInstall: "نصب",
   appDownloadBannerDismiss: "بستن",
+  batteryOptimizationHint: "برای اطمینان از اجرای یادآورها در زمان بیکاری گوشی، بهینه‌سازی باتری را برای Prayer Sweden غیرفعال کنید (گزینه 'بدون محدودیت' را انتخاب کنید).",
+  batteryOptimizationOpen: "تنظیمات باتری",
+  androidSetupTitle: "سه گام برای یادآورهای مطمئن (اندروید)",
+  androidSetupIntro:
+    "هر دکمه را بزنید و مراحل را دنبال کنید تا اعلان‌ها و اذان حتی در حالت بیکاری پخش شوند.",
+  androidSetupStepNotifications: "اعلان‌ها — اجازه نمایش هشدار به برنامه.",
+  androidSetupStepExact:
+    "زنگ‌های دقیق — برای به‌وقت بودن اوقات نماز لازم است.",
+  androidSetupStepBattery: "باتری — نگذارید سیستم برنامه را در پس‌زمینه بخواباند.",
+  androidSetupBatteryButton: "باز کردن تنظیمات برنامه و باتری",
+  batteryUnrestrictedOk: "باتری: بدون محدودیت ✓",
 };
 
 const ku: Messages = {
@@ -672,6 +729,17 @@ const ku: Messages = {
     "Li iPhone an iPad: Parve bike, paşê «Li ser ekrana malê zêde bike».",
   appDownloadBannerInstall: "Rake",
   appDownloadBannerDismiss: "Bigire",
+  batteryOptimizationHint: "Ji bo ku bîranîn di dema xewê de bi rasti bixebitin, optimîzasyona batterê ji bo Prayer Sweden bigire (bijara 'Bê sînor' hilbijêre).",
+  batteryOptimizationOpen: "Mîhengên batterê",
+  androidSetupTitle: "Sê gav ji bo ragihandinên pêbawer (Android)",
+  androidSetupIntro:
+    "Her bişkojê bikar bîne û ekranê bişopîne. Ev ragihandin û ezan di dema razanê de jî dixebitîne.",
+  androidSetupStepNotifications: "Ragihandin — destûrê bide ku sepan alert nîşan bide.",
+  androidSetupStepExact:
+    "Alarmên rast — ji bo dema rast a nimêjê pêwîst in.",
+  androidSetupStepBattery: "Batterê — nehêle pergal sepanê di paşperdê de rawestîne.",
+  androidSetupBatteryButton: "Mîhengên sepan û batterê veke",
+  batteryUnrestrictedOk: "Batterê: bê sînor ✓",
 };
 
 const so: Messages = {
@@ -786,6 +854,17 @@ const so: Messages = {
     "iPhone ama iPad: taabo Share, ka dibna Add to Home Screen.",
   appDownloadBannerInstall: "Rakib",
   appDownloadBannerDismiss: "Xir",
+  batteryOptimizationHint: "Si aad u hubiso in xusuusintu ay si fiican u shaqeyso marka talefanku nasanayo, dami hagaajinta batteriga ee Prayer Sweden (dooro 'Aan xadidnayn').",
+  batteryOptimizationOpen: "Dejinta batteriga",
+  androidSetupTitle: "Saddex tallaabo oo digniin lagu hubiyo (Android)",
+  androidSetupIntro:
+    "Taabo badhanka kasta oo raac shaashadda. Tani waxay u oggolaaneysaa ogeysiis iyo adaan xitaa marka talefanku nasto.",
+  androidSetupStepNotifications: "Ogeysiisyada — u oggolow barnaamijka inuu ogeysiis muujiyo.",
+  androidSetupStepExact:
+    "Digniin sax — loo baahan yahay si waqtiga salaaddu sax u yimaado.",
+  androidSetupStepBattery: "Batteriga — ha u oggolaanin nidaamka inuu barnaamijka dhigo mid hurda.",
+  androidSetupBatteryButton: "Fur dejinta barnaamijka iyo batteriga",
+  batteryUnrestrictedOk: "Batteriga: aan xadidnayn ✓",
 };
 
 export const MESSAGES: Record<Locale, Messages> = {

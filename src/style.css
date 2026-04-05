@@ -633,6 +633,79 @@ button.secondary:disabled {
   cursor: not-allowed;
 }
 
+.android-setup {
+  margin: 0 0 1.1rem;
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+}
+
+.android-setup__title {
+  margin: 0 0 0.45rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.android-setup__intro {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.android-setup__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.android-setup__row {
+  margin: 0 0 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.android-setup__row:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.android-setup__hint {
+  margin: 0 0 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.android-setup__subhint {
+  margin: 0 0 0.55rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.android-setup__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+}
+
+.android-setup__btn {
+  min-width: min(100%, 16rem);
+}
+
+.android-setup__status {
+  flex: 1;
+  min-width: 10rem;
+  font-size: 0.8125rem;
+}
+
 .notify-fieldset {
   margin: 0 0 1.25rem;
   padding: 1rem 1rem 1.1rem;
@@ -1173,6 +1246,19 @@ button.secondary:disabled {
   font-size: 0.8125rem;
   line-height: 1.45;
   color: var(--error);
+}
+
+.notify-actions--battery {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.battery-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 .error {

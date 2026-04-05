@@ -11,6 +11,8 @@ import {
 export interface BatteryOptimizationPlugin {
   isIgnoringBatteryOptimizations(): Promise<{ isIgnoring: boolean }>;
   openSettings(): Promise<void>;
+  openAppDetailsSettings(): Promise<void>;
+  openNotificationSettings(): Promise<void>;
 }
 
 const BatteryOptimization = registerPlugin<BatteryOptimizationPlugin>(
@@ -136,13 +138,27 @@ export async function openAndroidExactAlarmSettings(): Promise<void> {
   await LocalNotifications.changeExactNotificationSetting();
 }
 
-/** Opens battery optimization settings for the app (Android). */
+/** Opens this app’s system settings page (battery, data, etc.). */
 export async function openAndroidBatteryOptimizationSettings(): Promise<void> {
   if (Capacitor.getPlatform() !== "android") return;
   try {
-    await BatteryOptimization.openSettings();
+    await BatteryOptimization.openAppDetailsSettings();
+  } catch {
+    try {
+      await BatteryOptimization.openSettings();
+    } catch (e) {
+      console.warn("BatteryOptimization plugin not available", e);
+    }
+  }
+}
+
+/** Opens Android notification settings for this app. */
+export async function openAndroidAppNotificationSettings(): Promise<void> {
+  if (Capacitor.getPlatform() !== "android") return;
+  try {
+    await BatteryOptimization.openNotificationSettings();
   } catch (e) {
-    console.warn("BatteryOptimization plugin not available", e);
+    console.warn("openNotificationSettings failed", e);
   }
 }
 
