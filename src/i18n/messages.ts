@@ -52,11 +52,13 @@ export type MessageId =
   | "attribAladhan"
   | "attribCommons"
   | "loadingTimesAria"
+  | "offlineCachedTimes"
   | "nextPrayer"
   | "scheduleHeading"
   | "footerAttribution"
   | "footerLinkLabel"
   | "footerCreatedBy"
+  | "footerCopyright"
   | "privacy"
   | "terms"
   | "cookiesPolicy"
@@ -170,11 +172,13 @@ const sv: Messages = {
   attribAladhan: "Ljud från",
   attribCommons: "och",
   loadingTimesAria: "Laddar bönetider…",
+  offlineCachedTimes: "Visar sparade bönetider (offline).",
   nextPrayer: "Nästa bön",
   scheduleHeading: "Dagens bönetider",
   footerAttribution: "Bönetider: ",
   footerLinkLabel: "Islamiska förbundet",
   footerCreatedBy: "Skapad av RASafi Tech",
+  footerCopyright: "© 2026 RASafi Tech. Alla rättigheter förbehållna.",
   privacy: "Integritet",
   terms: "Villkor",
   cookiesPolicy: "Cookies",
@@ -298,11 +302,13 @@ const en: Messages = {
   attribAladhan: "Audio from",
   attribCommons: "and",
   loadingTimesAria: "Loading prayer times…",
+  offlineCachedTimes: "Showing saved prayer times (offline).",
   nextPrayer: "Next prayer",
   scheduleHeading: "Prayer times",
   footerAttribution: "Prayer times: ",
   footerLinkLabel: "Islamiska förbundet",
   footerCreatedBy: "Created by RASafi Tech",
+  footerCopyright: "© 2026 RASafi Tech. All rights reserved.",
   privacy: "Privacy",
   terms: "Terms",
   cookiesPolicy: "Cookies",
@@ -425,11 +431,13 @@ const ar: Messages = {
   attribAladhan: "صوت من",
   attribCommons: "و",
   loadingTimesAria: "جارٍ تحميل أوقات الصلاة…",
+  offlineCachedTimes: "يتم عرض أوقات صلاة محفوظة (بدون إنترنت).",
   nextPrayer: "الصلاة التالية",
   scheduleHeading: "أوقات الصلاة",
   footerAttribution: "أوقات الصلاة: ",
   footerLinkLabel: "الاتحاد الإسلامي في السويد",
   footerCreatedBy: "تم الإنشاء بواسطة RASafi Tech",
+  footerCopyright: "© 2026 RASafi Tech. جميع الحقوق محفوظة.",
   privacy: "الخصوصية",
   terms: "الشروط",
   cookiesPolicy: "ملفات تعريف الارتباط",
@@ -550,11 +558,13 @@ const fa: Messages = {
   attribAladhan: "صدا از",
   attribCommons: "و",
   loadingTimesAria: "در حال بارگذاری اوقات نماز…",
+  offlineCachedTimes: "اوقات نماز ذخیره‌شده نمایش داده می‌شود (آفلاین).",
   nextPrayer: "نماز بعدی",
   scheduleHeading: "اوقات نماز",
   footerAttribution: "اوقات نماز: ",
   footerLinkLabel: "اتحادیه اسلامی سوئد",
   footerCreatedBy: "ساخته‌شده توسط RASafi Tech",
+  footerCopyright: "© 2026 RASafi Tech. تمام حقوق محفوظ است.",
   privacy: "حریم خصوصی",
   terms: "شرایط",
   cookiesPolicy: "کوکی‌ها",
@@ -675,11 +685,13 @@ const ku: Messages = {
   attribAladhan: "Deng ji",
   attribCommons: "û",
   loadingTimesAria: "Demên nimêjê tên barkirin…",
+  offlineCachedTimes: "Demên nimêjê yên tomarbûyî têne nîşandan (offline).",
   nextPrayer: "Nimêja din",
   scheduleHeading: "Demên nimêjê",
   footerAttribution: "Demên nimêjê: ",
   footerLinkLabel: "Yekîtiya Îslamî ya Swêdê",
   footerCreatedBy: "Ji hêla RASafi Tech ve hatî çêkirin",
+  footerCopyright: "© 2026 RASafi Tech. Hemû maf parastî ne.",
   privacy: "Nepenîtî",
   terms: "Mercên karanînê",
   cookiesPolicy: "Cookies",
@@ -800,11 +812,13 @@ const so: Messages = {
   attribAladhan: "Cod ka yimid",
   attribCommons: "iyo",
   loadingTimesAria: "Waqtiga salaadda waa la soo dejinayaa…",
+  offlineCachedTimes: "Waxa la muujinayaa waqtiyada salaadda ee la keydiyay (offline).",
   nextPrayer: "Salaadda xigta",
   scheduleHeading: "Waqtiga salaadda",
   footerAttribution: "Waqtiga salaadda: ",
   footerLinkLabel: "Ururka Islaamka ee Iswiidhanka",
   footerCreatedBy: "Waxaa sameeyay RASafi Tech",
+  footerCopyright: "© 2026 RASafi Tech. Dhammaan xuquuqda waa la ilaaliyaa.",
   privacy: "Asturnaanta",
   terms: "Shuruudaha",
   cookiesPolicy: "Cookies",

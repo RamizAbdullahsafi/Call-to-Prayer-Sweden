@@ -1,3 +1,4 @@
+import { Capacitor } from "@capacitor/core";
 import type { PrayerKey } from "./prayerTimes";
 
 const STORAGE_VOICE = "ctp.azan.voice";
@@ -9,108 +10,132 @@ export type AzanVoiceDef = {
   id: string;
   label: string;
   reciter: string;
-  url: string;
+  /** Filename under `public/audio/` and `android/.../res/raw/` (offline). */
+  offlineFile: string;
   sourceNote?: string;
 };
 
+/** Android [AzanPlaybackService] prefix for [R.raw] lookup (basename of offlineFile). */
+export const RAW_ASSET_PREFIX = "asset://raw/";
+
+export function webAudioPath(offlineFile: string): string {
+  return `/audio/${offlineFile}`;
+}
+
+export function androidRawAssetUrl(offlineFile: string): string {
+  const base = offlineFile.replace(/\.[^.]+$/, "");
+  return `${RAW_ASSET_PREFIX}${base}`;
+}
+
+/** Voice ids removed from the picker; map to default on load. */
+const RETIRED_AZAN_VOICE_IDS = new Set(["bundled-offline", "beautiful-adhan"]);
+
 /**
- * Mishary Alafasy and other muezzins: public MP3s from AlAdhan’s CDN
- * (same files as https://www.aladhan.com/download-adhans).
+ * Grouped for the settings dropdown (optgroup). Each `label` is the option text;
+ * `reciter` is used for media session / attribution.
  */
-const ALADHAN_VOICES: AzanVoiceDef[] = [
-  {
-    id: "mishary-dubai",
-    label: "Dubai One TV",
-    reciter: "Mishary Rashid Alafasy",
-    url: "https://cdn.aladhan.com/audio/adhans/a4.mp3",
-    sourceNote: "AlAdhan",
-  },
-  {
-    id: "mishary-yet-another",
-    label: "Yet another recording",
-    reciter: "Mishary Rashid Alafasy",
-    url: "https://cdn.aladhan.com/audio/adhans/a9.mp3",
-    sourceNote: "AlAdhan",
-  },
-  {
-    id: "mishary-alt",
-    label: "Alternate recording",
-    reciter: "Mishary Rashid Alafasy",
-    url: "https://cdn.aladhan.com/audio/adhans/a7.mp3",
-    sourceNote: "AlAdhan",
-  },
-  {
-    id: "ahmad-nafees",
-    label: "Full adhan",
-    reciter: "Ahmad al-Nafees",
-    url: "https://cdn.aladhan.com/audio/adhans/a1.mp3",
-    sourceNote: "AlAdhan",
-  },
-  {
-    id: "mustafa-ozcan",
-    label: "Turkey",
-    reciter: "Hafiz Mustafa Özcan",
-    url: "https://cdn.aladhan.com/audio/adhans/a2.mp3",
-    sourceNote: "AlAdhan",
-  },
-  {
-    id: "karl-jenkins",
-    label: "Mass for Peace (orkester)",
-    reciter: "Karl Jenkins (arr.)",
-    url: "https://cdn.aladhan.com/audio/adhans/a3.mp3",
-    sourceNote: "AlAdhan",
-  },
-  {
-    id: "mansour-zahrani",
-    label: "Full adhan",
-    reciter: "Mansour Al-Zahrani",
-    url: "https://cdn.aladhan.com/audio/adhans/a11-mansour-al-zahrani.mp3",
-    sourceNote: "AlAdhan",
-  },
-];
+export const AZAN_VOICE_GROUPS: { groupId: string; groupLabel: string; voices: AzanVoiceDef[] }[] =
+  [
+    {
+      groupId: "mishary",
+      groupLabel: "Mishary Rashid Alafasy",
+      voices: [
+        {
+          id: "mishary-dubai",
+          label: "Dubai One TV",
+          reciter: "Mishary Rashid Alafasy",
+          offlineFile: "mishary_dubai.mp3",
+          sourceNote: "Bundled; AlAdhan",
+        },
+        {
+          id: "mishary-yet-another",
+          label: "Long studio recording",
+          reciter: "Mishary Rashid Alafasy",
+          offlineFile: "mishary_yet_another.mp3",
+          sourceNote: "Bundled; AlAdhan",
+        },
+        {
+          id: "mishary-alt",
+          label: "Alternate studio take",
+          reciter: "Mishary Rashid Alafasy",
+          offlineFile: "mishary_alt.mp3",
+          sourceNote: "Bundled; AlAdhan",
+        },
+      ],
+    },
+    {
+      groupId: "reciters",
+      groupLabel: "More reciters",
+      voices: [
+        {
+          id: "ahmad-nafees",
+          label: "Ahmad al-Nafees",
+          reciter: "Ahmad al-Nafees",
+          offlineFile: "ahmad_nafees.mp3",
+          sourceNote: "Bundled; AlAdhan",
+        },
+        {
+          id: "mustafa-ozcan",
+          label: "Mustafa Özcan · Turkey",
+          reciter: "Hafiz Mustafa Özcan",
+          offlineFile: "mustafa_ozcan.mp3",
+          sourceNote: "Bundled; AlAdhan",
+        },
+        {
+          id: "karl-jenkins",
+          label: "Karl Jenkins · Mass for Peace",
+          reciter: "Karl Jenkins (arr.)",
+          offlineFile: "karl_jenkins.mp3",
+          sourceNote: "Bundled; AlAdhan",
+        },
+        {
+          id: "mansour-zahrani",
+          label: "Mansour Al-Zahrani",
+          reciter: "Mansour Al-Zahrani",
+          offlineFile: "mansour_zahrani.mp3",
+          sourceNote: "Bundled; AlAdhan",
+        },
+      ],
+    },
+    {
+      groupId: "commons",
+      groupLabel: "More recordings",
+      voices: [
+        {
+          id: "sabah-fakhry",
+          label: "Sabah Fakhri · classic (1985)",
+          reciter: "Sabah Fakhri",
+          offlineFile: "sabah_fakhry.mp3",
+          sourceNote: "Bundled; Wikimedia Commons",
+        },
+        {
+          id: "adhan-classic",
+          label: "Classic adhan",
+          reciter: "—",
+          offlineFile: "adhan_classic.ogg",
+          sourceNote: "Bundled; Wikimedia Commons (CC BY-SA)",
+        },
+        {
+          id: "islamic-call-worship",
+          label: "Islamic call to worship",
+          reciter: "Mahfoudou",
+          offlineFile: "islamic_call_worship.oga",
+          sourceNote: "Bundled; Wikimedia Commons (CC BY-SA)",
+        },
+        {
+          id: "aaqib-azeez",
+          label: "Aaqib Azeez · Sunnah style",
+          reciter: "Aaqib Azeez",
+          offlineFile: "aaqib_azeez.mp3",
+          sourceNote: "Bundled; Wikimedia Commons (CC BY-SA)",
+        },
+      ],
+    },
+  ];
 
-/** Additional freely licensed recordings (Wikimedia Commons). */
-const WIKIMEDIA_VOICES: AzanVoiceDef[] = [
-  {
-    id: "sabah-fakhry",
-    label: "Klassisk (1985)",
-    reciter: "Sabah Fakhri",
-    url: "https://upload.wikimedia.org/wikipedia/commons/2/27/Call_to_prayer_by_Sabah_Fakhry.mp3",
-    sourceNote: "Wikimedia Commons",
-  },
-  {
-    id: "beautiful-adhan",
-    label: "Beautiful adhan",
-    reciter: "—",
-    url: "https://upload.wikimedia.org/wikipedia/commons/b/b0/Beautiful_adhan.ogg",
-    sourceNote: "Wikimedia Commons (CC0)",
-  },
-  {
-    id: "adhan-classic",
-    label: "Adhan (klassisk inspelning)",
-    reciter: "—",
-    url: "https://upload.wikimedia.org/wikipedia/commons/8/86/Azan.ogg",
-    sourceNote: "Wikimedia Commons (CC BY-SA)",
-  },
-  {
-    id: "islamic-call-worship",
-    label: "Islamiskt böneutrop",
-    reciter: "Mahfoudou",
-    url: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Islamic_call_to_worship.oga",
-    sourceNote: "Wikimedia Commons (CC BY-SA)",
-  },
-  {
-    id: "aaqib-azeez",
-    label: "Sunnah-stil",
-    reciter: "Aaqib Azeez",
-    url: "https://upload.wikimedia.org/wikipedia/commons/7/7d/The_Adhan_-_Muslim_Call_to_Prayer_-_Aaqib_Azeez.mp3",
-    sourceNote: "Wikimedia Commons (CC BY-SA)",
-  },
-];
+export const AZAN_VOICES: AzanVoiceDef[] = AZAN_VOICE_GROUPS.flatMap((g) => g.voices);
 
-export const AZAN_VOICES: AzanVoiceDef[] = [...ALADHAN_VOICES, ...WIKIMEDIA_VOICES];
-
-const DEFAULT_VOICE_ID = "mishary-dubai";
+const DEFAULT_VOICE_ID = "mishary-yet-another";
 
 const ALL_PRAYER_KEYS: PrayerKey[] = [
   "fajr",
@@ -266,6 +291,14 @@ export function loadAzanVoiceId(): string {
       }
       return DEFAULT_VOICE_ID;
     }
+    if (raw && RETIRED_AZAN_VOICE_IDS.has(raw)) {
+      try {
+        localStorage.setItem(STORAGE_VOICE, DEFAULT_VOICE_ID);
+      } catch {
+        /* ignore */
+      }
+      return DEFAULT_VOICE_ID;
+    }
     if (raw && AZAN_VOICES.some((v) => v.id === raw)) return raw;
   } catch {
     /* ignore */
@@ -285,12 +318,17 @@ export function saveAzanVoiceId(id: string): void {
 
 function resolveAzanUrl(voiceId: string): string | null {
   const def = AZAN_VOICES.find((v) => v.id === voiceId);
-  return def?.url ?? null;
+  return def ? webAudioPath(def.offlineFile) : null;
 }
 
-/** Stream URL for the selected voice (used by Android native azan alarms). */
+/** Playback URL for the selected voice (WebView path or Android raw asset). */
 export function getAzanStreamUrl(voiceId: string): string | null {
-  return resolveAzanUrl(voiceId);
+  const def = AZAN_VOICES.find((v) => v.id === voiceId);
+  if (!def) return null;
+  if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android") {
+    return androidRawAssetUrl(def.offlineFile);
+  }
+  return webAudioPath(def.offlineFile);
 }
 
 function getVoiceMeta(voiceId: string): { title: string; artist: string } {

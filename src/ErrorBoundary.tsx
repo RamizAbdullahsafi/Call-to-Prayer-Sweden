@@ -26,10 +26,26 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: "20px", color: "red", background: "white" }}>
-          <h1>Something went wrong.</h1>
-          <pre>{this.state.error?.message}</pre>
-          <button onClick={() => window.location.reload()}>Reload App</button>
+        <div className="error-boundary" role="alert">
+          <div className="error-boundary__card">
+            <h1 className="error-boundary__title">Something went wrong</h1>
+            <p className="error-boundary__hint">
+              You can try reloading the app. If this keeps happening, update or
+              reinstall from the store.
+            </p>
+            {this.state.error?.message ? (
+              <pre className="error-boundary__detail" tabIndex={0}>
+                {this.state.error.message}
+              </pre>
+            ) : null}
+            <button
+              type="button"
+              className="error-boundary__reload"
+              onClick={() => window.location.reload()}
+            >
+              Reload app
+            </button>
+          </div>
         </div>
       );
     }

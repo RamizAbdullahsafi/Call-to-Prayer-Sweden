@@ -62,7 +62,7 @@ export const NATIVE_NOTIFICATION_DAYS_AHEAD = 7;
 /** Android: long horizon + WorkManager refresh. iOS: stay within pending limit. */
 export function daysAheadForNativePlatform(): number {
   const p = Capacitor.getPlatform();
-  if (p === "android") return 60;
+  if (p === "android") return 30; // Max 500 alarms; 5 prayers * 30 days * 2 = 300 (safe).
   if (p === "ios") return 14;
   return NATIVE_NOTIFICATION_DAYS_AHEAD;
 }
@@ -192,7 +192,9 @@ export async function openAndroidBatteryOptimizationSettings(): Promise<void> {
     try {
       await BatteryOptimization.openSettings();
     } catch (e) {
-      console.warn("BatteryOptimization plugin not available", e);
+      if (import.meta.env.DEV) {
+        console.warn("BatteryOptimization plugin not available", e);
+      }
     }
   }
 }
@@ -203,7 +205,9 @@ export async function openAndroidAppNotificationSettings(): Promise<void> {
   try {
     await BatteryOptimization.openNotificationSettings();
   } catch (e) {
-    console.warn("openNotificationSettings failed", e);
+    if (import.meta.env.DEV) {
+      console.warn("openNotificationSettings failed", e);
+    }
   }
 }
 
@@ -459,7 +463,7 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
       const d = new Date();
       d.setDate(d.getDate() + offset);
       d.setHours(12, 0, 0, 0);
-      return fetchPrayerTimes(city, d);
+      return fetchPrayerTimes(city, d).then((r) => r.day);
     })
   );
 

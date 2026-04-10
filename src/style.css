@@ -1126,6 +1126,24 @@ button.secondary:disabled {
   align-items: flex-end;
 }
 
+@media (max-width: 420px) {
+  [dir="rtl"] .adhan-row.adhan-row-top,
+  .adhan-row.adhan-row-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .adhan-actions-btns {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .adhan-actions-btns .secondary {
+    flex: 1 1 auto;
+    min-height: var(--touch-min);
+  }
+}
+
 .adhan-volume-row {
   margin-bottom: 0.85rem;
 }
@@ -1225,6 +1243,27 @@ button.secondary:disabled {
 .adhan-grow {
   flex: 1 1 12rem;
   min-width: 0;
+}
+
+.adhan-voice-select {
+  min-height: 2.85rem;
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+  line-height: 1.35;
+}
+
+.adhan-voice-select optgroup {
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-family: inherit;
+}
+
+.adhan-voice-select option {
+  font-weight: 400;
+  font-size: 0.9375rem;
+  color: var(--text);
+  padding: 0.25rem 0;
 }
 
 .adhan-actions {
@@ -1533,6 +1572,14 @@ footer a:hover {
   letter-spacing: 0.01em;
 }
 
+.footer-copyright {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
 .footer-legal {
   margin: 0.75rem 0 0;
   font-size: 0.75rem;
@@ -1552,6 +1599,85 @@ footer a:hover {
 
 .app-footer {
   padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Fatal React error — matches app tokens, safe for light/dark */
+.error-boundary {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0));
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+.error-boundary__card {
+  width: 100%;
+  max-width: 26rem;
+  padding: 1.35rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--panel-shadow);
+}
+
+.error-boundary__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--text);
+}
+
+.error-boundary__hint {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.error-boundary__detail {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.75rem;
+  max-height: 8rem;
+  overflow: auto;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--muted);
+  background: var(--fieldset-tint);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.error-boundary__reload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: 0 1.1rem;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--primary-fg);
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.error-boundary__reload:hover {
+  filter: brightness(1.06);
+}
+
+.error-boundary__reload:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 /* Error: draw attention for assistive tech + sighted users */

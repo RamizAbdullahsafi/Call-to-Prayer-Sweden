@@ -1,3 +1,4 @@
+import { Capacitor } from "@capacitor/core";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -8,7 +9,7 @@ import { ErrorBoundary } from "./ErrorBoundary";
 
 initThemeFromStorage();
 
-if ("serviceWorker" in navigator) {
+if ("serviceWorker" in navigator && !Capacitor.isNativePlatform()) {
   window.addEventListener("load", () => {
     void navigator.serviceWorker.register("/sw.js", { scope: "/" });
   });

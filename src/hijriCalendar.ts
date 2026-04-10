@@ -70,23 +70,9 @@ export function buildHijriMonthGrid(
     const h = hijriFromGregorian(first, locale);
     const days = listDaysInHijriMonth(anchor, locale);
 
-    let monthTitle = "";
-    try {
-      monthTitle = new Intl.DateTimeFormat(`${locale}-u-ca-islamic-umalqura`, {
-        month: "long",
-        year: "numeric",
-      }).format(first);
-    } catch {
-      try {
-        // Fallback to English locale for formatting if the requested locale fails
-        monthTitle = new Intl.DateTimeFormat(`en-u-ca-islamic-umalqura`, {
-          month: "long",
-          year: "numeric",
-        }).format(first);
-      } catch {
-        monthTitle = `${h.monthName} ${h.year}`;
-      }
-    }
+    // Always build month title from computed Hijri values so Intl fallback
+    // cannot silently display Gregorian month names on some environments.
+    const monthTitle = `${h.monthName} ${h.year}`;
 
     const firstDowMon0 = (first.getDay() + 6) % 7;
     const cells: (HijriMonthCell | null)[] = [];

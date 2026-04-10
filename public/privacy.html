@@ -16,74 +16,157 @@
     </nav>
 
     <h1>Integritetspolicy</h1>
-    <p class="muted">Senast uppdaterad: 29 mars 2026.</p>
+    <p class="muted">Senast uppdaterad: 10 april 2026.</p>
+    <p class="legal-authority">
+      Denna policy är avsedd att stödja efterlevnad av EU:s dataskyddsförordning
+      (GDPR), svensk praxis (t.ex. IMY:s vägledning) och krav som följer av
+      distribution via <strong>Google Play</strong>. Den ska återspegla hur
+      appen faktiskt fungerar; vid avvikelse gäller denna text i förhållande till
+      användare i EU/EES.
+    </p>
 
     <h2>1. Syfte och omfattning</h2>
     <p>
-      Denna policy beskriver hur Call to Prayer Sweden hanterar information i
-      webbappen och närliggande klienter (PWA). Vi behandlar i huvudsak
-      tekniska data som behövs för att visa bönetider och dina valda
-      inställningar.
+      Policyn gäller <strong>Call to Prayer Sweden</strong> i webbläsaren,
+      installerad webbapp (PWA) och Android-app som bygger på samma innehåll
+      (Capacitor WebView). Den beskriver vilka personuppgifter som kan
+      behandlas, i vilket syfte, med vilken rättslig grund och under hur lång tid.
     </p>
 
-    <h2>2. Personuppgifter</h2>
+    <h2>2. Personuppgiftsansvarig</h2>
     <p>
-      Appen kräver inget konto. Om du anger ort, datum eller aktiverar
-      platsfunktion skickas sådana uppgifter i anrop till vår serverlösa
-      mellanhand (Netlify Functions) som vidarebefordrar till Islamiska
-      förbundets bönetider-widget. Uppgifterna används endast för att
-      returnera tider till din enhet.
-    </p>
-    <p>
-      Om du aktiverar notifieringar kan webbläsaren eller operativsystemet
-      behandla tekniska identifierare enligt plattformens egna regler.
+      <strong>Ansvarig för behandlingen</strong> är utvecklaren bakom appen
+      (<strong>RASafi Tech</strong>, så som anges i appens information).
+      Kontakt sker i första hand via de kontaktuppgifter som anges i
+      <strong>Google Play Console</strong> (utvecklarkontakt för appen) samt via
+      projektets publika källkodsrepository:
+      <a href="https://github.com/RamizAbdullahsafi/Call-to-Prayer-Sweden">GitHub</a>.
     </p>
 
-    <h2>3. Lokal lagring</h2>
+    <h2>3. Vilka uppgifter behandlas?</h2>
+    <ul>
+      <li>
+        <strong>Ort och datum</strong> som du anger (eller som följer av dina
+        val) skickas i begäran till vår serverlösa mellanhand
+        (<strong>Netlify Functions</strong>) som vidarebefordrar till
+        <strong>Islamiska förbundet i Sverige</strong> (IF) för att hämta
+        publicerade bönetider. Uppgifterna används för att returnera tider till
+        din enhet.
+      </li>
+      <li>
+        <strong>Plats (GPS)</strong> används endast om du aktivt begär det
+        (t.ex. &quot;min position&quot;). Koordinater behandlas på enheten för
+        qibla och kan användas i ett anrop som <strong>du</strong> utlöser till
+        <strong>OpenStreetMap Nominatim</strong> för omvänd geokodning
+        (ortnamn). Vi säljer inte platsdata och bygger inte reklamprofiler i
+        appen.
+      </li>
+      <li>
+        <strong>Notifieringar och larm</strong>: Om du aktiverar påminnelser
+        eller azan använder operativsystemet och (på Android) appens
+        schemaläggning (t.ex. lokala notifieringar, exakta larm, bakgrundsarbete
+        enligt behörigheter du godkänner). Behandlingen sker enligt
+        plattformsleverantörens (Google/Android) villkor och integritetspolicy i
+        den del de är personuppgiftsansvariga.
+      </li>
+      <li>
+        <strong>Inställningar och cache</strong> (ort, språk, tema, val av adhan,
+        påminnelser m.m.) lagras lokalt på enheten (webbläsarens lagring och/eller
+        Capacitor <code>Preferences</code>). Bönetider kan även cachas lokalt
+        för att tjänsten ska fungera tillfälligt utan nätverk.
+      </li>
+      <li>
+        <strong>Adhan-ljud</strong> levereras som <strong>filer som ingår i
+        appen</strong> (bundlat material). Uppspelning kräver normalt inte att
+        ljud hämtas från externa värdar.
+      </li>
+      <li>
+        <strong>Tekniska loggar</strong> kan skapas hos vår driftleverantör
+        (Netlify) vid anrop till API (t.ex. tid, IP-adress, felinformation) för
+        drift, säkerhet och felsökning enligt leverantörens standard.
+      </li>
+    </ul>
+
+    <h2>4. Rättslig grund (GDPR)</h2>
     <p>
-      Inställningar (t.ex. ort, språk, tema, adhan-val, påminnelser) lagras
-      lokalt på din enhet via webbläsarens lagring. Data säljs inte och
-      används inte för att skapa reklamprofiler i appen.
+      Behandling som är nödvändig för att tillhandahålla tjänsten du använder
+      (visa bönetider, dina inställningar) sker med stöd av
+      <strong>artikel 6.1 b</strong> GDPR (åtgärder som vidtas på begäran av
+      den registrerade / avtal om tjänst). Där lag eller plattform kräver det
+      (t.ex. <strong>särskilda kategorier</strong> förekommer normalt inte i
+      appen) tillämpas endast tillåten grund.
+    </p>
+    <p>
+      För <strong>platstjänster</strong> och <strong>aviseringar</strong> på
+      enheten gäller dessutom ditt <strong>samtycke</strong> eller motsvarande
+      plattforms­godkännande när så krävs enligt tillämplig lag (GDPR/ePrivacy
+      och operativsystemets modell).
     </p>
 
-    <h2>4. Ljud och externa källor</h2>
+    <h2>5. Mottagare och underbiträden</h2>
     <p>
-      Vid uppspelning av adhan kan ljud hämtas från externa värdar (t.ex.
-      AlAdhan, Wikimedia Commons). Dessa kan logga tekniska anslutningsuppgifter
-      enligt sin egen policy.
+      Uppgifter kan delas med: <strong>Netlify</strong> (värd för funktion som
+      anropar bönetider), <strong>IF</strong> (källa för publicerade tider),
+      <strong>OpenStreetMap Nominatim</strong> (vid omvänd geokodning som du
+      utlöser) samt <strong>Google</strong> i egenskap av leverantör av
+      operativsystem och Play-butik. Vi använder inte egna
+      marknadsförings- eller analyscookies i appen i syfte att spåra dig över
+      webbplatser.
     </p>
 
-    <h2>5. Plats (GPS)</h2>
+    <h2>6. Överföring till tredjeland</h2>
     <p>
-      Om du använder &quot;min position&quot; kan enhetens koordinater
-      användas för att uppskatta ort och qibla. Behandlingen sker på enheten
-      och i anrop som du utlöser.
+      Viss behandling kan ske utanför EU/EES (t.ex. USA hos Netlify eller
+      Google). Sådan överföring sker i enlighet med GDPR, inklusive
+      EU-kommissionens standardavtalsklausuler eller motsvarande godkända
+      mekanismer, i den utsträckning leverantören åtar sig detta.
     </p>
 
-    <h2>6. Rättslig grund och lagringstid</h2>
+    <h2>7. Lagringstid</h2>
     <p>
-      För svenska användare tillämpas EU:s dataskyddsförordning (GDPR) där
-      det är relevant. Lokal lagring kvarstår tills du rensar webbplatsdata
-      eller avinstallerar appen. Serverloggar hos driftleverantör kan
-      förekomma enligt deras standard (t.ex. teknisk felsökning och säkerhet).
+      Lokala inställningar och cache kvarstår tills du rensar app-/webbdata eller
+      avinstallerar appen. Serverloggar hos leverantörer lagras enligt deras
+      rutiner (ofta begränsad teknisk retention).
     </p>
 
-    <h2>7. Dina rättigheter</h2>
+    <h2>8. Dina rättigheter</h2>
     <p>
-      Du kan begära information om behandling, rättelse eller radering i den
-      utsträckning det är tillämpligt. Kontakta oss via projektets publika
-      kanal eller kontaktväg i appbutiken.
+      Du har rätt till information, rättelse, radering, begränsning av
+      behandling, invändning och dataportabilitet i den utsträckning som följer
+      av GDPR. Du kan också inge klagan till
+      <strong>Integritetsskyddsmyndigheten (IMY)</strong>,
+      <a href="https://www.imy.se">imy.se</a>.
     </p>
 
-    <h2>8. Ändringar</h2>
+    <h2>9. Google Play och Android</h2>
     <p>
-      Policyn kan uppdateras. Datum för senaste version visas överst på sidan.
+      Vid installation via Google Play gäller även
+      <a href="https://play.google.com/intl/sv_se/about/play-terms/">Google Plays villkor</a>
+      och Googles integritetspolicy i relevant del. Appen kan begära
+      behörigheter som t.ex. aviseringar, exakta larm, plats i förgrunden för
+      uppspelning och batteri/optimering beroende på version — syftet är att
+      leverera bönetider, qibla och påminnelser/azan. Uppgifter du anger i
+      <strong>Play Console Data safety</strong>-formuläret ska överensstämma
+      med denna policy.
     </p>
 
-    <h2>9. Kontakt</h2>
+    <h2>10. Barn</h2>
     <p>
-      Frågor om integritet: använd kontaktuppgifter i appbutiken eller
-      projektets GitHub-repository.
+      Tjänsten är inte riktad till barn under 13 år. Om du är vårdnadshavare och
+      anser att barn lämnat uppgifter, kontakta oss via Play-kontakt eller
+      GitHub så hjälper vi till att radera i möjlig mån.
+    </p>
+
+    <h2>11. Ändringar</h2>
+    <p>
+      Policyn kan uppdateras; väsentliga ändringar bör återspeglas i nytt datum
+      här och i butikslistningen där det krävs.
+    </p>
+
+    <h2>12. Kontakt</h2>
+    <p>
+      Integritetsfrågor: använd kontakt i Google Play eller öppna ett ärende på
+      GitHub-repositoriet ovan.
     </p>
 
     <p class="back"><a href="/">← Tillbaka till appen</a></p>

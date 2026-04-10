@@ -16,74 +16,150 @@
     </nav>
 
     <h1>Privacy Policy</h1>
-    <p class="muted">Last updated: April 4, 2026.</p>
-
-    <h2>1. Purpose and Scope</h2>
-    <p>
-      This policy describes how Call to Prayer Sweden handles information in
-      the web app and related clients (PWA). We primarily process technical
-      data needed to display prayer times and your chosen settings.
+    <p class="muted">Last updated: 10 April 2026.</p>
+    <p class="legal-authority">
+      This policy is intended to support compliance with the EU General Data
+      Protection Regulation (GDPR), Swedish practice (e.g. guidance from the
+      Swedish Authority for Privacy Protection, IMY), and requirements that
+      follow from distribution via <strong>Google Play</strong>. It should
+      reflect how the app actually works; where it differs, this text governs
+      for users in the EU/EEA.
     </p>
 
-    <h2>2. Personal Data</h2>
+    <h2>1. Purpose and scope</h2>
     <p>
-      The app does not require an account. If you enter a city, date, or
-      activate location features, such information is sent in requests to our
-      serverless intermediary (Netlify Functions), which forwards it to the
-      Islamic Association of Sweden's (IFIS) prayer times widget. The data is
-      only used to return times to your device.
-    </p>
-    <p>
-      If you activate notifications, the browser or operating system may
-      process technical identifiers according to the platform's own rules.
+      This policy applies to <strong>Call to Prayer Sweden</strong> in the
+      browser, as an installed web app (PWA), and as the Android app built on
+      the same content (Capacitor WebView). It describes what personal data may
+      be processed, for what purpose, on what legal basis, and for how long.
     </p>
 
-    <h2>3. Local Storage</h2>
+    <h2>2. Data controller</h2>
     <p>
-      Settings (e.g., city, language, theme, adhan choices, reminders) are
-      stored locally on your device via browser storage. Data is not sold and
-      is not used to create advertising profiles in the app.
+      The <strong>controller</strong> is the developer of the app
+      (<strong>RASafi Tech</strong>, as stated in the app). Contact is primarily
+      via the contact details published in <strong>Google Play Console</strong>
+      (developer contact for the app) and the public source repository:
+      <a href="https://github.com/RamizAbdullahsafi/Call-to-Prayer-Sweden">GitHub</a>.
     </p>
 
-    <h2>4. Audio and External Sources</h2>
+    <h2>3. What data is processed?</h2>
+    <ul>
+      <li>
+        <strong>City and date</strong> you enter (or that follow from your
+        choices) are sent in requests to our serverless layer
+        (<strong>Netlify Functions</strong>), which forwards them to the
+        <strong>Islamic Association of Sweden (IF)</strong> to retrieve published
+        prayer times. The data is used only to return times to your device.
+      </li>
+      <li>
+        <strong>Location (GPS)</strong> is used only if you actively request it
+        (e.g. &quot;my position&quot;). Coordinates are processed on the device
+        for qibla and may be used in a request <strong>you</strong> trigger to
+        <strong>OpenStreetMap Nominatim</strong> for reverse geocoding (city
+        name). We do not sell location data or build ad profiles in the app.
+      </li>
+      <li>
+        <strong>Notifications and alarms</strong>: If you enable reminders or
+        adhan, the operating system and (on Android) the app’s scheduling (e.g.
+        local notifications, exact alarms, background work per permissions you
+        approve) apply. Processing follows the platform provider’s (Google/Android)
+        terms and privacy policy where they act as controller.
+      </li>
+      <li>
+        <strong>Settings and cache</strong> (city, language, theme, adhan choice,
+        reminders, etc.) are stored locally (browser storage and/or Capacitor
+        <code>Preferences</code>). Prayer times may also be cached locally for
+        temporary offline use.
+      </li>
+      <li>
+        <strong>Adhan audio</strong> is delivered as <strong>files bundled in
+        the app</strong>. Playback normally does not require fetching audio from
+        external hosts.
+      </li>
+      <li>
+        <strong>Technical logs</strong> may be created at our hosting provider
+        (Netlify) when the API is called (e.g. time, IP address, error data) for
+        operations, security, and troubleshooting under the provider’s
+        standard practices.
+      </li>
+    </ul>
+
+    <h2>4. Legal basis (GDPR)</h2>
     <p>
-      When playing adhan, audio may be fetched from external hosts (e.g.,
-      AlAdhan, Wikimedia Commons). These may log technical connection data
-      according to their own policies.
+      Processing necessary to provide the service you use (show prayer times,
+      your settings) is based on <strong>Article 6(1)(b) GDPR</strong>
+      (performance of a contract / steps at your request). The app does not
+      normally process special categories of personal data under Article 9.
+    </p>
+    <p>
+      For <strong>location services</strong> and <strong>notifications</strong>
+      on the device, your <strong>consent</strong> or equivalent platform
+      approval also applies where required by applicable law (GDPR / ePrivacy and
+      the OS model).
     </p>
 
-    <h2>5. Location (GPS)</h2>
+    <h2>5. Recipients and processors</h2>
     <p>
-      If you use &quot;my position,&quot; the device's coordinates may be
-      used to estimate the city and qibla. Processing occurs on the device
-      and in requests that you trigger.
+      Data may be shared with: <strong>Netlify</strong> (hosting for the
+      function that fetches prayer times), <strong>IF</strong> (source of
+      published times), <strong>OpenStreetMap Nominatim</strong> (when you
+      trigger reverse geocoding), and <strong>Google</strong> as OS and Play
+      store provider. We do not use our own marketing or analytics cookies to
+      track you across websites.
     </p>
 
-    <h2>6. Legal Basis and Retention</h2>
+    <h2>6. Transfers outside the EU/EEA</h2>
     <p>
-      For users in the EU, the General Data Protection Regulation (GDPR) applies
-      where relevant. Local storage remains until you clear website data or
-      uninstall the app. Server logs at the hosting provider may occur
-      according to their standards (e.g., technical troubleshooting and security).
+      Some processing may occur outside the EU/EEA (e.g. USA with Netlify or
+      Google). Such transfers are carried out in accordance with GDPR, including
+      the European Commission’s standard contractual clauses or other approved
+      mechanisms, to the extent the provider commits to them.
     </p>
 
-    <h2>7. Your Rights</h2>
+    <h2>7. Retention</h2>
     <p>
-      You may request information about processing, correction, or deletion
-      to the extent applicable. Contact us via the project's public channel
-      or the contact method in the app store.
+      Local settings and cache remain until you clear app/browser data or
+      uninstall. Server logs at providers are retained under their policies
+      (often limited technical retention).
     </p>
 
-    <h2>8. Changes</h2>
+    <h2>8. Your rights</h2>
     <p>
-      The policy may be updated. The date of the latest version is shown at
-      the top of the page.
+      You have rights to information, rectification, erasure, restriction,
+      objection, and data portability under GDPR. You may lodge a complaint with
+      the Swedish Authority for Privacy Protection (<strong>IMY</strong>),
+      <a href="https://www.imy.se">imy.se</a>, or your local supervisory
+      authority.
     </p>
 
-    <h2>9. Contact</h2>
+    <h2>9. Google Play and Android</h2>
     <p>
-      Privacy questions: use contact details in the app store or the
-      project's GitHub repository.
+      When you install via Google Play, Google’s terms and privacy policy also
+      apply where relevant. The app may request permissions such as
+      notifications, exact alarms, location, foreground playback, and battery
+      optimisation exemptions depending on version — to deliver prayer times,
+      qibla, and reminders/adhan. Information declared in Play’s
+      <strong>Data safety</strong> form should match this policy.
+    </p>
+
+    <h2>10. Children</h2>
+    <p>
+      The service is not directed at children under 13. If you are a parent or
+      guardian and believe a child has provided data, contact us via Play or
+      GitHub and we will help delete it where feasible.
+    </p>
+
+    <h2>11. Changes</h2>
+    <p>
+      This policy may be updated; material changes should be reflected in the
+      date above and in the store listing where required.
+    </p>
+
+    <h2>12. Contact</h2>
+    <p>
+      Privacy questions: use the contact in Google Play or open an issue on the
+      GitHub repository above.
     </p>
 
     <p class="back"><a href="/">← Back to the app</a></p>

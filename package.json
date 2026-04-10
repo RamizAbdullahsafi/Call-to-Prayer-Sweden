@@ -8,6 +8,7 @@
     "prebuild": "npm run icons",
     "build": "tsc && vite build",
     "icons": "node scripts/generate-pwa-icons.mjs",
+    "azan-audio": "node scripts/fetch-azan-audio.mjs",
     "preview": "vite preview",
     "postinstall": "patch-package",
     "android:sync": "npm run build && npx cap sync android",

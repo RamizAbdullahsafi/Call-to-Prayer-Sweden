@@ -14,11 +14,17 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 
 /**
- * Plays streamed azan in the foreground so Android allows network audio when the app is not active.
+ * Plays azan in the foreground from [R.raw] ([RAW_ASSET_PREFIX] + basename) or legacy [LEGACY_BUNDLED_URL].
  */
 class AzanPlaybackService : Service() {
 
     companion object {
+        /** Must match `RAW_ASSET_PREFIX` in TypeScript (`azan.ts`). */
+        const val RAW_ASSET_PREFIX = "asset://raw/"
+
+        /** Older scheduled alarms used this; same audio as `beautiful_adhan`. */
+        const val LEGACY_BUNDLED_URL = "asset://bundled-adhan"
+
         const val EXTRA_AUDIO_URL = "audioUrl"
         const val EXTRA_VOLUME = "volume"
         const val EXTRA_KEY = "key"
@@ -78,7 +84,30 @@ class AzanPlaybackService : Service() {
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build()
             )
-            mp.setDataSource(url)
+            when {
+                url.startsWith(RAW_ASSET_PREFIX) -> {
+                    val name = url.removePrefix(RAW_ASSET_PREFIX)
+                    val resId = resources.getIdentifier(name, "raw", packageName)
+                    if (resId == 0) {
+                        Log.e(TAG, "Missing raw resource: $name")
+                        throw IllegalArgumentException("raw/$name")
+                    }
+                    resources.openRawResourceFd(resId).use { afd ->
+                        mp.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                    }
+                }
+                url == LEGACY_BUNDLED_URL -> {
+                    val resId = resources.getIdentifier("beautiful_adhan", "raw", packageName)
+                    if (resId == 0) {
+                        Log.e(TAG, "Missing beautiful_adhan raw")
+                        throw IllegalArgumentException("raw/beautiful_adhan")
+                    }
+                    resources.openRawResourceFd(resId).use { afd ->
+                        mp.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                    }
+                }
+                else -> mp.setDataSource(url)
+            }
             mp.setOnPreparedListener { p ->
                 try {
                     p.setVolume(volume, volume)

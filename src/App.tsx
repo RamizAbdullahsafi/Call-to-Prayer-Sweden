@@ -17,7 +17,7 @@ import {
   type PrayerKey,
 } from "./prayerTimes";
 import {
-  AZAN_VOICES,
+  AZAN_VOICE_GROUPS,
   DEFAULT_AZAN_PRAYER_KEYS,
   getAzanStreamUrl,
   loadAzanPlayEnabled,
@@ -221,6 +221,7 @@ export function App(): ReactElement {
   );
   const [error, setError] = useState<string | null>(null);
   const [scheduleDay, setScheduleDay] = useState<PrayerDay | null>(null);
+  const [offlineCachedTimes, setOfflineCachedTimes] = useState(false);
   const [loading, setLoading] = useState(false);
   const [notifyKeys, setNotifyKeys] = useState<PrayerKey[]>(() =>
     setToPrayerKeys(loadNotifyKeys())
@@ -304,6 +305,7 @@ export function App(): ReactElement {
   const loadPrayerTimes = useCallback(async (): Promise<void> => {
     const tr = tRef.current;
     setError(null);
+    setOfflineCachedTimes(false);
     setLoading(true);
     setScheduleDay(null);
     const d = new Date(dateInput + "T12:00:00");
@@ -314,8 +316,9 @@ export function App(): ReactElement {
     }
     const cityVal = cityCustomRef.current.trim() || city;
     try {
-      const day = await fetchPrayerTimes(cityVal, d);
-      setScheduleDay(day);
+      const result = await fetchPrayerTimes(cityVal, d);
+      setScheduleDay(result.day);
+      setOfflineCachedTimes(result.fromCache);
     } catch (e) {
       if (e instanceof Error) {
         if (e.message.startsWith("PRAYER_TIMES_HTTP_")) {
@@ -769,6 +772,20 @@ export function App(): ReactElement {
     if (Number.isNaN(date.getTime())) return null;
     return hijriFromGregorian(date, locale);
   }, [dateInput, locale]);
+  const gregorianInfoLabel = useMemo(() => {
+    const date = new Date(dateInput + "T12:00:00");
+    if (Number.isNaN(date.getTime())) return null;
+    try {
+      return new Intl.DateTimeFormat(locale, {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(date);
+    } catch {
+      return date.toDateString();
+    }
+  }, [dateInput, locale]);
 
   const [hijriViewAnchor, setHijriViewAnchor] = useState(
     () => new Date(`${formatDateYMD(new Date())}T12:00:00`)
@@ -1006,6 +1023,7 @@ export function App(): ReactElement {
           <span className="visually-hidden">{t("loadingTimesAria")}</span>
         ) : null}
       </div>
+      {offlineCachedTimes ? <p className="geo-msg">{t("offlineCachedTimes")}</p> : null}
 
       {!scheduleDay || !nextPrayer ? null : (
         <div
@@ -1225,6 +1243,7 @@ export function App(): ReactElement {
           {!hijriInfo ? null : (
             <>
               <p className="hijri-summary-label">{hijriInfo.label}</p>
+              {gregorianInfoLabel ? <p>{gregorianInfoLabel}</p> : null}
               {hijriImportantDay(hijriInfo) ? (
                 <p className="hijri-event">{hijriImportantDay(hijriInfo)}</p>
               ) : null}
@@ -1511,6 +1530,7 @@ export function App(): ReactElement {
             <label htmlFor="adhan-voice">{t("voice")}</label>
             <select
               id="adhan-voice"
+              className="adhan-voice-select"
               aria-label={t("voiceSelectAria")}
               value={azanVoiceId}
               onChange={(e) => {
@@ -1520,10 +1540,14 @@ export function App(): ReactElement {
                 setAzanPlayError(null);
               }}
             >
-              {AZAN_VOICES.map((vo) => (
-                <option key={vo.id} value={vo.id}>
-                  {vo.reciter} — {vo.label}
-                </option>
+              {AZAN_VOICE_GROUPS.map((group) => (
+                <optgroup key={group.groupId} label={group.groupLabel}>
+                  {group.voices.map((vo) => (
+                    <option key={vo.id} value={vo.id}>
+                      {vo.label}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </div>
@@ -1661,6 +1685,7 @@ export function App(): ReactElement {
           </a>
         </p>
         <p className="footer-credit">{t("footerCreatedBy")}</p>
+        <p className="footer-copyright">{t("footerCopyright")}</p>
         <p className="footer-legal">
           <a href={getLegalPath("/terms.html")}>{t("terms")}</a>
           {" · "}

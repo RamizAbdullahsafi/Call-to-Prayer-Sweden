@@ -16,56 +16,93 @@
     </nav>
 
     <h1>Siyaasadda Khaaska ah</h1>
-    <p class="muted">Markii ugu dambeysay ee la cusboonaysiiyay: Maarso 29, 2026.</p>
-
-    <h2>1. Ujeedada iyo Baaxadda</h2>
-    <p>
-      Siyaasaddani waxay sharxaysaa sida Call to Prayer Sweden u maamusho macluumaadka ku jira abka shabakadda iyo macaamiisha la xiriira (PWA). Waxaan inta badan ka shaqaynaa xogta farsamada ee loo baahan yahay si loo muujiyo waqtiyada salaadda iyo goobaha aad dooratay.
+    <p class="muted">Markii ugu dambeysay ee la cusboonaysiiyay: Abriil 10, 2026.</p>
+    <p class="legal-authority">
+      Siyaasaddan waxay ujeedkeedu yahay inay taageerto waafaqsanaanta Xeerka Guud ee Ilaalinta Xogta Midowga Yurub (GDPR), dhaqanka Iswiidhan (tusaale, tilmaamaha hay'adda ilaalinta khaaska ah ee Iswiidhan, IMY), iyo shuruudaha ka imanaya baahinta <strong>Google Play</strong>. Waa inay muujiso sida abka dhab ahaantii u shaqeeyo; haddii ay jirto khilaaf, qoraalkan ayaa xukuma dadka isticmaala Midowga Yurub / EEA.
     </p>
 
-    <h2>2. Xogta Shakhsiga ah</h2>
+    <h2>1. Ujeeddo iyo baaxad</h2>
     <p>
-      Abka uma baahna akoon. Haddii aad geliso magaalo, taariikh, ama aad dhaqaajiso sifooyinka goobta, macluumaadkaas waxaa loo diraa codsiyada adeegaha dhexdhexaadka ah (Netlify Functions), kaas oo u sii gudbiya aaladda waqtiyada salaadda ee Ururka Islaamka ee Iswiidhan (IFIS). Xogta waxa kaliya loo isticmaalaa in waqtiyada loogu soo celiyo qalabkaaga.
-    </p>
-    <p>
-      Haddii aad dhaqaajiso ogeysiisyada, biraawsarka ama nidaamka qalliinka ayaa laga yaabaa inay u socodsiiyaan aqoonsiga farsamada si waafaqsan xeerarka madal kooda.
+      Siyaasaddu waxay khuseysaa <strong>Call to Prayer Sweden</strong> biraawsarka, sida barnaamijka shabakadda la rakibay (PWA), iyo abka Android ee isku mawduuca ku dhisay (Capacitor WebView). Waxay sharxisaa xogta shaqsiyeed ee la baaraandegi karo, ujeeddada, saldhigga sharciga, iyo mudada.
     </p>
 
-    <h2>3. Kaydinta Gudaha</h2>
+    <h2>2. Maamulaha xogta</h2>
     <p>
-      Goobaha (tusaale, magaalada, luqadda, dulucda, xulashada adhaanka, xasuusinta) waxaa lagu kaydiyaa qalabkaaga iyada oo loo marayo kaydinta biraawsarka. Xogta lama iibiyo lamana isticmaalo si loogu abuuro muuqaallo xayaysiis abka dhexdiisa ah.
+      <strong>Maamulaha</strong> waa horumariyaha abka (<strong>RASafi Tech</strong>, sida lagu sheegay abka). Xiriirka ugu horreeya waa faahfaahinta xiriirka ee lagu daabacay <strong>Google Play Console</strong> (xiriirka horumariyaha abka) iyo keydka ilaha dadweynaha:
+      <a href="https://github.com/RamizAbdullahsafi/Call-to-Prayer-Sweden">GitHub</a>.
     </p>
 
-    <h2>4. Maqalka iyo Ilaha Dibadda</h2>
+    <h2>3. Xog noocee ah ayaa la baaraandegaa?</h2>
+    <ul>
+      <li>
+        <strong>Magaalada iyo taariikhda</strong> aad geliso (ama ay ka timaado doorashooyinkaaga) waxaa lagu diraa codsiyada heerka aan server lahayn (<strong>Netlify Functions</strong>), kaas oo u gudbiya <strong>Ururka Islaamka ee Iswiidhan (IF)</strong> si loo helo waqtiyada salaadda ee la daabacay. Xogta waxaa loo isticmaalaa kaliya si waqtiyada loo celiyo qalabkaaga.
+      </li>
+      <li>
+        <strong>Goobta (GPS)</strong> waxaa la isticmaalaa kaliya haddii aad si firfircoon u codsato (tusaale &quot;booskayga&quot;). Isku-xirka waxaa lagu baaraandegaa qalabka qiblaha, waxaana laga yaabaa in lagu isticmaalo codsi <strong>adigu</strong> bilowdo <strong>OpenStreetMap Nominatim</strong> si loo helo magaca magaalada (reverse geocoding). Ma iibinno xogta goobta mana dhisno astaamo xayeysiis abka.
+      </li>
+      <li>
+        <strong>Ogeysiisyada iyo digniinta</strong>: Haddii aad shido xusuusin ama adhaan, nidaamka hawlgalka iyo (Android) jadwalka abka (tusaale ogeysiisyada maxalliga ah, digniin sax ah, shaqada asalka sida oggolaadaha aad ansixiso) ayaa khuseeya. Baaraandegista waxay raacdaa shuruudaha iyo siyaasadda khaaska ah ee bixiyaha aasaaska (Google/Android) halka ay maamule yihiin.
+      </li>
+      <li>
+        <strong>Dejinta iyo keydka</strong> (magaalada, luqadda, mawduuca, doorashada adhaan, xusuusin, iwm) waxaa lagu keydiyaa maxalli (keydka biraawsarka iyo/ama Capacitor <code>Preferences</code>). Waqtiyada salaadda waxaa sidoo kale lagu keydin karaa maxalli si loo isticmaalo offline waqti gaaban.
+      </li>
+      <li>
+        <strong>Maqalka adhaan</strong> waxaa loo bixiyaa sida <strong>faylasha ku xiran abka</strong>. Ciyaarinta guud ahaan uma baahna in maqal laga soo qaado marti-geliyeyaal dibadeed.
+      </li>
+      <li>
+        <strong>Diiwaannada farsamada</strong> waxaa laga yaabaa in lagu abuuro bixiyaha marti-gelinta (Netlify) marka API la yeero (tusaale waqtiga, cinwaanka IP, xogta khaladaad) hawlgalka, amniga, iyo xallinta dhibaatooyinka sida dhaqanka caadiga ah ee bixiyaha.
+      </li>
+    </ul>
+
+    <h2>4. Saldhigga sharciga (GDPR)</h2>
     <p>
-      Marka la ciyaarayo adhaanka, maqalka waxaa laga soo qaadi karaa martigaliyayaasha dibadda (tusaale, AlAdhan, Wikimedia Commons). Kuwani waxay diiwaangelin karaan xogta xiriirka farsamada si waafaqsan siyaasadahooda.
+      Baaraandegista lagama maarmaanka u ah bixinta adeegga aad isticmaasho (muujinta waqtiyada salaadda, dejintaada) waxay ku saleysan tahay <strong>Qodobka 6(1)(b) GDPR</strong> (fulinta heshiis / tallaabooyinka codsigaaga). Abku guud ahaan ma baaraandego qaybaha gaarka ah ee xogta shaqsiyeed ee Qodobka 9.
+    </p>
+    <p>
+      Adeegyada <strong>goobta</strong> iyo <strong>ogeysiisyada</strong> qalabka, <strong>ogolaanshahaaga</strong> ama ansixinta la midka ah ee aasaaska ayaa sidoo kale khuseysa meesha sharciga (GDPR / ePrivacy iyo qaabka OS) u baahan yahay.
     </p>
 
-    <h2>5. Goobta (GPS)</h2>
+    <h2>5. Qaataha iyo baaraandegayaasha</h2>
     <p>
-      Haddii aad isticmaasho &quot;goobtayda,&quot; isku-duwayaasha qalabka ayaa loo isticmaali karaa si loo qiyaaso magaalada iyo qiblada. Habayntu waxay ka dhacdaa qalabka iyo codsiyada aad kiciso.
+      Xogta waxaa lala wadaagi karaa: <strong>Netlify</strong> (marti-gelinta shaqada soo qaadista waqtiyada salaadda), <strong>IF</strong> (iska soo saarista waqtiyada la daabacay), <strong>OpenStreetMap Nominatim</strong> (markaad bilowdo reverse geocoding), iyo <strong>Google</strong> sida bixiyaha OS iyo Play. Ma isticmaalno kukiyada suuqgeynta ama falanqaynta si aan ku raadino bogagga shabakadda.
     </p>
 
-    <h2>6. Saldhigga Sharciga ah iyo Haynta</h2>
+    <h2>6. Gudbinta ka baxsan Midowga Yurub / EEA</h2>
     <p>
-      Isticmaalayaasha Midowga Yurub, Xeerka Ilaalinta Xogta Guud (GDPR) ayaa khuseeya meeshii ay khusayso. Kaydinta guduhu waxay ahaanaysaa ilaa aad ka tirtirto xogta mareegaha ama aad iska saarto abka. Diiwaanka adeegaha ee bixiyaha martigelinta ayaa dhici kara si waafaqsan heerarkooda (tusaale, cilad-baadhista farsamada iyo amniga).
+      Baaraandegista qaarkood waxay ka dhici kartaa ka baxsan Midowga Yurub / EEA (tusaale Maraykanka Netlify ama Google). Gudbinta noocan ah waxaa lagu fuliyaa sida GDPR, oo ay ku jiraan qodobbada heshiiska caadiga ah ee Komishanka Yurub ama farsamooyinka kale ee la ansixiyay, ilaa inta bixiyuhu u ballanqaaday.
     </p>
 
-    <h2>7. Xuquuqdaada</h2>
+    <h2>7. Haynta</h2>
     <p>
-      Waxaad codsan kartaa macluumaadka ku saabsan habaynta, sixitaanka, ama tirtiridda ilaa inta ay khusayso. Nagala soo xiriir kanaalka guud ee mashruuca ama habka xiriirka ee dukaanka abka.
+      Dejinta maxalliga ah iyo keydku waxay sii jiri doonaan ilaa aad tirtirto xogta abka/biraawsarka ama aad ka saarto abka. Diiwaannada serverka bixiyeyaasha waxaa lagu hayaa siyaasadooda (badanaa haynta farsamada oo xaddidan).
     </p>
 
-    <h2>8. Isbeddellada</h2>
+    <h2>8. Xuquuqdaada</h2>
     <p>
-      Siyaasadda waa la cusboonaysiin karaa. Taariikhda nooca ugu dambeeyay waxaa lagu muujiyay xagga sare ee bogga.
+      Waxaad leedahay xuquuqda macluumaadka, saxitaanka, tirtirka, xaddidaadda, diidmada, iyo xuquuqda xogta lagu qaado (data portability) sida GDPR. Waxaad dacwad u gudbin kartaa hay'adda ilaalinta khaaska ah ee Iswiidhan (<strong>IMY</strong>),
+      <a href="https://www.imy.se">imy.se</a>, ama hay'adda kormeerka maxalliga ah ee aad joogtid.
     </p>
 
-    <h2>9. Xiriir</h2>
+    <h2>9. Google Play iyo Android</h2>
     <p>
-      Su'aalaha khaaska ah: isticmaal faahfaahinta xiriirka ee dukaanka abka ama kaydka GitHub ee mashruuca.
+      Markaad ka rakibto Google Play, shuruudaha iyo siyaasadda khaaska ah ee Google ayaa sidoo kale khuseysa meelaha la xiriira. Abku wuxuu codsan karaa oggolaado sida ogeysiisyada, digniinta saxda ah, goobta, ciyaarinta hore, iyo ka-noqoshada hagaajinta batteriga sida nooca — si loo bixiyo waqtiyada salaadda, qiblaha, iyo xusuusinta/adhaan. Macluumaadka lagu dhawaaqay foomka <strong>Amniga xogta</strong> ee Play waa inuu la jaan qaadaa siyaasaddan.
     </p>
 
-    <p class="back"><a href="/">← Ku laabo abka</a></p>
+    <h2>10. Carruurta</h2>
+    <p>
+      Adeeggu ma u jeedo carruurta ka yar 13. Haddii aad tahay waalid ama mas'uul oo aad u maleyneyso in caruur uu bixiyay xog, nala soo xiriir Play ama GitHub waxaanan kaa caawin doonaa tirtirka haddii ay suurtagal tahay.
+    </p>
+
+    <h2>11. Isbeddellada</h2>
+    <p>
+      Siyaasadda waxaa la cusboonaysiin karaa; isbeddellada muhiimka ah waa in lagu muujiyaa taariikhda kor ku xusan iyo liiska dukaanka haddii loo baahan yahay.
+    </p>
+
+    <h2>12. Xiriir</h2>
+    <p>
+      Su'aalaha khaaska ah: isticmaal xiriirka Google Play ama fur arrin keydka GitHub ee kor ku xusan.
+    </p>
+
+    <p class="back"><a href="/">← Ku noqo abka</a></p>
   </body>
 </html>

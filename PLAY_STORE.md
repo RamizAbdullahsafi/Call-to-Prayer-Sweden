@@ -16,6 +16,10 @@ Efter deploy finns sidan:
 
 Ange denna URL i Play Console under appens butiksprofil / dataskydd.
 
+**Data safety (Play Console):** Fyll i formuläret så att det **överensstämmer** med texten i `privacy.html` (samma datatyper, syften och delning: t.ex. ungefärlig/plats vid användarens val, ort i API-anrop, lokala inställningar, Netlify/IF/Nominatim/Google där det står i policyn). Uppdatera policyn och Data safety vid varje väsentlig ändring av appen.
+
+**Juridiskt:** Texten är skriven för att följa **GDPR** och svensk praxis (t.ex. IMY) i stor utsträckning och för att stödja **Google Play**-krav, men ersätter inte rådgivning från jurist. Vid bolag/organisationsnummer, e-post eller fysisk adress som kontakt — lägg in det i `privacy.html` / `terms.html` och i Play Console.
+
 ## Bygga webben för Android
 
 Sätt `VITE_API_ORIGIN` till din Netlify-bas-URL **utan** avslutande snedstreck, bygg och synka:

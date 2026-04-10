@@ -6,80 +6,85 @@ export type HijriInfo = {
   label: string;
 };
 
-const MONTH_NAMES = [
+const MONTH_NAMES_EN = [
   "Muharram",
   "Safar",
-  "Rabi al-Awwal",
-  "Rabi al-Thani",
+  "Rabi' al-Awwal",
+  "Rabi' al-Thani",
   "Jumada al-Ula",
   "Jumada al-Akhirah",
   "Rajab",
   "Sha'ban",
   "Ramadan",
   "Shawwal",
-  "Dhu al-Qadah",
+  "Dhu al-Qa'dah",
   "Dhu al-Hijjah",
 ];
 
+const MONTH_NAMES_SV = [
+  "Muharram",
+  "Safar",
+  "Rabi' al-awwal",
+  "Rabi' al-thani",
+  "Jumada al-ula",
+  "Jumada al-akhira",
+  "Rajab",
+  "Sha'ban",
+  "Ramadan",
+  "Shawwal",
+  "Dhu al-qa'da",
+  "Dhu al-hijja",
+];
+
+export function getHijriOffset(): number {
+  try {
+    return Number(localStorage.getItem("ctp.hijri.offset") ?? "0");
+  } catch {
+    return 0;
+  }
+}
+
+export function saveHijriOffset(offset: number): void {
+  try {
+    localStorage.setItem("ctp.hijri.offset", offset.toString());
+  } catch {
+    /* ignore */
+  }
+}
+
 export function hijriFromGregorian(date: Date, locale: string = "en"): HijriInfo {
+  const adjustedDate = new Date(date);
+  const offset = getHijriOffset();
+  if (offset !== 0) {
+    adjustedDate.setDate(adjustedDate.getDate() + offset);
+  }
+
   let day = 1;
   let month = 1;
   let year = 1445;
-  let monthName = MONTH_NAMES[0]!;
-  let label = `${day} ${monthName} ${year}`;
 
   try {
-    try {
-      const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
-        day: "numeric",
-        month: "numeric",
-        year: "numeric",
-      }).formatToParts(date);
+    // We use 'en-u-ca-islamic-umalqura' for numeric parts to ensure stability
+    const parts = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    }).formatToParts(adjustedDate);
 
-      day = Number(parts.find((p) => p.type === "day")?.value ?? "1");
-      month = Number(parts.find((p) => p.type === "month")?.value ?? "1");
-      year = Number(parts.find((p) => p.type === "year")?.value ?? "1445");
-    } catch {
-      /* ignore - uses defaults */
-    }
-
-    try {
-      monthName =
-        new Intl.DateTimeFormat(`${locale}-u-ca-islamic-umalqura`, {
-          month: "long",
-        }).format(date);
-    } catch {
-      try {
-        // Fallback to English if the specific locale-u-ca combo fails
-        monthName = new Intl.DateTimeFormat(`en-u-ca-islamic-umalqura`, {
-          month: "long",
-        }).format(date);
-      } catch {
-        monthName = MONTH_NAMES[Math.max(0, Math.min(11, month - 1))]!;
-      }
-    }
-
-    try {
-      label = new Intl.DateTimeFormat(`${locale}-u-ca-islamic-umalqura`, {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }).format(date);
-    } catch {
-      try {
-        // Fallback to English if the specific locale-u-ca combo fails
-        label = new Intl.DateTimeFormat(`en-u-ca-islamic-umalqura`, {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }).format(date);
-      } catch {
-        label = `${day} ${monthName} ${year}`;
-      }
-    }
+    day = Number(parts.find((p) => p.type === "day")?.value ?? "1");
+    month = Number(parts.find((p) => p.type === "month")?.value ?? "1");
+    // Some environments return year with " AH", so we extract only digits
+    const yearStr = parts.find((p) => p.type === "year")?.value ?? "1445";
+    year = Number(yearStr.replace(/\D/g, ""));
   } catch {
-    /* Fallback if Intl or Islamic calendar is completely unsupported */
+    // If Intl fails, we could use a simple algorithmic fallback here if needed
   }
+
+  const monthNames = locale.startsWith("sv") ? MONTH_NAMES_SV : MONTH_NAMES_EN;
+  const monthName = monthNames[Math.max(0, Math.min(11, month - 1))]!;
+
+  // Construct the label manually to ensure "Islamic Month + Islamic Year"
+  const label = `${day} ${monthName} ${year}`;
 
   return {
     day,

@@ -27,6 +27,16 @@ export type PrayerDay = {
   schedule: PrayerSchedule;
 };
 
+export type FetchPrayerTimesResult = {
+  day: PrayerDay;
+  fromCache: boolean;
+};
+
+type PrayerDayCacheEntry = {
+  savedAt: string;
+  day: PrayerDay;
+};
+
 const PRAYER_KEYS: PrayerKey[] = [
   "fajr",
   "sunrise",
@@ -35,6 +45,46 @@ const PRAYER_KEYS: PrayerKey[] = [
   "maghrib",
   "isha",
 ];
+
+const PRAYER_CACHE_PREFIX = "ctp.prayer.cache.v1";
+
+function prayerCacheKey(city: string, date: string): string {
+  return `${PRAYER_CACHE_PREFIX}:${city}:${date}`;
+}
+
+function loadCachedPrayerDay(city: string, date: string): PrayerDay | null {
+  try {
+    const raw = localStorage.getItem(prayerCacheKey(city, date));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as PrayerDayCacheEntry;
+    if (!parsed || typeof parsed !== "object" || !parsed.day) return null;
+    if (
+      parsed.day.city !== city ||
+      parsed.day.date !== date ||
+      typeof parsed.day.schedule !== "object"
+    ) {
+      return null;
+    }
+    for (const key of PRAYER_KEYS) {
+      if (typeof parsed.day.schedule[key] !== "string") return null;
+    }
+    return parsed.day;
+  } catch {
+    return null;
+  }
+}
+
+function saveCachedPrayerDay(day: PrayerDay): void {
+  try {
+    const entry: PrayerDayCacheEntry = {
+      savedAt: new Date().toISOString(),
+      day,
+    };
+    localStorage.setItem(prayerCacheKey(day.city, day.date), JSON.stringify(entry));
+  } catch {
+    /* ignore storage failures */
+  }
+}
 
 /** Rows for the daily schedule; on Fridays inserts Jumu’ah after Dhuhr (same published time as Dhuhr from IF). */
 export type ScheduleRow =
@@ -290,39 +340,54 @@ export function getAbsoluteBonetiderFetchUrl(): string {
 export async function fetchPrayerTimes(
   city: string,
   date: Date = new Date()
-): Promise<PrayerDay> {
+): Promise<FetchPrayerTimesResult> {
   const place = resolveCityForWidget(city);
+  const dateYmd = formatDateYMD(date);
   const params = new URLSearchParams({
     ifis_bonetider_widget_city: `${place}, SE`,
-    ifis_bonetider_widget_date: formatDateYMD(date),
+    ifis_bonetider_widget_date: dateYmd,
   });
 
-  const res = await fetch(bonetiderFetchUrl(), {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params.toString(),
-  });
+  const fromCache = (): PrayerDay | null => loadCachedPrayerDay(place, dateYmd);
 
-  if (!res.ok) {
-    throw new Error(`PRAYER_TIMES_HTTP_${res.status}`);
-  }
-
-  const html = await res.text();
-  let schedule: PrayerSchedule;
   try {
-    schedule = extractPrayerTimesFromWidgetHtml(html);
-  } catch (e) {
-    if (e instanceof Error && e.message === "PRAYER_TIMES_EMPTY") {
-      throw new Error("PRAYER_TIMES_EMPTY");
-    }
-    throw new Error("PRAYER_TIMES_PARSE");
-  }
+    const res = await fetch(bonetiderFetchUrl(), {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString(),
+    });
 
-  return {
-    city: place,
-    date: formatDateYMD(date),
-    schedule,
-  };
+    if (!res.ok) {
+      const cached = fromCache();
+      if (cached) return { day: cached, fromCache: true };
+      throw new Error(`PRAYER_TIMES_HTTP_${res.status}`);
+    }
+
+    const html = await res.text();
+    let schedule: PrayerSchedule;
+    try {
+      schedule = extractPrayerTimesFromWidgetHtml(html);
+    } catch (e) {
+      const cached = fromCache();
+      if (cached) return { day: cached, fromCache: true };
+      if (e instanceof Error && e.message === "PRAYER_TIMES_EMPTY") {
+        throw new Error("PRAYER_TIMES_EMPTY");
+      }
+      throw new Error("PRAYER_TIMES_PARSE");
+    }
+
+    const day = {
+      city: place,
+      date: dateYmd,
+      schedule,
+    };
+    saveCachedPrayerDay(day);
+    return { day, fromCache: false };
+  } catch (e) {
+    const cached = fromCache();
+    if (cached) return { day: cached, fromCache: true };
+    throw e;
+  }
 }
 
 export { SWEDISH_MUNICIPALITIES };
