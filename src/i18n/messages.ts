@@ -9,10 +9,14 @@ export type MessageId =
   | "themeNight"
   | "themeSystem"
   | "controlsAria"
+  | "disclosureLocationTitle"
   | "mainNavAria"
   | "tabPrayer"
+  | "tabPrayerLead"
   | "tabQibla"
+  | "tabQiblaLead"
   | "tabCalendar"
+  | "tabCalendarLead"
   | "tabSettings"
   | "settingsSection"
   | "city"
@@ -59,6 +63,7 @@ export type MessageId =
   | "footerLinkLabel"
   | "footerCreatedBy"
   | "footerCopyright"
+  | "footerLegalNavAria"
   | "privacy"
   | "terms"
   | "cookiesPolicy"
@@ -98,6 +103,12 @@ export type MessageId =
   | "hijriSummaryTitle"
   | "calPrevMonth"
   | "calNextMonth"
+  | "calMonthPagerHint"
+  | "hijriEvent.ramadanStart"
+  | "hijriEvent.laylatQadr"
+  | "hijriEvent.eidFitr"
+  | "hijriEvent.arafah"
+  | "hijriEvent.eidAdha"
   | "appDownloadBannerTitle"
   | "appDownloadBannerBody"
   | "appDownloadBannerIosBody"
@@ -125,10 +136,17 @@ const sv: Messages = {
   themeNight: "Natt",
   themeSystem: "System",
   controlsAria: "Ort och datum",
+  disclosureLocationTitle: "Plats, datum och läge",
   mainNavAria: "Huvudnavigering",
   tabPrayer: "Bönetider",
+  tabPrayerLead:
+    "Officiella tider för vald ort och datum — nästa bön och dagens schema.",
   tabQibla: "Qibla",
+  tabQiblaLead:
+    "Riktning mot Kaba utifrån din position. Aktivera GPS och vid behov kompass.",
   tabCalendar: "Kalender",
+  tabCalendarLead:
+    "Hijridatum, månadsvy och koppling till den valda gregorianska dagen.",
   tabSettings: "Inställningar",
   settingsSection: "Språk, utseende, aviseringar och azan",
   city: "Ort",
@@ -179,6 +197,7 @@ const sv: Messages = {
   footerLinkLabel: "Islamiska förbundet",
   footerCreatedBy: "Skapad av RASafi Tech",
   footerCopyright: "© 2026 RASafi Tech. Alla rättigheter förbehållna.",
+  footerLegalNavAria: "Juridik och policyer",
   privacy: "Integritet",
   terms: "Villkor",
   cookiesPolicy: "Cookies",
@@ -222,6 +241,12 @@ const sv: Messages = {
   hijriSummaryTitle: "Hijridatum",
   calPrevMonth: "Föregående månad",
   calNextMonth: "Nästa månad",
+  calMonthPagerHint: "Byt månad med pilarna.",
+  "hijriEvent.ramadanStart": "Början av Ramadan",
+  "hijriEvent.laylatQadr": "Laylat al-Qadr (ca)",
+  "hijriEvent.eidFitr": "Eid al-Fitr",
+  "hijriEvent.arafah": "Arafadagen",
+  "hijriEvent.eidAdha": "Eid al-Adha",
   appDownloadBannerTitle: "Installera på mobilen",
   appDownloadBannerBody:
     "Använd webbläsarens «Installera» / «Lägg till på hemskärmen» — samma app som på webben, utan appbutik.",
@@ -254,10 +279,17 @@ const en: Messages = {
   themeNight: "Night",
   themeSystem: "System",
   controlsAria: "Location and date",
+  disclosureLocationTitle: "Location, date & mode",
   mainNavAria: "Main navigation",
   tabPrayer: "Prayer times",
+  tabPrayerLead:
+    "Official times for your city and date — next prayer and today’s schedule.",
   tabQibla: "Qibla",
+  tabQiblaLead:
+    "Direction toward the Kaaba from your position. Enable GPS and compass if needed.",
   tabCalendar: "Calendar",
+  tabCalendarLead:
+    "Hijri calendar, month view, and link to the selected Gregorian date.",
   tabSettings: "Settings",
   settingsSection: "Language, appearance, notifications, and azan",
   city: "City",
@@ -309,6 +341,7 @@ const en: Messages = {
   footerLinkLabel: "Islamiska förbundet",
   footerCreatedBy: "Created by RASafi Tech",
   footerCopyright: "© 2026 RASafi Tech. All rights reserved.",
+  footerLegalNavAria: "Legal and policies",
   privacy: "Privacy",
   terms: "Terms",
   cookiesPolicy: "Cookies",
@@ -351,6 +384,12 @@ const en: Messages = {
   hijriSummaryTitle: "Islamic date (Hijri)",
   calPrevMonth: "Previous month",
   calNextMonth: "Next month",
+  calMonthPagerHint: "Change month with the arrows.",
+  "hijriEvent.ramadanStart": "Start of Ramadan",
+  "hijriEvent.laylatQadr": "Laylat al-Qadr (approx.)",
+  "hijriEvent.eidFitr": "Eid al-Fitr",
+  "hijriEvent.arafah": "Day of Arafah",
+  "hijriEvent.eidAdha": "Eid al-Adha",
   appDownloadBannerTitle: "Install this app",
   appDownloadBannerBody:
     "Use your browser’s Install or Add to Home screen option — same web app, no app store.",
@@ -383,10 +422,17 @@ const ar: Messages = {
   themeNight: "ليل",
   themeSystem: "النظام",
   controlsAria: "المدينة والتاريخ",
+  disclosureLocationTitle: "الموقع والتاريخ والوضع",
   mainNavAria: "التنقل الرئيسي",
   tabPrayer: "أوقات الصلاة",
+  tabPrayerLead:
+    "أوقات رسمية للمدينة والتاريخ المختارين — الصلاة القادمة وجدول اليوم.",
   tabQibla: "القبلة",
+  tabQiblaLead:
+    "الاتجاه نحو الكعبة من موقعك. فعّل تحديد الموقع والبوصلة عند الحاجة.",
   tabCalendar: "التقويم",
+  tabCalendarLead:
+    "التقويم الهجري وعرض الشهر والربط بالتاريخ الميلادي المختار.",
   tabSettings: "الإعدادات",
   settingsSection: "اللغة والمظهر والإشعارات والأذان",
   city: "المدينة",
@@ -438,6 +484,7 @@ const ar: Messages = {
   footerLinkLabel: "الاتحاد الإسلامي في السويد",
   footerCreatedBy: "تم الإنشاء بواسطة RASafi Tech",
   footerCopyright: "© 2026 RASafi Tech. جميع الحقوق محفوظة.",
+  footerLegalNavAria: "قانوني وسياسات",
   privacy: "الخصوصية",
   terms: "الشروط",
   cookiesPolicy: "ملفات تعريف الارتباط",
@@ -480,6 +527,12 @@ const ar: Messages = {
   hijriSummaryTitle: "التاريخ الهجري",
   calPrevMonth: "الشهر السابق",
   calNextMonth: "الشهر التالي",
+  calMonthPagerHint: "غيّر الشهر باستخدام الأسهم.",
+  "hijriEvent.ramadanStart": "بداية رمضان",
+  "hijriEvent.laylatQadr": "ليلة القدر (تقريباً)",
+  "hijriEvent.eidFitr": "عيد الفطر",
+  "hijriEvent.arafah": "يوم عرفة",
+  "hijriEvent.eidAdha": "عيد الأضحى",
   appDownloadBannerTitle: "ثبّت التطبيق",
   appDownloadBannerBody:
     "استخدم «تثبيت» أو «إضافة إلى الشاشة الرئيسية» من المتصفح — نفس الموقع دون متجر تطبيقات.",
@@ -510,10 +563,17 @@ const fa: Messages = {
   themeNight: "شب",
   themeSystem: "سیستم",
   controlsAria: "شهر و تاریخ",
+  disclosureLocationTitle: "مکان، تاریخ و حالت اذان",
   mainNavAria: "ناوبری اصلی",
   tabPrayer: "اوقات نماز",
+  tabPrayerLead:
+    "اوقات رسمی برای شهر و تاریخ انتخاب‌شده — نماز بعدی و برنامهٔ امروز.",
   tabQibla: "قبله",
+  tabQiblaLead:
+    "جهت به سمت کعبه از موقعیت شما. در صورت نیاز GPS و قطب‌نما را فعال کنید.",
   tabCalendar: "تقویم",
+  tabCalendarLead:
+    "تقویم هجری، نمای ماه و ارتباط با تاریخ میلادی انتخاب‌شده.",
   tabSettings: "تنظیمات",
   settingsSection: "زبان، ظاهر، اعلان‌ها و اذان",
   city: "شهر",
@@ -565,6 +625,7 @@ const fa: Messages = {
   footerLinkLabel: "اتحادیه اسلامی سوئد",
   footerCreatedBy: "ساخته‌شده توسط RASafi Tech",
   footerCopyright: "© 2026 RASafi Tech. تمام حقوق محفوظ است.",
+  footerLegalNavAria: "قانونی و خط‌مشی‌ها",
   privacy: "حریم خصوصی",
   terms: "شرایط",
   cookiesPolicy: "کوکی‌ها",
@@ -607,6 +668,12 @@ const fa: Messages = {
   hijriSummaryTitle: "تاریخ هجری",
   calPrevMonth: "ماه قبل",
   calNextMonth: "ماه بعد",
+  calMonthPagerHint: "با فلش‌ها ماه را عوض کنید.",
+  "hijriEvent.ramadanStart": "آغاز ماه رمضان",
+  "hijriEvent.laylatQadr": "شب قدر (تقریبی)",
+  "hijriEvent.eidFitr": "عید فطر",
+  "hijriEvent.arafah": "روز عرفه",
+  "hijriEvent.eidAdha": "عید قربان",
   appDownloadBannerTitle: "نصب برنامه",
   appDownloadBannerBody:
     "از مرورگر گزینه «نصب» یا «افزودن به صفحه اصلی» را بزنید — همان وب‌اپ، بدون فروشگاه.",
@@ -637,10 +704,17 @@ const ku: Messages = {
   themeNight: "Şev",
   themeSystem: "Sîstem",
   controlsAria: "Bajar û roj",
+  disclosureLocationTitle: "Cih, roj û mod",
   mainNavAria: "Navîgasyona sereke",
   tabPrayer: "Demên nimêjê",
+  tabPrayerLead:
+    "Demên fermî ji bo bajar û roja hilbijartî — nimêja din û plana rojê.",
   tabQibla: "Qible",
+  tabQiblaLead:
+    "Ber bi Kabeyê ve ji cihê te. GPS û kompas çalak bike heke pêwîst be.",
   tabCalendar: "Salname",
+  tabCalendarLead:
+    "Salnameya Hicrî, dîtina mehê û girêdana bi roja mîladî ya hilbijartî.",
   tabSettings: "Mîheng",
   settingsSection: "Ziman, xuyang, ragihandin û ezan",
   city: "Bajar",
@@ -692,6 +766,7 @@ const ku: Messages = {
   footerLinkLabel: "Yekîtiya Îslamî ya Swêdê",
   footerCreatedBy: "Ji hêla RASafi Tech ve hatî çêkirin",
   footerCopyright: "© 2026 RASafi Tech. Hemû maf parastî ne.",
+  footerLegalNavAria: "Qanûnî û polîtîkayên",
   privacy: "Nepenîtî",
   terms: "Mercên karanînê",
   cookiesPolicy: "Cookies",
@@ -734,6 +809,12 @@ const ku: Messages = {
   hijriSummaryTitle: "Roja Hicrî",
   calPrevMonth: "Meha berê",
   calNextMonth: "Meha din",
+  calMonthPagerHint: "Mehê bi okan biguherîne.",
+  "hijriEvent.ramadanStart": "Destpêka Remezanê",
+  "hijriEvent.laylatQadr": "Şeva Qederê (texmînî)",
+  "hijriEvent.eidFitr": "Cejna Remezanê",
+  "hijriEvent.arafah": "Roja Arefayê",
+  "hijriEvent.eidAdha": "Cejna Qurbanê",
   appDownloadBannerTitle: "Sepanê rake",
   appDownloadBannerBody:
     "Sepana gerokê «Rake» an «Li ser ekrana malê zêde bike» — heman malper, bê firotgeh.",
@@ -764,10 +845,17 @@ const so: Messages = {
   themeNight: "Habeen",
   themeSystem: "Nidaamka",
   controlsAria: "Magaalo iyo taariikh",
+  disclosureLocationTitle: "Goobta, taariikhda iyo habka",
   mainNavAria: "Navigashada ugu weyn",
   tabPrayer: "Waqtiga salaadda",
+  tabPrayerLead:
+    "Waqtiyo rasmiy magaalo iyo taariikhda la doortay — salaadda soo socota iyo jadwalka maanta.",
   tabQibla: "Qibla",
+  tabQiblaLead:
+    "Jihada xagga Kaaba ee booskaaga. Shid GPS iyo buskud haddii loo baahdo.",
   tabCalendar: "Kalender",
+  tabCalendarLead:
+    "Jadwalka Hijriga, aragtida bilaha, iyo xiriirka taariikhda Giriigoriyaanka la doortay.",
   tabSettings: "Dejinta",
   settingsSection: "Luqad, muuqaal, ogeysiis iyo adaan",
   city: "Magaalo",
@@ -819,6 +907,7 @@ const so: Messages = {
   footerLinkLabel: "Ururka Islaamka ee Iswiidhanka",
   footerCreatedBy: "Waxaa sameeyay RASafi Tech",
   footerCopyright: "© 2026 RASafi Tech. Dhammaan xuquuqda waa la ilaaliyaa.",
+  footerLegalNavAria: "Sharciga iyo siyaasadaha",
   privacy: "Asturnaanta",
   terms: "Shuruudaha",
   cookiesPolicy: "Cookies",
@@ -861,6 +950,12 @@ const so: Messages = {
   hijriSummaryTitle: "Taariikhda Hijriga",
   calPrevMonth: "Bishii hore",
   calNextMonth: "Bishii xigta",
+  calMonthPagerHint: "Ku beddel bilaha falaadhaha.",
+  "hijriEvent.ramadanStart": "Bilowga Ramadaanka",
+  "hijriEvent.laylatQadr": "Laylatul Qadr (qiyaas)",
+  "hijriEvent.eidFitr": "Ciida Fitr",
+  "hijriEvent.arafah": "Maalinta Carafo",
+  "hijriEvent.eidAdha": "Ciida Adxa",
   appDownloadBannerTitle: "Ku rakib barnaamijka",
   appDownloadBannerBody:
     "Isticmaal «Rakib» ama «Ku dar bogga guriga» ee browserka — isla webka, oo aan Play Store.",

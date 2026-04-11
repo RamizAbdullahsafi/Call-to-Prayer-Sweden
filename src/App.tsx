@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import {
   useCallback,
   useEffect,
@@ -19,6 +19,7 @@ import {
 import {
   AZAN_VOICE_GROUPS,
   DEFAULT_AZAN_PRAYER_KEYS,
+  getAzanVoiceLabel,
   getAzanStreamUrl,
   loadAzanPlayEnabled,
   loadAzanPrayerKeys,
@@ -61,10 +62,8 @@ import {
 } from "./nativePrayerNotifications";
 import {
   applyEffectiveTheme,
-  effectiveTheme,
   getStoredThemePreference,
   saveThemePreference,
-  subscribeSystemColorScheme,
   type ThemePreference,
 } from "./theme";
 import {
@@ -76,9 +75,16 @@ import {
 import type { MessageId } from "./i18n/messages";
 import { detectCurrentPosition, reverseGeocodeCity, type GeoPoint } from "./location";
 import { qiblaBearing } from "./qibla";
-import { hijriFromGregorian, hijriImportantDay } from "./hijri";
+import { formatLocaleDigits } from "./i18n/localeNumbers";
+import { hijriFromGregorian, hijriImportantDayKey } from "./hijri";
 import { buildHijriMonthGrid, shiftHijriMonth } from "./hijriCalendar";
 import { AppDownloadBanner } from "./AppDownloadBanner";
+import {
+  IconCalendar,
+  IconPrayer,
+  IconQibla,
+  IconSettings,
+} from "./TabIcons";
 import {
   hasAbsoluteOrientationListener,
   headingFromOrientationEvent,
@@ -238,6 +244,8 @@ export function App(): ReactElement {
   const [notifyMode, setNotifyMode] = useState<NotifyMode>(() => loadNotifyMode());
   const [azanPlaying, setAzanPlaying] = useState(false);
   const [azanPlayError, setAzanPlayError] = useState<string | null>(null);
+  const adhanVoiceDialogRef = useRef<HTMLDialogElement>(null);
+  const [adhanVoicePickerOpen, setAdhanVoicePickerOpen] = useState(false);
   const [nowTick, setNowTick] = useState(() => new Date());
   const [geo, setGeo] = useState<GeoPoint | null>(null);
   const [geoLoading, setGeoLoading] = useState(false);
@@ -257,14 +265,7 @@ export function App(): ReactElement {
   >("prayer");
 
   useLayoutEffect(() => {
-    applyEffectiveTheme(effectiveTheme(themePref));
-  }, [themePref]);
-
-  useEffect(() => {
-    if (themePref !== "system") return;
-    return subscribeSystemColorScheme(() => {
-      applyEffectiveTheme(effectiveTheme("system"));
-    });
+    applyEffectiveTheme(themePref);
   }, [themePref]);
 
   useEffect(() => {
@@ -772,6 +773,11 @@ export function App(): ReactElement {
     if (Number.isNaN(date.getTime())) return null;
     return hijriFromGregorian(date, locale);
   }, [dateInput, locale]);
+
+  const hijriEventMessageId = useMemo(
+    () => (hijriInfo ? hijriImportantDayKey(hijriInfo) : null),
+    [hijriInfo]
+  );
   const gregorianInfoLabel = useMemo(() => {
     const date = new Date(dateInput + "T12:00:00");
     if (Number.isNaN(date.getTime())) return null;
@@ -786,6 +792,24 @@ export function App(): ReactElement {
       return date.toDateString();
     }
   }, [dateInput, locale]);
+
+  const locationSummaryLine = useMemo(() => {
+    const cityVal = cityCustom.trim() || city;
+    const d = new Date(dateInput + "T12:00:00");
+    let datePart = dateInput;
+    if (!Number.isNaN(d.getTime())) {
+      try {
+        datePart = new Intl.DateTimeFormat(locale, {
+          weekday: "short",
+          day: "numeric",
+          month: "short",
+        }).format(d);
+      } catch {
+        datePart = dateInput;
+      }
+    }
+    return `${cityVal} · ${datePart}`;
+  }, [city, cityCustom, dateInput, locale]);
 
   const [hijriViewAnchor, setHijriViewAnchor] = useState(
     () => new Date(`${formatDateYMD(new Date())}T12:00:00`)
@@ -828,69 +852,22 @@ export function App(): ReactElement {
   };
 
   return (
-    <>
+    <div className="app-native-shell">
       <a href="#main-content" className="skip-link">
         {t("skipToContent")}
       </a>
       <AppDownloadBanner t={t} />
-      <header className="app-header masjid-header app-header--brand">
-        <h1>{t("appTitle")}</h1>
-        <p className="tagline">{t("tagline")}</p>
-      </header>
-
-      <nav className="app-nav" aria-label={t("mainNavAria")}>
-        <div className="app-nav-inner" role="tablist">
-          <button
-            type="button"
-            id="tab-btn-prayer"
-            role="tab"
-            aria-selected={activeTab === "prayer"}
-            aria-controls="panel-prayer"
-            className={`app-nav-tab${activeTab === "prayer" ? " app-nav-tab--active" : ""}`}
-            onClick={() => setActiveTab("prayer")}
-          >
-            {t("tabPrayer")}
-          </button>
-          <button
-            type="button"
-            id="tab-btn-qibla"
-            role="tab"
-            aria-selected={activeTab === "qibla"}
-            aria-controls="panel-qibla"
-            className={`app-nav-tab${activeTab === "qibla" ? " app-nav-tab--active" : ""}`}
-            onClick={() => setActiveTab("qibla")}
-          >
-            {t("tabQibla")}
-          </button>
-          <button
-            type="button"
-            id="tab-btn-calendar"
-            role="tab"
-            aria-selected={activeTab === "calendar"}
-            aria-controls="panel-calendar"
-            className={`app-nav-tab${activeTab === "calendar" ? " app-nav-tab--active" : ""}`}
-            onClick={() => setActiveTab("calendar")}
-          >
-            {t("tabCalendar")}
-          </button>
-          <button
-            type="button"
-            id="tab-btn-settings"
-            role="tab"
-            aria-selected={activeTab === "settings"}
-            aria-controls="panel-settings"
-            className={`app-nav-tab${activeTab === "settings" ? " app-nav-tab--active" : ""}`}
-            onClick={() => setActiveTab("settings")}
-          >
-            {t("tabSettings")}
-          </button>
+      <header className="app-top-bar" role="banner">
+        <div className="app-top-bar__inner">
+          <p className="app-top-bar__eyebrow">{t("tagline")}</p>
+          <h1 className="app-top-bar__title">{t("appTitle")}</h1>
         </div>
-      </nav>
+      </header>
 
       <main
         id="main-content"
         tabIndex={-1}
-        className="app-main masjid-sanctuary app-main--shell"
+        className="app-main masjid-sanctuary app-main--shell app-main--with-tabbar"
         aria-busy={loading}
       >
       <section
@@ -898,119 +875,12 @@ export function App(): ReactElement {
         role="tabpanel"
         aria-labelledby="tab-btn-prayer"
         hidden={activeTab !== "prayer"}
-        className="app-tab-panel"
+        className="app-tab-panel app-page"
       >
-      <div className="controls masjid-panel" aria-label={t("controlsAria")}>
-        <div>
-          <label htmlFor="city">{t("city")}</label>
-          <select
-            id="city"
-            aria-label={t("citySelectAria")}
-            value={city}
-            onChange={(e) => {
-              const next = e.target.value;
-              setCity(next);
-              setCityCustom(next);
-              persistCustomCity(next);
-              void loadPrayerTimes();
-            }}
-          >
-            {SWEDISH_MUNICIPALITIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="cityCustom">{t("cityCustom")}</label>
-          <input
-            type="text"
-            id="cityCustom"
-            list="city-custom-options"
-            autoComplete="address-level2"
-            placeholder={t("cityCustomPlaceholder")}
-            value={cityCustom}
-            onChange={(e) => {
-              const next = e.target.value;
-              setCityCustom(next);
-              const normalized = normalizeCityName(next);
-              const matched = municipalityByNormalized.get(normalized);
-              if (matched) setCity(matched);
-            }}
-            onBlur={() => {
-              persistCustomCity(cityCustom);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                persistCustomCity(cityCustom);
-                void loadPrayerTimes();
-              }
-            }}
-          />
-          <datalist id="city-custom-options">
-            {SWEDISH_MUNICIPALITIES.map((name) => (
-              <option key={name} value={name} />
-            ))}
-          </datalist>
-        </div>
-        <div className="controls-row control-actions">
-          <button
-            type="button"
-            className="secondary"
-            onClick={() => void onDetectLocation()}
-            disabled={geoLoading}
-          >
-            {geoLoading ? "Detecting location…" : "Use my location (GPS)"}
-          </button>
-          <label className="mode-label" htmlFor="notifyMode">
-          Azan mode
-          <select
-            id="notifyMode"
-            value={notifyMode}
-            onChange={(e) => setNotifyMode(e.target.value as NotifyMode)}
-          >
-            <option value="full">Full Azan</option>
-            <option value="notify_only">Notification only</option>
-            <option value="vibrate">Vibration only</option>
-            <option value="silent">Silent</option>
-          </select>
-        </label>
-        </div>
-        {geoMessage ? <p className="geo-msg">{geoMessage}</p> : null}
-        <div className="controls-row">
-          <div>
-            <label htmlFor="date">{t("date")}</label>
-            <input
-              type="date"
-              id="date"
-              value={dateInput}
-              onChange={(e) => {
-                setDateInput(e.target.value);
-              }}
-            />
-          </div>
-          <div className="controls-load">
-            <button
-              type="button"
-              className={`primary${loading ? " is-loading" : ""}`}
-              disabled={loading}
-              aria-busy={loading}
-              onClick={() => void loadPrayerTimes()}
-            >
-              {loading ? (
-                <>
-                  <span className="btn-spinner" aria-hidden="true" />
-                  <span>{t("loading")}</span>
-                </>
-              ) : (
-                t("loadTimes")
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
+      <header className="app-page-head app-page-head--toolbar">
+        <h2 className="app-page-title">{t("tabPrayer")}</h2>
+        <p className="app-page-sub">{t("tabPrayerLead")}</p>
+      </header>
 
       {error ? (
         <div id="error" className="error" role="alert" tabIndex={-1}>
@@ -1023,7 +893,11 @@ export function App(): ReactElement {
           <span className="visually-hidden">{t("loadingTimesAria")}</span>
         ) : null}
       </div>
-      {offlineCachedTimes ? <p className="geo-msg">{t("offlineCachedTimes")}</p> : null}
+      {offlineCachedTimes ? (
+        <p className="status-chip status-chip--offline">
+          {t("offlineCachedTimes")}
+        </p>
+      ) : null}
 
       {!scheduleDay || !nextPrayer ? null : (
         <div
@@ -1032,12 +906,22 @@ export function App(): ReactElement {
           role="region"
           aria-label={t("nextPrayer")}
         >
-          <div className="label">{t("nextPrayer")}</div>
-          <div className="name">
-            {t(prayerMsg(nextPrayer.key, "prayer"))} ·{" "}
-            {scheduleDay.schedule[nextPrayer.key]}
+          <div className="next-banner__main">
+            <div className="label">{t("nextPrayer")}</div>
+            <div className="name">
+              {t(prayerMsg(nextPrayer.key, "prayer"))}
+              <span className="next-banner__dot" aria-hidden>
+                ·
+              </span>
+              <time
+                className="next-banner__time"
+                dateTime={`${scheduleDay.date}T${scheduleDay.schedule[nextPrayer.key]}`}
+              >
+                {scheduleDay.schedule[nextPrayer.key]}
+              </time>
+            </div>
           </div>
-          <div className="countdown">
+          <div className="countdown" aria-live="polite">
             {formatCountdownI18n(
               nextPrayer.at.getTime() - nowTick.getTime(),
               t
@@ -1137,6 +1021,128 @@ export function App(): ReactElement {
         </div>
       </section>
 
+      <details className="disclosure-panel disclosure-panel--location">
+        <summary className="disclosure-panel__summary">
+          <span className="disclosure-panel__title">{t("disclosureLocationTitle")}</span>
+          <span className="disclosure-panel__value">{locationSummaryLine}</span>
+        </summary>
+        <div className="disclosure-panel__body">
+          <div className="controls masjid-panel" aria-label={t("controlsAria")}>
+            <div>
+              <label htmlFor="city">{t("city")}</label>
+              <select
+                id="city"
+                aria-label={t("citySelectAria")}
+                value={city}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setCity(next);
+                  setCityCustom(next);
+                  persistCustomCity(next);
+                  void loadPrayerTimes();
+                }}
+              >
+                {SWEDISH_MUNICIPALITIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="cityCustom">{t("cityCustom")}</label>
+              <input
+                type="text"
+                id="cityCustom"
+                list="city-custom-options"
+                autoComplete="address-level2"
+                placeholder={t("cityCustomPlaceholder")}
+                value={cityCustom}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setCityCustom(next);
+                  const normalized = normalizeCityName(next);
+                  const matched = municipalityByNormalized.get(normalized);
+                  if (matched) setCity(matched);
+                }}
+                onBlur={() => {
+                  persistCustomCity(cityCustom);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    persistCustomCity(cityCustom);
+                    void loadPrayerTimes();
+                  }
+                }}
+              />
+              <datalist id="city-custom-options">
+                {SWEDISH_MUNICIPALITIES.map((name) => (
+                  <option key={name} value={name} />
+                ))}
+              </datalist>
+            </div>
+            <div className="controls-row control-actions">
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => void onDetectLocation()}
+                disabled={geoLoading}
+              >
+                {geoLoading ? "Detecting location…" : "Use my location (GPS)"}
+              </button>
+              <label className="mode-label" htmlFor="notifyMode">
+                Azan mode
+                <select
+                  id="notifyMode"
+                  value={notifyMode}
+                  onChange={(e) => setNotifyMode(e.target.value as NotifyMode)}
+                >
+                  <option value="full">Full Azan</option>
+                  <option value="notify_only">Notification only</option>
+                  <option value="vibrate">Vibration only</option>
+                  <option value="silent">Silent</option>
+                </select>
+              </label>
+            </div>
+            {geoMessage ? (
+              <p className="status-chip status-chip--info">{geoMessage}</p>
+            ) : null}
+            <div className="controls-row">
+              <div>
+                <label htmlFor="date">{t("date")}</label>
+                <input
+                  type="date"
+                  id="date"
+                  value={dateInput}
+                  onChange={(e) => {
+                    setDateInput(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="controls-load">
+                <button
+                  type="button"
+                  className={`primary${loading ? " is-loading" : ""}`}
+                  disabled={loading}
+                  aria-busy={loading}
+                  onClick={() => void loadPrayerTimes()}
+                >
+                  {loading ? (
+                    <>
+                      <span className="btn-spinner" aria-hidden="true" />
+                      <span>{t("loading")}</span>
+                    </>
+                  ) : (
+                    t("loadTimes")
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
       </section>
 
       <section
@@ -1144,11 +1150,15 @@ export function App(): ReactElement {
         role="tabpanel"
         aria-labelledby="tab-btn-qibla"
         hidden={activeTab !== "qibla"}
-        className="app-tab-panel"
+        className="app-tab-panel app-page"
       >
+      <header className="app-page-head app-page-head--toolbar">
+        <h2 className="app-page-title">{t("tabQibla")}</h2>
+        <p className="app-page-sub">{t("tabQiblaLead")}</p>
+      </header>
       <div className="feature-grid feature-grid--stack">
-        <div className="feature-card">
-          <h3>{t("qiblaTitle")}</h3>
+        <div className="feature-card feature-card--pro">
+          <h3 className="feature-card__title">{t("qiblaTitle")}</h3>
           <div className="qibla-actions">
             <button
               type="button"
@@ -1170,10 +1180,14 @@ export function App(): ReactElement {
               </button>
             ) : null}
           </div>
-          {geoMessage ? <p className="geo-msg">{geoMessage}</p> : null}
-          {compassError ? <p className="geo-msg">{compassError}</p> : null}
+          {geoMessage ? (
+            <p className="status-chip status-chip--info">{geoMessage}</p>
+          ) : null}
+          {compassError ? (
+            <p className="status-chip status-chip--warning">{compassError}</p>
+          ) : null}
           {qiblaDeg === null ? (
-            <p>{t("qiblaGpsHint")}</p>
+            <p className="feature-card__lead">{t("qiblaGpsHint")}</p>
           ) : (
             <>
               <div
@@ -1235,49 +1249,93 @@ export function App(): ReactElement {
         role="tabpanel"
         aria-labelledby="tab-btn-calendar"
         hidden={activeTab !== "calendar"}
-        className="app-tab-panel"
+        className="app-tab-panel app-page"
       >
-      <div className="feature-grid feature-grid--calendar">
-        <div className="feature-card feature-card--hijri-summary">
-          <h3>{t("hijriSummaryTitle")}</h3>
+      <header className="app-page-head app-page-head--toolbar">
+        <h2 className="app-page-title">{t("tabCalendar")}</h2>
+        <p className="app-page-sub">{t("tabCalendarLead")}</p>
+      </header>
+      <div className="calendar-hub">
+        <div className="calendar-hub__summary">
+          <p className="calendar-hub__eyebrow">{t("hijriSummaryTitle")}</p>
           {!hijriInfo ? null : (
             <>
               <p className="hijri-summary-label">{hijriInfo.label}</p>
-              {gregorianInfoLabel ? <p>{gregorianInfoLabel}</p> : null}
-              {hijriImportantDay(hijriInfo) ? (
-                <p className="hijri-event">{hijriImportantDay(hijriInfo)}</p>
+              {gregorianInfoLabel ? (
+                <p className="calendar-hub__greg">{gregorianInfoLabel}</p>
+              ) : null}
+              {hijriEventMessageId ? (
+                <p className="hijri-event">{t(hijriEventMessageId)}</p>
               ) : null}
             </>
           )}
         </div>
-        <div className="feature-card feature-card--hijri-calendar">
+        <div className="calendar-hub__divider" aria-hidden />
+        <div className="calendar-hub__calendar">
           <div className="hijri-cal-header">
-            <h3 className="hijri-cal-title">{t("hijriCalendarTitle")}</h3>
-            <div className="hijri-cal-nav">
-              <button
-                type="button"
-                className="hijri-cal-nav-btn"
-                aria-label={t("calPrevMonth")}
-                onClick={() =>
-                  setHijriViewAnchor((a) => shiftHijriMonth(a, -1, locale))
-                }
+            <div className="hijri-cal-header__row">
+              <h3 className="hijri-cal-title">{t("hijriCalendarTitle")}</h3>
+              <div
+                className="hijri-cal-nav"
+                role="group"
+                aria-label={t("hijriCalendarTitle")}
               >
-                ‹
-              </button>
-              <span className="hijri-cal-month-label">
-                {hijriMonthGrid?.monthTitle ?? "—"}
-              </span>
-              <button
-                type="button"
-                className="hijri-cal-nav-btn"
-                aria-label={t("calNextMonth")}
-                onClick={() =>
-                  setHijriViewAnchor((a) => shiftHijriMonth(a, 1, locale))
-                }
-              >
-                ›
-              </button>
+                <button
+                  type="button"
+                  className="hijri-cal-nav-btn"
+                  aria-label={t("calPrevMonth")}
+                  onClick={() =>
+                    setHijriViewAnchor((a) => shiftHijriMonth(a, -1, locale))
+                  }
+                >
+                  <svg
+                    className="hijri-cal-nav-icon"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden
+                  >
+                    <polyline
+                      points="15 18 9 12 15 6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <span className="hijri-cal-month-label">
+                  {hijriMonthGrid?.monthTitle ?? "—"}
+                </span>
+                <button
+                  type="button"
+                  className="hijri-cal-nav-btn"
+                  aria-label={t("calNextMonth")}
+                  onClick={() =>
+                    setHijriViewAnchor((a) => shiftHijriMonth(a, 1, locale))
+                  }
+                >
+                  <svg
+                    className="hijri-cal-nav-icon"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden
+                  >
+                    <polyline
+                      points="9 18 15 12 9 6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
+            <p className="hijri-cal-nav-hint">{t("calMonthPagerHint")}</p>
           </div>
           {!hijriMonthGrid ? null : (
             <div
@@ -1286,8 +1344,12 @@ export function App(): ReactElement {
               aria-label={hijriMonthGrid.monthTitle}
             >
               <div className="hijri-cal-weekdays" role="row">
-                {hijriMonthGrid.weekdayLabels.map((wd) => (
-                  <div key={wd} className="hijri-cal-wd" role="columnheader">
+                {hijriMonthGrid.weekdayLabels.map((wd, wdIdx) => (
+                  <div
+                    key={`hijri-wd-${wdIdx}`}
+                    className="hijri-cal-wd"
+                    role="columnheader"
+                  >
                     {wd}
                   </div>
                 ))}
@@ -1313,9 +1375,11 @@ export function App(): ReactElement {
                       className={`hijri-cal-cell${selected ? " hijri-cal-cell--selected" : ""}${today ? " hijri-cal-cell--today" : ""}`}
                       onClick={() => setDateInput(ymd)}
                     >
-                      <span className="hijri-cal-day">{cell.hijriDay}</span>
+                      <span className="hijri-cal-day">
+                        {formatLocaleDigits(cell.hijriDay, locale)}
+                      </span>
                       <span className="hijri-cal-greg">
-                        {cell.gregorian.getDate()}
+                        {formatLocaleDigits(cell.gregorian.getDate(), locale)}
                       </span>
                     </button>
                   );
@@ -1333,72 +1397,72 @@ export function App(): ReactElement {
         role="tabpanel"
         aria-labelledby="tab-btn-settings"
         hidden={activeTab !== "settings"}
-        className="app-tab-panel app-tab-panel--settings"
+        className="app-tab-panel app-tab-panel--settings app-page"
       >
-      <p className="settings-intro">{t("settingsSection")}</p>
-      <div
-        className="lang-bar lang-bar--in-panel"
-        role="group"
-        aria-label={t("language")}
-      >
-        <label className="lang-bar-label" htmlFor="app-locale">
-          {t("language")}
-        </label>
-        <select
-          id="app-locale"
-          className="lang-select"
-          value={locale}
-          aria-label={t("language")}
-          onChange={(e) => setLocale(e.target.value as Locale)}
+      <header className="app-page-head app-page-head--toolbar">
+        <h2 className="app-page-title">{t("tabSettings")}</h2>
+        <p className="app-page-sub">{t("settingsSection")}</p>
+      </header>
+      <div className="settings-stack">
+        <section
+          className="settings-tile"
+          aria-labelledby="settings-heading-lang"
         >
-          {LOCALES.map((loc) => (
-            <option key={loc} value={loc}>
-              {LOCALE_LABELS[loc]}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div
-        className="theme-bar theme-bar--in-panel"
-        role="group"
-        aria-label={t("themeAppearance")}
-      >
-        <span className="theme-bar-label" id="theme-label">
-          {t("themeAppearance")}
-        </span>
-        <div
-          className="theme-segmented"
-          role="group"
-          aria-labelledby="theme-label"
+          <h3 id="settings-heading-lang" className="settings-tile__title">
+            {t("language")}
+          </h3>
+          <select
+            id="app-locale"
+            className="settings-select"
+            value={locale}
+            aria-labelledby="settings-heading-lang"
+            onChange={(e) => setLocale(e.target.value as Locale)}
+          >
+            {LOCALES.map((loc) => (
+              <option key={loc} value={loc}>
+                {LOCALE_LABELS[loc]}
+              </option>
+            ))}
+          </select>
+        </section>
+        <section
+          className="settings-tile"
+          aria-labelledby="settings-heading-theme"
         >
-          <button
-            type="button"
-            className={`theme-option${themePref === "light" ? " theme-option--active" : ""}`}
-            aria-pressed={themePref === "light"}
-            onClick={() => onThemePreferenceChange("light")}
+          <h3 id="settings-heading-theme" className="settings-tile__title">
+            {t("themeAppearance")}
+          </h3>
+          <div
+            className="theme-segmented theme-segmented--settings"
+            role="group"
+            aria-labelledby="settings-heading-theme"
           >
-            {t("themeDay")}
-          </button>
-          <button
-            type="button"
-            className={`theme-option${themePref === "dark" ? " theme-option--active" : ""}`}
-            aria-pressed={themePref === "dark"}
-            onClick={() => onThemePreferenceChange("dark")}
-          >
-            {t("themeNight")}
-          </button>
-          <button
-            type="button"
-            className={`theme-option${themePref === "system" ? " theme-option--active" : ""}`}
-            aria-pressed={themePref === "system"}
-            onClick={() => onThemePreferenceChange("system")}
-          >
-            {t("themeSystem")}
-          </button>
-        </div>
+            <button
+              type="button"
+              className={`theme-option${themePref === "light" ? " theme-option--active" : ""}`}
+              aria-pressed={themePref === "light"}
+              onClick={() => onThemePreferenceChange("light")}
+            >
+              {t("themeDay")}
+            </button>
+            <button
+              type="button"
+              className={`theme-option${themePref === "dark" ? " theme-option--active" : ""}`}
+              aria-pressed={themePref === "dark"}
+              onClick={() => onThemePreferenceChange("dark")}
+            >
+              {t("themeNight")}
+            </button>
+          </div>
+        </section>
       </div>
-      <fieldset className="notify-fieldset">
-        <legend>{t("reminders")}</legend>
+      <details className="settings-disclosure">
+        <summary className="settings-disclosure__summary">
+          <span className="settings-disclosure__title">{t("reminders")}</span>
+          <span className="settings-disclosure__badge">{notifyKeys.length}</span>
+        </summary>
+        <fieldset className="notify-fieldset notify-fieldset--disclosure">
+          <legend className="visually-hidden">{t("reminders")}</legend>
         {nativeNotificationsEnabled && Capacitor.getPlatform() === "android" ? (
           <div
             className="android-setup"
@@ -1517,39 +1581,89 @@ export function App(): ReactElement {
           />
           {t("notifySilent")}
         </label>
-      </fieldset>
+        </fieldset>
+      </details>
 
-      <fieldset className="adhan-fieldset">
-        <legend>{t("adhan")}</legend>
+      <details className="settings-disclosure">
+        <summary className="settings-disclosure__summary">
+          <span className="settings-disclosure__title">{t("adhan")}</span>
+        </summary>
+        <fieldset className="adhan-fieldset adhan-fieldset--disclosure">
+          <legend className="visually-hidden">{t("adhan")}</legend>
         <p className="adhan-hint">
           {t("adhanHintBefore")}{" "}
           <strong>{t("test")}</strong> {t("adhanHintAfter")}
         </p>
         <div className="adhan-row adhan-row-top">
           <div className="adhan-grow">
-            <label htmlFor="adhan-voice">{t("voice")}</label>
-            <select
-              id="adhan-voice"
-              className="adhan-voice-select"
+            <label htmlFor="adhan-voice-trigger">{t("voice")}</label>
+            <button
+              type="button"
+              id="adhan-voice-trigger"
+              className="adhan-voice-trigger"
+              aria-haspopup="dialog"
+              aria-expanded={adhanVoicePickerOpen}
+              aria-controls="adhan-voice-dialog"
               aria-label={t("voiceSelectAria")}
-              value={azanVoiceId}
-              onChange={(e) => {
-                const v = e.target.value;
-                setAzanVoiceId(v);
-                saveAzanVoiceId(v);
-                setAzanPlayError(null);
+              onClick={() => {
+                setAdhanVoicePickerOpen(true);
+                adhanVoiceDialogRef.current?.showModal();
               }}
             >
-              {AZAN_VOICE_GROUPS.map((group) => (
-                <optgroup key={group.groupId} label={group.groupLabel}>
-                  {group.voices.map((vo) => (
-                    <option key={vo.id} value={vo.id}>
-                      {vo.label}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
+              <span className="adhan-voice-trigger__label">
+                {getAzanVoiceLabel(azanVoiceId)}
+              </span>
+            </button>
+            <dialog
+              id="adhan-voice-dialog"
+              ref={adhanVoiceDialogRef}
+              className="adhan-voice-dialog"
+              aria-labelledby="adhan-voice-dialog-title"
+              onClose={() => setAdhanVoicePickerOpen(false)}
+            >
+              <div className="adhan-voice-dialog__header">
+                <h3 id="adhan-voice-dialog-title" className="adhan-voice-dialog__title">
+                  {t("voice")}
+                </h3>
+                <button
+                  type="button"
+                  className="adhan-voice-dialog__close"
+                  aria-label={t("appDownloadBannerDismiss")}
+                  onClick={() => adhanVoiceDialogRef.current?.close()}
+                >
+                  ×
+                </button>
+              </div>
+              <div className="adhan-voice-dialog__scroller">
+                {AZAN_VOICE_GROUPS.map((group) => (
+                  <section
+                    key={group.groupId}
+                    className="adhan-voice-group"
+                    aria-label={group.groupLabel}
+                  >
+                    <p className="adhan-voice-group__label">{group.groupLabel}</p>
+                    <ul className="adhan-voice-group__list">
+                      {group.voices.map((vo) => (
+                        <li key={vo.id}>
+                          <button
+                            type="button"
+                            className={`adhan-voice-option${vo.id === azanVoiceId ? " adhan-voice-option--active" : ""}`}
+                            onClick={() => {
+                              setAzanVoiceId(vo.id);
+                              saveAzanVoiceId(vo.id);
+                              setAzanPlayError(null);
+                              adhanVoiceDialogRef.current?.close();
+                            }}
+                          >
+                            {vo.label}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            </dialog>
           </div>
           <div className="adhan-actions adhan-actions-btns">
             <button
@@ -1667,35 +1781,113 @@ export function App(): ReactElement {
           </a>
           .
         </p>
-      </fieldset>
+        </fieldset>
+      </details>
 
       </section>
 
       </main>
 
       <footer className="app-footer">
-        <p>
-          {t("footerAttribution")}
-          <a
-            href="https://www.islamiskaforbundet.se/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t("footerLinkLabel")}
-          </a>
-        </p>
-        <p className="footer-credit">{t("footerCreatedBy")}</p>
-        <p className="footer-copyright">{t("footerCopyright")}</p>
-        <p className="footer-legal">
+        <div className="app-footer__top">
+          <p className="app-footer__attribution">
+            {t("footerAttribution")}
+            <a
+              href="https://www.islamiskaforbundet.se/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("footerLinkLabel")}
+            </a>
+          </p>
+          <p className="footer-credit">{t("footerCreatedBy")}</p>
+          <p className="footer-copyright">{t("footerCopyright")}</p>
+        </div>
+        <nav className="footer-legal-nav" aria-label={t("footerLegalNavAria")}>
           <a href={getLegalPath("/terms.html")}>{t("terms")}</a>
-          {" · "}
+          <span className="footer-legal-nav__sep" aria-hidden>
+            ·
+          </span>
           <a href={getLegalPath("/privacy.html")}>{t("privacy")}</a>
-          {" · "}
+          <span className="footer-legal-nav__sep" aria-hidden>
+            ·
+          </span>
           <a href={getLegalPath("/cookies.html")}>{t("cookiesPolicy")}</a>
-          {" · "}
+          <span className="footer-legal-nav__sep" aria-hidden>
+            ·
+          </span>
           <a href={getLegalPath("/disclaimer.html")}>{t("disclaimer")}</a>
-        </p>
+        </nav>
       </footer>
-    </>
+
+      <nav className="app-tab-bar" aria-label={t("mainNavAria")}>
+        <div
+          className="app-tab-bar__inner"
+          role="tablist"
+          style={
+            {
+              "--tab-active":
+                activeTab === "prayer"
+                  ? 0
+                  : activeTab === "qibla"
+                    ? 1
+                    : activeTab === "calendar"
+                      ? 2
+                      : 3,
+            } as CSSProperties
+          }
+        >
+          <span className="app-tab-bar__pill" aria-hidden />
+          <button
+            type="button"
+            id="tab-btn-prayer"
+            role="tab"
+            aria-selected={activeTab === "prayer"}
+            aria-controls="panel-prayer"
+            className={`app-tab${activeTab === "prayer" ? " app-tab--active" : ""}`}
+            onClick={() => setActiveTab("prayer")}
+          >
+            <IconPrayer className="app-tab__icon" />
+            <span className="app-tab__label">{t("tabPrayer")}</span>
+          </button>
+          <button
+            type="button"
+            id="tab-btn-qibla"
+            role="tab"
+            aria-selected={activeTab === "qibla"}
+            aria-controls="panel-qibla"
+            className={`app-tab${activeTab === "qibla" ? " app-tab--active" : ""}`}
+            onClick={() => setActiveTab("qibla")}
+          >
+            <IconQibla className="app-tab__icon" />
+            <span className="app-tab__label">{t("tabQibla")}</span>
+          </button>
+          <button
+            type="button"
+            id="tab-btn-calendar"
+            role="tab"
+            aria-selected={activeTab === "calendar"}
+            aria-controls="panel-calendar"
+            className={`app-tab${activeTab === "calendar" ? " app-tab--active" : ""}`}
+            onClick={() => setActiveTab("calendar")}
+          >
+            <IconCalendar className="app-tab__icon" />
+            <span className="app-tab__label">{t("tabCalendar")}</span>
+          </button>
+          <button
+            type="button"
+            id="tab-btn-settings"
+            role="tab"
+            aria-selected={activeTab === "settings"}
+            aria-controls="panel-settings"
+            className={`app-tab${activeTab === "settings" ? " app-tab--active" : ""}`}
+            onClick={() => setActiveTab("settings")}
+          >
+            <IconSettings className="app-tab__icon" />
+            <span className="app-tab__label">{t("tabSettings")}</span>
+          </button>
+        </div>
+      </nav>
+    </div>
   );
 }

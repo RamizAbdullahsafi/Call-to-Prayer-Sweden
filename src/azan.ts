@@ -135,6 +135,15 @@ export const AZAN_VOICE_GROUPS: { groupId: string; groupLabel: string; voices: A
 
 export const AZAN_VOICES: AzanVoiceDef[] = AZAN_VOICE_GROUPS.flatMap((g) => g.voices);
 
+/** Label for the current voice id (for the picker button). */
+export function getAzanVoiceLabel(voiceId: string): string {
+  for (const g of AZAN_VOICE_GROUPS) {
+    const v = g.voices.find((vo) => vo.id === voiceId);
+    if (v) return v.label;
+  }
+  return voiceId;
+}
+
 const DEFAULT_VOICE_ID = "mishary-yet-another";
 
 const ALL_PRAYER_KEYS: PrayerKey[] = [
@@ -316,12 +325,18 @@ export function saveAzanVoiceId(id: string): void {
   }
 }
 
-function resolveAzanUrl(voiceId: string): string | null {
+/**
+ * Bundled file path for in-app HTML5 playback (`new Audio()`).
+ * Always `/audio/…` from `public/audio/` (Vite → `dist/` → Capacitor `public/`).
+ * Works offline in the WebView/PWA without network — do not use `asset://raw/` here
+ * (that scheme is only for `getAzanStreamUrl` → Android native azan alarms / foreground service).
+ */
+export function getAzanBundledWebUrl(voiceId: string): string | null {
   const def = AZAN_VOICES.find((v) => v.id === voiceId);
   return def ? webAudioPath(def.offlineFile) : null;
 }
 
-/** Playback URL for the selected voice (WebView path or Android raw asset). */
+/** Playback URL for the selected voice: Android native alarms use `asset://raw/…`; elsewhere bundled web path. */
 export function getAzanStreamUrl(voiceId: string): string | null {
   const def = AZAN_VOICES.find((v) => v.id === voiceId);
   if (!def) return null;
@@ -341,7 +356,7 @@ export function playAzanFromVoiceId(
   voiceId: string,
   onPlaybackError?: () => void
 ): void {
-  const url = resolveAzanUrl(voiceId);
+  const url = getAzanBundledWebUrl(voiceId);
   if (url) playAzanUrl(url, getVoiceMeta(voiceId), onPlaybackError);
 }
 
@@ -355,6 +370,8 @@ export function playAzanUrl(
   const a = new Audio(url);
   a.volume = loadAzanVolume();
   a.preload = "auto";
+  /* iOS WebKit: hint inline playback (video uses playsinline; harmless on Audio). */
+  a.setAttribute("playsinline", "");
   currentAudio = a;
 
   const m = meta ?? { title: "Azan", artist: "Call to Prayer Sweden" };

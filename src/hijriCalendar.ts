@@ -1,3 +1,4 @@
+import { formatLocaleDigits } from "./i18n/localeNumbers";
 import { hijriFromGregorian, type HijriInfo } from "./hijri";
 
 export type HijriMonthCell = {
@@ -70,9 +71,8 @@ export function buildHijriMonthGrid(
     const h = hijriFromGregorian(first, locale);
     const days = listDaysInHijriMonth(anchor, locale);
 
-    // Always build month title from computed Hijri values so Intl fallback
-    // cannot silently display Gregorian month names on some environments.
-    const monthTitle = `${h.monthName} ${h.year}`;
+    // Month name from locale table; year with locale-appropriate digits.
+    const monthTitle = `${h.monthName} ${formatLocaleDigits(h.year, locale)}`;
 
     const firstDowMon0 = (first.getDay() + 6) % 7;
     const cells: (HijriMonthCell | null)[] = [];

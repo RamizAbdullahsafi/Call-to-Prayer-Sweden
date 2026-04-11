@@ -1,7 +1,7 @@
 {
   "name": "call-to-prayer-sweden",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "postinstall": "patch-package",
     "android:sync": "npm run build && npx cap sync android",
+    "android:copy": "npm run build && npx cap copy android",
     "android:open": "npx cap open android"
   },
   "dependencies": {

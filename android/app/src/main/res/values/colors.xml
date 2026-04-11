@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Masjid-inspired blue & white (matches web CSS tokens) -->
-    <color name="colorPrimary">#1D4ED8</color>
-    <color name="colorPrimaryDark">#1E3A8A</color>
-    <color name="colorAccent">#2563EB</color>
-    <color name="splash_background">#E8F0FE</color>
-    <color name="navigation_bar_color">#FFFFFF</color>
+    <!-- OpenMath app palette (Teal600 / Slate100) -->
+    <color name="colorPrimary">#0D9488</color>
+    <color name="colorPrimaryDark">#0F766E</color>
+    <color name="colorAccent">#6366F1</color>
+    <!-- Match app dark UI during cold start (same as values-night). -->
+    <color name="splash_background">#000000</color>
+    <color name="navigation_bar_color">#000000</color>
 </resources>

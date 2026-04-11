@@ -112,6 +112,29 @@ export function AppDownloadBanner({
       aria-label={t("appDownloadBannerTitle")}
     >
       <div className="app-download-banner__inner">
+        <div className="app-download-banner__mark" aria-hidden>
+          <svg
+            className="app-download-banner__mark-svg"
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+          >
+            <rect
+              width="40"
+              height="40"
+              rx="11"
+              fill="currentColor"
+              opacity="0.12"
+            />
+            <path
+              d="M20 11v18M11 20h18"
+              stroke="currentColor"
+              strokeWidth="2.25"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
         <div className="app-download-banner__text">
           <strong className="app-download-banner__title">
             {t("appDownloadBannerTitle")}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sv" data-theme="light">
+<html lang="sv" data-theme="dark" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,7 +7,27 @@
       name="description"
       content="Bönetider för Sverige med valfri adhan och påminnelser."
     />
-    <meta name="theme-color" content="#1d4ed8" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+    <!-- First paint before JS/CSS: dark surface; script below switches to light if saved. -->
+    <style id="ctp-boot-surface">
+      html {
+        background-color: #000000;
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        background-color: #000000;
+        color: #f5f5f7;
+        min-height: 100dvh;
+        min-height: 100vh;
+      }
+      #app {
+        min-height: 100dvh;
+        min-height: 100vh;
+        background-color: #000000;
+      }
+    </style>
     <link rel="manifest" href="/manifest.webmanifest" />
     <!-- Same artwork as Android adaptive icon (public/icon.svg) -->
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
@@ -17,9 +37,45 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- Theme + locale before React — avoids white flash / wrong direction on load. -->
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("ctp.theme");
+          if (theme === "light") {
+            document.documentElement.setAttribute("data-theme", "light");
+            document
+              .querySelector('meta[name="theme-color"]')
+              ?.setAttribute("content", "#f5f5f7");
+            document
+              .querySelector('meta[name="color-scheme"]')
+              ?.setAttribute("content", "light");
+            var surf = document.getElementById("ctp-boot-surface");
+            if (surf) {
+              surf.textContent =
+                "html{background-color:#f5f5f7;color-scheme:light}" +
+                "body{margin:0;background-color:#f5f5f7;color:#1c1c1e;min-height:100dvh;min-height:100vh}" +
+                "#app{min-height:100dvh;min-height:100vh;background-color:#f5f5f7}";
+            }
+          } else {
+            document.documentElement.setAttribute("data-theme", "dark");
+          }
+        } catch (e) {}
+        try {
+          var KEY = "ctp.locale";
+          var VALID = { sv: 1, en: 1, ar: 1, fa: 1, ku: 1, so: 1 };
+          var RTL = { ar: 1, fa: 1 };
+          var LANG = { sv: "sv", en: "en", ar: "ar", fa: "fa", ku: "ku", so: "so" };
+          var stored = localStorage.getItem(KEY);
+          if (!stored || !VALID[stored]) return;
+          document.documentElement.setAttribute("lang", LANG[stored] || "sv");
+          document.documentElement.setAttribute("dir", RTL[stored] ? "rtl" : "ltr");
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

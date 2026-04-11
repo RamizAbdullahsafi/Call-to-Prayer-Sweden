@@ -1,0 +1,60 @@
+/**
+ * Before every Android build (Run, Build APK, etc.), rebuild the Vite bundle and
+ * sync it into this module's assets so the WebView loads your latest UI.
+ *
+ * Important: "Sync Project with Gradle Files" does NOT run this task — only a
+ * real build/run does. If UI changes do not appear, run from the repo root:
+ *   npm run android:sync
+ * then Build → Clean Project → Run. Or uninstall the app once to clear WebView cache.
+ *
+ * To skip (e.g. CI already built web): CAPACITOR_SKIP_WEB_BUILD=1 or -PskipWebBuild
+ */
+
+def capacitorWebRoot = file("${rootProject.projectDir}/..").canonicalFile
+
+def shouldRunCapacitorWebAssets() {
+    if (project.hasProperty("skipWebBuild")) return false
+    def skip = System.getenv("CAPACITOR_SKIP_WEB_BUILD")
+    if (skip == null || skip.isEmpty()) return true
+    return !(skip == "1" || skip.equalsIgnoreCase("true") || skip.equalsIgnoreCase("yes"))
+}
+
+tasks.register("capacitorWebAssets", Exec) {
+    group = "capacitor"
+    description = "npm run build + npx cap sync android (latest web UI into Android)"
+    workingDir = capacitorWebRoot
+
+    def win = System.getProperty("os.name", "").toLowerCase().contains("windows")
+    // Windows: use .cmd and `call` so Android Studio's Gradle daemon finds npm/npx (PATH is often minimal).
+    if (win) {
+        commandLine "cmd", "/c", "call npm.cmd run build && call npx.cmd cap sync android"
+    } else {
+        commandLine "sh", "-c", "npm run build && npx cap sync android"
+    }
+
+    doFirst {
+        logger.lifecycle("")
+        logger.lifecycle("========== capacitorWebAssets ==========")
+        logger.lifecycle("Working directory: " + capacitorWebRoot.absolutePath)
+        def pkg = new File(capacitorWebRoot, "package.json")
+        if (!pkg.exists()) {
+            throw new GradleException(
+                "capacitorWebAssets: package.json not found. Open the project folder that contains package.json " +
+                "(usually the repo root), not only the android/ subfolder."
+            )
+        }
+        logger.lifecycle("========================================")
+        logger.lifecycle("")
+    }
+
+    // Avoid Gradle treating this Exec as "unchanged" and skipping npm/cap when only Kotlin changed.
+    outputs.upToDateWhen { false }
+}
+
+afterEvaluate {
+    if (shouldRunCapacitorWebAssets()) {
+        tasks.named("preBuild").configure { dependsOn("capacitorWebAssets") }
+    } else {
+        logger.lifecycle("capacitorWebAssets: skipped (CAPACITOR_SKIP_WEB_BUILD or -PskipWebBuild)")
+    }
+}

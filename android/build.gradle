@@ -7,7 +7,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.1.0'
+        // Capacitor 6 is validated against AGP 8.x; AGP 9 + Gradle 9 can break AAR metadata tasks on :capacitor-cordova-android-plugins.
+        classpath 'com.android.tools.build:gradle:8.7.3'
         classpath 'com.google.gms:google-services:4.4.0'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.10'
 

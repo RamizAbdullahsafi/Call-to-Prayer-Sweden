@@ -1,6 +1,7 @@
 package se.calltoprayer.sweden
 
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -78,6 +79,10 @@ class BatteryOptimizationPlugin : Plugin() {
     }
 }
 
+/**
+ * Capacitor host: the visible UI (prayer times, settings, calendar) is the web app in
+ * `app/src/main/assets/public/` inside a WebView — not separate XML/Compose screens.
+ */
 class MainActivity : BridgeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -85,5 +90,17 @@ class MainActivity : BridgeActivity() {
         registerPlugin(NativeAzanPlugin::class.java)
         super.onCreate(savedInstanceState)
         PrayerScheduleBootstrap.register(this)
+        clearWebViewDiskCacheInDebugBuilds()
+    }
+
+    /** Debug builds only: avoid stale WebView cache after rebuilding web assets. */
+    private fun clearWebViewDiskCacheInDebugBuilds() {
+        val debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        if (!debug) return
+        try {
+            bridge?.getWebView()?.clearCache(true)
+        } catch (e: Exception) {
+            Log.w("MainActivity", "clearCache (debug)", e)
+        }
     }
 }

@@ -14,6 +14,7 @@ import org.json.JSONArray
 class NativeAzanPlugin : Plugin() {
 
     @PluginMethod
+    @Suppress("unused")
     fun sync(call: PluginCall) {
         val enabled = call.getBoolean("enabled") ?: false
         val url = call.getString("audioUrl") ?: ""

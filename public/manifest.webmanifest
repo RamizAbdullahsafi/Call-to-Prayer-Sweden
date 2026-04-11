@@ -4,8 +4,8 @@
   "description": "Bönetider för Sverige — från Islamiska förbundet.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#e8f0fe",
-  "theme_color": "#1d4ed8",
+  "background_color": "#000000",
+  "theme_color": "#16a34a",
   "lang": "sv",
   "icons": [
     {

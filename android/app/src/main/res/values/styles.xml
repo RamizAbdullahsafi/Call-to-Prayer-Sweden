@@ -15,8 +15,8 @@
         <item name="android:background">@null</item>
         <item name="android:statusBarColor">@color/splash_background</item>
         <item name="android:navigationBarColor">@color/navigation_bar_color</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
     <!-- Splash → hand off to WebView theme (Android 12+ splash API) -->
@@ -26,7 +26,7 @@
         <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
         <item name="android:statusBarColor">@color/splash_background</item>
         <item name="android:navigationBarColor">@color/navigation_bar_color</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 </resources>
