@@ -4,10 +4,6 @@ export type MessageId =
   | "skipToContent"
   | "appTitle"
   | "tagline"
-  | "themeAppearance"
-  | "themeDay"
-  | "themeNight"
-  | "themeSystem"
   | "controlsAria"
   | "disclosureLocationTitle"
   | "mainNavAria"
@@ -52,9 +48,9 @@ export type MessageId =
   | "syncAdhanWithNotify"
   | "playAdhanOnNotify"
   | "adhanPlaying"
+  | "adhanSeek"
   | "adhanPlaybackFailed"
-  | "attribAladhan"
-  | "attribCommons"
+  | "adhanPerPrayerTitle"
   | "loadingTimesAria"
   | "offlineCachedTimes"
   | "nextPrayer"
@@ -131,10 +127,6 @@ const sv: Messages = {
   appTitle: "Call to Prayer Sweden",
   tagline:
     "Bönetider för svenska orter — från Islamiska förbundet i Sverige.",
-  themeAppearance: "Utseende",
-  themeDay: "Dag",
-  themeNight: "Natt",
-  themeSystem: "System",
   controlsAria: "Ort och datum",
   disclosureLocationTitle: "Plats, datum och läge",
   mainNavAria: "Huvudnavigering",
@@ -148,7 +140,7 @@ const sv: Messages = {
   tabCalendarLead:
     "Hijridatum, månadsvy och koppling till den valda gregorianska dagen.",
   tabSettings: "Inställningar",
-  settingsSection: "Språk, utseende, aviseringar och azan",
+  settingsSection: "Språk, aviseringar och azan",
   city: "Ort",
   citySelectAria: "Välj ort",
   cityCustom: "Annan ort (valfritt)",
@@ -185,10 +177,10 @@ const sv: Messages = {
   syncAdhanWithNotify: "Samma böner som påminnelser",
   playAdhanOnNotify: "Spela azan vid påminnelse",
   adhanPlaying: "Azan spelas…",
+  adhanSeek: "Spola i azan",
   adhanPlaybackFailed:
     "Kunde inte spela upp azan. Kontrollera anslutningen eller prova en annan röst.",
-  attribAladhan: "Ljud från",
-  attribCommons: "och",
+  adhanPerPrayerTitle: "Röst per bönetid",
   loadingTimesAria: "Laddar bönetider…",
   offlineCachedTimes: "Visar sparade bönetider (offline).",
   nextPrayer: "Nästa bön",
@@ -274,10 +266,6 @@ const en: Messages = {
   appTitle: "Call to Prayer Sweden",
   tagline:
     "Prayer times for Swedish locations — from Islamiska förbundet (Islamic Association of Sweden).",
-  themeAppearance: "Appearance",
-  themeDay: "Day",
-  themeNight: "Night",
-  themeSystem: "System",
   controlsAria: "Location and date",
   disclosureLocationTitle: "Location, date & mode",
   mainNavAria: "Main navigation",
@@ -291,7 +279,7 @@ const en: Messages = {
   tabCalendarLead:
     "Hijri calendar, month view, and link to the selected Gregorian date.",
   tabSettings: "Settings",
-  settingsSection: "Language, appearance, notifications, and azan",
+  settingsSection: "Language, notifications, and azan",
   city: "City",
   citySelectAria: "Select city",
   cityCustom: "Other city (optional)",
@@ -329,10 +317,10 @@ const en: Messages = {
   syncAdhanWithNotify: "Same prayers as reminders",
   playAdhanOnNotify: "Play azan with reminder",
   adhanPlaying: "Playing azan…",
+  adhanSeek: "Seek in azan",
   adhanPlaybackFailed:
     "Could not play azan. Check your connection or try another voice.",
-  attribAladhan: "Audio from",
-  attribCommons: "and",
+  adhanPerPrayerTitle: "Voice per prayer time",
   loadingTimesAria: "Loading prayer times…",
   offlineCachedTimes: "Showing saved prayer times (offline).",
   nextPrayer: "Next prayer",
@@ -417,10 +405,6 @@ const ar: Messages = {
   appTitle: "Call to Prayer Sweden",
   tagline:
     "أوقات الصلاة للمدن السويدية — من الاتحاد الإسلامي في السويد.",
-  themeAppearance: "المظهر",
-  themeDay: "نهار",
-  themeNight: "ليل",
-  themeSystem: "النظام",
   controlsAria: "المدينة والتاريخ",
   disclosureLocationTitle: "الموقع والتاريخ والوضع",
   mainNavAria: "التنقل الرئيسي",
@@ -434,7 +418,7 @@ const ar: Messages = {
   tabCalendarLead:
     "التقويم الهجري وعرض الشهر والربط بالتاريخ الميلادي المختار.",
   tabSettings: "الإعدادات",
-  settingsSection: "اللغة والمظهر والإشعارات والأذان",
+  settingsSection: "اللغة والإشعارات والأذان",
   city: "المدينة",
   citySelectAria: "اختر المدينة",
   cityCustom: "مدينة أخرى (اختياري)",
@@ -472,10 +456,10 @@ const ar: Messages = {
   syncAdhanWithNotify: "نفس الصلوات كالتذكيرات",
   playAdhanOnNotify: "تشغيل الأذان مع التذكير",
   adhanPlaying: "جارٍ تشغيل الأذان…",
+  adhanSeek: "الانتقال داخل الأذان",
   adhanPlaybackFailed:
     "تعذّر تشغيل الأذان. تحقق من الاتصال أو جرّب صوتًا آخر.",
-  attribAladhan: "صوت من",
-  attribCommons: "و",
+  adhanPerPrayerTitle: "صوت لكل صلاة",
   loadingTimesAria: "جارٍ تحميل أوقات الصلاة…",
   offlineCachedTimes: "يتم عرض أوقات صلاة محفوظة (بدون إنترنت).",
   nextPrayer: "الصلاة التالية",
@@ -558,10 +542,6 @@ const fa: Messages = {
   appTitle: "Call to Prayer Sweden",
   tagline:
     "اوقات نماز برای شهرهای سوئد — از اتحادیه اسلامی سوئد.",
-  themeAppearance: "ظاهر",
-  themeDay: "روز",
-  themeNight: "شب",
-  themeSystem: "سیستم",
   controlsAria: "شهر و تاریخ",
   disclosureLocationTitle: "مکان، تاریخ و حالت اذان",
   mainNavAria: "ناوبری اصلی",
@@ -575,7 +555,7 @@ const fa: Messages = {
   tabCalendarLead:
     "تقویم هجری، نمای ماه و ارتباط با تاریخ میلادی انتخاب‌شده.",
   tabSettings: "تنظیمات",
-  settingsSection: "زبان، ظاهر، اعلان‌ها و اذان",
+  settingsSection: "زبان، اعلان‌ها و اذان",
   city: "شهر",
   citySelectAria: "انتخاب شهر",
   cityCustom: "شهر دیگر (اختیاری)",
@@ -613,10 +593,10 @@ const fa: Messages = {
   syncAdhanWithNotify: "همان نمازها مانند یادآورها",
   playAdhanOnNotify: "پخش اذان با یادآور",
   adhanPlaying: "در حال پخش اذان…",
+  adhanSeek: "جابه‌جایی در اذان",
   adhanPlaybackFailed:
     "پخش اذان ممکن نشد. اتصال را بررسی کنید یا صدای دیگری انتخاب کنید.",
-  attribAladhan: "صدا از",
-  attribCommons: "و",
+  adhanPerPrayerTitle: "صدای جداگانه برای هر نماز",
   loadingTimesAria: "در حال بارگذاری اوقات نماز…",
   offlineCachedTimes: "اوقات نماز ذخیره‌شده نمایش داده می‌شود (آفلاین).",
   nextPrayer: "نماز بعدی",
@@ -699,10 +679,6 @@ const ku: Messages = {
   appTitle: "Call to Prayer Sweden",
   tagline:
     "Demên nimêjê ji bo bajarên Swêdê — Yekîtiya Îslamî ya Swêdê.",
-  themeAppearance: "Xuyang",
-  themeDay: "Roj",
-  themeNight: "Şev",
-  themeSystem: "Sîstem",
   controlsAria: "Bajar û roj",
   disclosureLocationTitle: "Cih, roj û mod",
   mainNavAria: "Navîgasyona sereke",
@@ -716,7 +692,7 @@ const ku: Messages = {
   tabCalendarLead:
     "Salnameya Hicrî, dîtina mehê û girêdana bi roja mîladî ya hilbijartî.",
   tabSettings: "Mîheng",
-  settingsSection: "Ziman, xuyang, ragihandin û ezan",
+  settingsSection: "Ziman, ragihandin û ezan",
   city: "Bajar",
   citySelectAria: "Bajêr hilbijêre",
   cityCustom: "Bajarek din (bixweye)",
@@ -754,10 +730,10 @@ const ku: Messages = {
   syncAdhanWithNotify: "Heman nimêj wek bîranîn",
   playAdhanOnNotify: "Ezan bi bîranînê re bilêxe",
   adhanPlaying: "Ezan tê lêxistin…",
+  adhanSeek: "Di ezanê de bigere",
   adhanPlaybackFailed:
     "Ezan nehat lêxistin. Girêdanê kontrol bike an dengek din hilbijêre.",
-  attribAladhan: "Deng ji",
-  attribCommons: "û",
+  adhanPerPrayerTitle: "Deng ji bo her nimêjê",
   loadingTimesAria: "Demên nimêjê tên barkirin…",
   offlineCachedTimes: "Demên nimêjê yên tomarbûyî têne nîşandan (offline).",
   nextPrayer: "Nimêja din",
@@ -840,10 +816,6 @@ const so: Messages = {
   appTitle: "Call to Prayer Sweden",
   tagline:
     "Waqtiga salaadda magaalooyinka Iswiidhanka — Ururka Islaamka ee Iswiidhanka.",
-  themeAppearance: "Muuqaalka",
-  themeDay: "Maalin",
-  themeNight: "Habeen",
-  themeSystem: "Nidaamka",
   controlsAria: "Magaalo iyo taariikh",
   disclosureLocationTitle: "Goobta, taariikhda iyo habka",
   mainNavAria: "Navigashada ugu weyn",
@@ -857,7 +829,7 @@ const so: Messages = {
   tabCalendarLead:
     "Jadwalka Hijriga, aragtida bilaha, iyo xiriirka taariikhda Giriigoriyaanka la doortay.",
   tabSettings: "Dejinta",
-  settingsSection: "Luqad, muuqaal, ogeysiis iyo adaan",
+  settingsSection: "Luqad, ogeysiis iyo adaan",
   city: "Magaalo",
   citySelectAria: "Dooro magaalo",
   cityCustom: "Magaalo kale (ikhtiyaari)",
@@ -895,10 +867,10 @@ const so: Messages = {
   syncAdhanWithNotify: "Isla salaadaha xusuusinta",
   playAdhanOnNotify: "Ku ciyaar adaan marka xusuusinta",
   adhanPlaying: "Adaan ayaa la ciyaarayaa…",
+  adhanSeek: "Raadi adaan",
   adhanPlaybackFailed:
     "Adaan lama ciyaarin. Hubi xiriirka ama door cod kale.",
-  attribAladhan: "Cod ka yimid",
-  attribCommons: "iyo",
+  adhanPerPrayerTitle: "Cod kasta salaadda",
   loadingTimesAria: "Waqtiga salaadda waa la soo dejinayaa…",
   offlineCachedTimes: "Waxa la muujinayaa waqtiyada salaadda ee la keydiyay (offline).",
   nextPrayer: "Salaadda xigta",

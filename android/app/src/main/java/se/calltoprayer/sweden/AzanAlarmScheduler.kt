@@ -50,13 +50,10 @@ object AzanAlarmScheduler {
     }
 
     /**
-     * @param alarms JSON array of { id: number, atMs: number, key: string }
+     * @param alarms JSON array of { id: number, atMs: number, key: string, audioUrl: string }
      */
-    fun scheduleFromJs(context: Context, audioUrl: String, volume: Float, alarms: JSONArray) {
+    fun scheduleFromJs(context: Context, volume: Float, alarms: JSONArray) {
         cancelAll(context)
-        if (audioUrl.isBlank()) {
-            return
-        }
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val scheduledIds = mutableListOf<Int>()
         val now = System.currentTimeMillis()
@@ -66,6 +63,10 @@ object AzanAlarmScheduler {
                 val id = o.getInt("id")
                 val atMs = o.getLong("atMs")
                 val key = o.getString("key")
+                val audioUrl = o.optString("audioUrl", "")
+                if (audioUrl.isBlank()) {
+                    continue
+                }
                 if (atMs <= now) {
                     continue
                 }

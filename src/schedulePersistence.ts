@@ -20,6 +20,7 @@ export type PrayerSchedulePersisted = {
   /** Android: native exact alarms for full azan when the WebView is not running. */
   azanPlayEnabled?: boolean;
   azanAudioUrl?: string;
+  azanAudioUrlByKey?: Partial<Record<PrayerKey, string>>;
   azanVolume?: number;
   azanKeys?: PrayerKey[];
 };
@@ -43,7 +44,7 @@ export function buildPrayerSchedulePersisted(options: {
   daysAhead: number;
   androidAzan?: {
     enabled: boolean;
-    audioUrl: string;
+    audioUrlByKey: Partial<Record<PrayerKey, string>>;
     volume: number;
     prayerKeys: Set<PrayerKey>;
   };
@@ -65,9 +66,13 @@ export function buildPrayerSchedulePersisted(options: {
     daysAhead: options.daysAhead,
   };
   const az = options.androidAzan;
-  if (az && az.enabled && az.audioUrl.length > 0 && az.prayerKeys.size > 0) {
+  const hasPerPrayerAudio =
+    !!az &&
+    Object.values(az.audioUrlByKey).some((u) => typeof u === "string" && u.length > 0);
+  if (az && az.enabled && hasPerPrayerAudio && az.prayerKeys.size > 0) {
     base.azanPlayEnabled = true;
-    base.azanAudioUrl = az.audioUrl;
+    base.azanAudioUrlByKey = az.audioUrlByKey;
+    base.azanAudioUrl = Object.values(az.audioUrlByKey).find((u) => u && u.length > 0);
     base.azanVolume = az.volume;
     base.azanKeys = [...az.prayerKeys];
   }

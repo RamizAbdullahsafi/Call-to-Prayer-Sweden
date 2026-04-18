@@ -1,10 +1,8 @@
 package se.calltoprayer.sweden
 
 import android.content.Context
-import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -20,21 +18,22 @@ object PrayerScheduleBootstrap {
     /** Call from [MainActivity.onCreate] after super. */
     @JvmStatic
     fun register(context: Context) {
-        val network = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-
+        // No network required: [PrayerRescheduleWorker] falls back to mirrored prayer cache when offline
+        // so notifications and native azan alarms stay in sync (same as when online).
         val periodic = PeriodicWorkRequest.Builder(PrayerRescheduleWorker::class.java, 24, TimeUnit.HOURS)
-            .setConstraints(network)
             .build()
 
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(PERIODIC, ExistingPeriodicWorkPolicy.KEEP, periodic)
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            PERIODIC,
+            ExistingPeriodicWorkPolicy.UPDATE,
+            periodic
+        )
     }
 
     /** After reboot; also safe to call multiple times. */
     @JvmStatic
     fun enqueueOneShot(context: Context) {
-        val network = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-
-        val once = OneTimeWorkRequest.Builder(PrayerRescheduleWorker::class.java).setConstraints(network).build()
+        val once = OneTimeWorkRequest.Builder(PrayerRescheduleWorker::class.java).build()
 
         WorkManager.getInstance(context).enqueueUniqueWork(ONESHOT, ExistingWorkPolicy.REPLACE, once)
     }

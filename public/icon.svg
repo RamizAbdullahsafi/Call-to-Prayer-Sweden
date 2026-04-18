@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Matches android adaptive icon: ic_launcher_background + ic_masjid_foreground -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108" role="img" aria-label="Prayer Sweden">
-  <rect width="108" height="108" fill="#0D47A1"/>
-  <path fill="#FFFFFF" fill-opacity="0.125" d="M54,15 C75,15 92,32 92,54 C92,76 75,93 54,93 C33,93 16,76 16,54 C16,32 33,15 54,15 Z"/>
-  <path fill="#FFFFFF" d="M38,58 C38,48 45,38 54,38 C63,38 70,48 70,58 L38,58 Z"/>
-  <path fill="#FFFFFF" d="M54,28 C55.5,28 56.5,29 56.5,30.5 C56.5,32 55.5,33 54,33 C52.5,33 51.5,32 51.5,30.5 C51.5,29 52.5,28 54,28 Z"/>
-  <path fill="#FFFFFF" d="M24,75 L28,75 L27,35 C27,33 25,33 25,35 Z"/>
-  <path fill="#FFFFFF" d="M80,75 L84,75 L83,35 C83,33 81,33 81,35 Z"/>
-  <path fill="#FFFFFF" d="M30,75 L78,75 L78,58 L30,58 Z"/>
-  <path fill="#0D47A1" d="M38,75 L44,75 L44,68 C44,65 38,65 38,68 Z"/>
-  <path fill="#0D47A1" d="M51,75 L57,75 L57,66 C57,62 51,62 51,66 Z"/>
-  <path fill="#0D47A1" d="M64,75 L70,75 L70,68 C70,65 64,65 64,68 Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108" role="img" aria-label="Call to Prayer Sweden">
+  <defs>
+    <linearGradient id="bg" x1="16" y1="10" x2="92" y2="98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#14171C"/>
+      <stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="33" y1="24" x2="76" y2="84" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F3DA93"/>
+      <stop offset="1" stop-color="#BB8E2F"/>
+    </linearGradient>
+  </defs>
+  <rect width="108" height="108" rx="24" fill="url(#bg)"/>
+  <circle cx="54" cy="54" r="31" fill="none" stroke="#D6A94A" stroke-opacity="0.26" stroke-width="2.6"/>
+
+  <path fill="url(#gold)" d="M62.8 24.8c-8.8 0-16 7.2-16 16 0 8.2 6 14.9 13.8 15.9-2.3 2.3-5.5 3.6-9 3.6-7.1 0-12.8-5.8-12.8-12.9 0-8 5.8-14.8 13.7-15.9 3.7-.5 7.3.1 10.3 1.6z"/>
+  <circle cx="65.6" cy="31.8" r="1.9" fill="#F9E8B9"/>
+
+  <path fill="url(#gold)" d="M31.5 79.5h45v4.5h-45z"/>
+  <path fill="url(#gold)" d="M38.5 79.5h6.3V72c0-2.6-6.3-2.6-6.3 0z"/>
+  <path fill="url(#gold)" d="M50.8 79.5h6.4V68.5c0-3.2-6.4-3.2-6.4 0z"/>
+  <path fill="url(#gold)" d="M63.2 79.5h6.3V72c0-2.6-6.3-2.6-6.3 0z"/>
+  <path fill="url(#gold)" d="M37.2 79.1h4.2l-.8-29.2c0-1.7-1.2-2.4-1.6-2.4s-1.6.7-1.6 2.4z"/>
+  <path fill="url(#gold)" d="M66.7 79.1h4.2l-.8-33.3c0-1.7-1.2-2.4-1.6-2.4s-1.6.7-1.6 2.4z"/>
+  <path fill="url(#gold)" d="M44.2 61.2c0-7.9 4.4-14.3 9.8-14.3s9.8 6.4 9.8 14.3z"/>
 </svg>

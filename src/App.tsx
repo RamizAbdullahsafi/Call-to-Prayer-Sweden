@@ -1,8 +1,11 @@
 import type { CSSProperties, ReactElement } from "react";
 import {
+  Suspense,
+  lazy,
+  memo,
+  startTransition,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -13,6 +16,7 @@ import {
   fetchPrayerTimes,
   formatDateYMD,
   prayerInstant,
+  syncPrayerCacheFromLocalStorageToNativePreferences,
   type PrayerDay,
   type PrayerKey,
 } from "./prayerTimes";
@@ -23,14 +27,18 @@ import {
   getAzanStreamUrl,
   loadAzanPlayEnabled,
   loadAzanPrayerKeys,
+  loadAzanVoiceIdsByPrayer,
   loadAzanVolume,
   loadAzanVoiceId,
   playAzanFromVoiceId,
   saveAzanPlayEnabled,
   saveAzanPrayerKeys,
+  saveAzanVoiceIdsByPrayer,
   saveAzanVolume,
   saveAzanVoiceId,
+  seekAzan,
   setAzanPlaybackListener,
+  setAzanProgressListener,
   stopAzan,
 } from "./azan";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -61,12 +69,6 @@ import {
   scheduleNativePrayerNotificationsAhead,
 } from "./nativePrayerNotifications";
 import {
-  applyEffectiveTheme,
-  getStoredThemePreference,
-  saveThemePreference,
-  type ThemePreference,
-} from "./theme";
-import {
   LOCALES,
   LOCALE_LABELS,
   useI18n,
@@ -78,13 +80,21 @@ import { qiblaBearing } from "./qibla";
 import { formatLocaleDigits } from "./i18n/localeNumbers";
 import { hijriFromGregorian, hijriImportantDayKey } from "./hijri";
 import { buildHijriMonthGrid, shiftHijriMonth } from "./hijriCalendar";
-import { AppDownloadBanner } from "./AppDownloadBanner";
-import {
-  IconCalendar,
-  IconPrayer,
-  IconQibla,
-  IconSettings,
-} from "./TabIcons";
+const AppDownloadBanner = lazy(() =>
+  import("./AppDownloadBanner").then((m) => ({ default: m.AppDownloadBanner }))
+);
+const IconCalendar = lazy(() =>
+  import("./TabIcons").then((m) => ({ default: m.IconCalendar }))
+);
+const IconPrayer = lazy(() =>
+  import("./TabIcons").then((m) => ({ default: m.IconPrayer }))
+);
+const IconQibla = lazy(() =>
+  import("./TabIcons").then((m) => ({ default: m.IconQibla }))
+);
+const IconSettings = lazy(() =>
+  import("./TabIcons").then((m) => ({ default: m.IconSettings }))
+);
 import {
   hasAbsoluteOrientationListener,
   headingFromOrientationEvent,
@@ -115,6 +125,13 @@ function formatCountdownI18n(
     return `${m} ${t("countdownMinShort")} ${sec} ${t("countdownSecShort")}`;
   }
   return `${sec} ${t("countdownSecShort")}`;
+}
+
+function formatAdhanTime(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
 const ORDER: PrayerKey[] = [
@@ -195,7 +212,7 @@ function normalizeCityName(input: string): string {
     .replace(/ö/g, "o");
 }
 
-function ScheduleSkeleton(): ReactElement {
+const ScheduleSkeleton = memo(function ScheduleSkeleton(): ReactElement {
   return (
     <div
       className="schedule schedule--skeleton"
@@ -209,7 +226,7 @@ function ScheduleSkeleton(): ReactElement {
       ))}
     </div>
   );
-}
+});
 
 export function App(): ReactElement {
   const { t, locale, setLocale } = useI18n();
@@ -236,6 +253,9 @@ export function App(): ReactElement {
     setToPrayerKeys(loadAzanPrayerKeys())
   );
   const [azanVoiceId, setAzanVoiceId] = useState(loadAzanVoiceId);
+  const [azanVoiceByPrayer, setAzanVoiceByPrayer] = useState(
+    loadAzanVoiceIdsByPrayer
+  );
   const [azanPlay, setAzanPlay] = useState(loadAzanPlayEnabled);
   const [azanVolumePct, setAzanVolumePct] = useState(() =>
     Math.round(loadAzanVolume() * 100)
@@ -243,9 +263,17 @@ export function App(): ReactElement {
   const [notifySilent, setNotifySilent] = useState(loadNotifySilent);
   const [notifyMode, setNotifyMode] = useState<NotifyMode>(() => loadNotifyMode());
   const [azanPlaying, setAzanPlaying] = useState(false);
+  const [azanProgress, setAzanProgress] = useState<{
+    currentTime: number;
+    duration: number;
+  } | null>(null);
   const [azanPlayError, setAzanPlayError] = useState<string | null>(null);
   const adhanVoiceDialogRef = useRef<HTMLDialogElement>(null);
   const [adhanVoicePickerOpen, setAdhanVoicePickerOpen] = useState(false);
+  /** `global` = default voice; otherwise pick voice for that prayer only. */
+  const [adhanVoicePickerScope, setAdhanVoicePickerScope] = useState<
+    "global" | PrayerKey
+  >("global");
   const [nowTick, setNowTick] = useState(() => new Date());
   const [geo, setGeo] = useState<GeoPoint | null>(null);
   const [geoLoading, setGeoLoading] = useState(false);
@@ -256,17 +284,9 @@ export function App(): ReactElement {
   const headingSmoothRef = useRef<number | null>(null);
   const stopCompassRef = useRef<() => void>(() => {});
 
-  const [themePref, setThemePref] = useState<ThemePreference>(() =>
-    getStoredThemePreference()
-  );
-
   const [activeTab, setActiveTab] = useState<
     "prayer" | "qibla" | "calendar" | "settings"
   >("prayer");
-
-  useLayoutEffect(() => {
-    applyEffectiveTheme(themePref);
-  }, [themePref]);
 
   useEffect(() => {
     saveNotifyMode(notifyMode);
@@ -308,7 +328,6 @@ export function App(): ReactElement {
     setError(null);
     setOfflineCachedTimes(false);
     setLoading(true);
-    setScheduleDay(null);
     const d = new Date(dateInput + "T12:00:00");
     if (Number.isNaN(d.getTime())) {
       setError(tr("errors.selectDate"));
@@ -318,23 +337,27 @@ export function App(): ReactElement {
     const cityVal = cityCustomRef.current.trim() || city;
     try {
       const result = await fetchPrayerTimes(cityVal, d);
-      setScheduleDay(result.day);
-      setOfflineCachedTimes(result.fromCache);
+      startTransition(() => {
+        setScheduleDay(result.day);
+        setOfflineCachedTimes(result.fromCache);
+      });
     } catch (e) {
-      if (e instanceof Error) {
-        if (e.message.startsWith("PRAYER_TIMES_HTTP_")) {
-          const status = e.message.slice("PRAYER_TIMES_HTTP_".length);
-          setError(tr("errors.fetchFailed", { status }));
-        } else if (e.message === "PRAYER_TIMES_PARSE") {
-          setError(tr("errors.parseFailed"));
-        } else if (e.message === "PRAYER_TIMES_EMPTY") {
-          setError(tr("errors.cityNotFound"));
+      startTransition(() => {
+        if (e instanceof Error) {
+          if (e.message.startsWith("PRAYER_TIMES_HTTP_")) {
+            const status = e.message.slice("PRAYER_TIMES_HTTP_".length);
+            setError(tr("errors.fetchFailed", { status }));
+          } else if (e.message === "PRAYER_TIMES_PARSE") {
+            setError(tr("errors.parseFailed"));
+          } else if (e.message === "PRAYER_TIMES_EMPTY") {
+            setError(tr("errors.cityNotFound"));
+          } else {
+            setError(tr("errors.generic"));
+          }
         } else {
           setError(tr("errors.generic"));
         }
-      } else {
-        setError(tr("errors.generic"));
-      }
+      });
     } finally {
       setLoading(false);
     }
@@ -349,8 +372,20 @@ export function App(): ReactElement {
   }, [locale]);
 
   useEffect(() => {
-    const id = window.setInterval(() => setNowTick(new Date()), 1000);
+    if (activeTab !== "prayer") return;
+    const id = window.setInterval(() => {
+      if (document.visibilityState === "hidden") return;
+      setNowTick(new Date());
+    }, 1000);
     return () => window.clearInterval(id);
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    const id = window.setTimeout(() => {
+      void syncPrayerCacheFromLocalStorageToNativePreferences();
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -366,6 +401,11 @@ export function App(): ReactElement {
     return () => setAzanPlaybackListener(null);
   }, []);
 
+  useEffect(() => {
+    setAzanProgressListener((p) => setAzanProgress(p));
+    return () => setAzanProgressListener(null);
+  }, []);
+
   const [permRevision, setPermRevision] = useState(0);
   const nativeNotificationsEnabled =
     Capacitor.isNativePlatform() && isNativeLocalNotificationsAvailable();
@@ -377,6 +417,8 @@ export function App(): ReactElement {
     "granted" | "denied" | "unsupported"
   >("unsupported");
   const [batteryOptimizationIgnored, setBatteryOptimizationIgnored] = useState(false);
+  const [remindersDisclosureOpen, setRemindersDisclosureOpen] = useState(false);
+  const [adhanDisclosureOpen, setAdhanDisclosureOpen] = useState(false);
 
   useEffect(() => {
     if (!nativeNotificationsEnabled) return;
@@ -429,9 +471,9 @@ export function App(): ReactElement {
   }, [nativeNotificationsEnabled, nativePerm, permRevision, t]);
 
   const nextPrayer = useMemo(() => {
-    if (!scheduleDay) return null;
+    if (activeTab !== "prayer" || !scheduleDay) return null;
     return getNextPrayer(scheduleDay, nowTick);
-  }, [scheduleDay, nowTick]);
+  }, [activeTab, scheduleDay, nowTick]);
 
   useEffect(() => {
     if (!scheduleDay || !nextPrayer) {
@@ -449,25 +491,26 @@ export function App(): ReactElement {
   const notifyKeySet = useMemo(() => new Set(notifyKeys), [notifyKeys]);
   const adhanKeySet = useMemo(() => new Set(azanPrayerKeys), [azanPrayerKeys]);
 
+  const cleanupNativeNotifications = useCallback((): void => {
+    if (Capacitor.isNativePlatform() && isNativeLocalNotificationsAvailable()) {
+      void cancelAllNativePrayerNotifications();
+    }
+  }, []);
+
   useEffect(() => {
-    disposeNotifyRef.current();
-    disposeNotifyRef.current = () => {};
-
-    const cleanupNative = (): void => {
-      if (Capacitor.isNativePlatform() && isNativeLocalNotificationsAvailable()) {
-        void cancelAllNativePrayerNotifications();
-      }
-    };
-
     if (
-      Capacitor.isNativePlatform() &&
-      isNativeLocalNotificationsAvailable()
+      !Capacitor.isNativePlatform() ||
+      !isNativeLocalNotificationsAvailable()
     ) {
-      if (notifyKeySet.size === 0) {
-        cleanupNative();
-        return;
-      }
-      const cityVal = cityCustomRef.current.trim() || city;
+      return;
+    }
+    if (notifyKeySet.size === 0) {
+      cleanupNativeNotifications();
+      return;
+    }
+    const cityVal = cityCustomRef.current.trim() || city;
+    const debounceMs = 260;
+    const handle = window.setTimeout(() => {
       void scheduleNativePrayerNotificationsAhead({
         city: cityVal,
         keys: notifyKeySet,
@@ -478,18 +521,49 @@ export function App(): ReactElement {
           Capacitor.getPlatform() === "android"
             ? {
                 enabled: notifyMode === "full",
-                audioUrl: getAzanStreamUrl(loadAzanVoiceId()) ?? "",
-                volume: loadAzanVolume(),
-                prayerKeys: loadAzanPrayerKeys(),
+                audioUrlByKey: ORDER.reduce<Partial<Record<PrayerKey, string>>>(
+                  (acc, key) => {
+                    const voiceId = azanVoiceByPrayer[key] ?? azanVoiceId;
+                    const url = getAzanStreamUrl(voiceId);
+                    if (url) acc[key] = url;
+                    return acc;
+                  },
+                  {}
+                ),
+                volume: azanVolumePct / 100,
+                prayerKeys: adhanKeySet,
               }
             : undefined,
       });
       saveNotifyKeys(notifyKeySet);
-      disposeNotifyRef.current = cleanupNative;
-      return () => {
-        cleanupNative();
-      };
+    }, debounceMs);
+    return () => window.clearTimeout(handle);
+  }, [
+    city,
+    cityCustom,
+    nativeRescheduleTick,
+    notifyKeySet,
+    notifySilent,
+    notifyMode,
+    permRevision,
+    locale,
+    azanVoiceId,
+    azanVoiceByPrayer,
+    azanVolumePct,
+    adhanKeySet,
+    cleanupNativeNotifications,
+  ]);
+
+  useEffect(() => {
+    if (
+      Capacitor.isNativePlatform() &&
+      isNativeLocalNotificationsAvailable()
+    ) {
+      return;
     }
+
+    disposeNotifyRef.current();
+    disposeNotifyRef.current = () => {};
 
     if (!notificationsSupported() || Notification.permission !== "granted") {
       return;
@@ -515,7 +589,8 @@ export function App(): ReactElement {
           if (!loadAzanPlayEnabled()) return;
           if (loadAzanVolume() <= 0) return;
           if (!loadAzanPrayerKeys().has(key)) return;
-          playAzanFromVoiceId(loadAzanVoiceId());
+          const voiceByPrayer = loadAzanVoiceIdsByPrayer();
+          playAzanFromVoiceId(voiceByPrayer[key] ?? loadAzanVoiceId());
         },
         getNotificationSilent: () => notifySilentRef.current,
         notificationTitle: t("appTitle"),
@@ -527,13 +602,11 @@ export function App(): ReactElement {
       dispose();
     };
   }, [
-    city,
-    nativeRescheduleTick,
     scheduleDay,
     notifyKeySet,
     notifySilent,
     notifyMode,
-    permRevision,
+    locale,
     t,
   ]);
 
@@ -561,7 +634,8 @@ export function App(): ReactElement {
         if (!loadAzanPlayEnabled()) return;
         if (loadAzanVolume() <= 0) return;
         if (!loadAzanPrayerKeys().has(key)) return;
-        playAzanFromVoiceId(loadAzanVoiceId());
+        const voiceByPrayer = loadAzanVoiceIdsByPrayer();
+        playAzanFromVoiceId(voiceByPrayer[key] ?? loadAzanVoiceId());
       }
     ).then((handle) => {
       sub = handle;
@@ -583,7 +657,8 @@ export function App(): ReactElement {
         if (!loadAzanPlayEnabled()) return;
         if (loadAzanVolume() <= 0) return;
         if (!loadAzanPrayerKeys().has(key)) return;
-        playAzanFromVoiceId(loadAzanVoiceId());
+        const voiceByPrayer = loadAzanVoiceIdsByPrayer();
+        playAzanFromVoiceId(voiceByPrayer[key] ?? loadAzanVoiceId());
       }
     ).then((handle) => {
       actionSub = handle;
@@ -622,6 +697,14 @@ export function App(): ReactElement {
     });
   };
 
+  const onAzanVoiceForPrayerChange = (key: PrayerKey, voiceId: string): void => {
+    setAzanVoiceByPrayer((prev) => {
+      const next = { ...prev, [key]: voiceId };
+      saveAzanVoiceIdsByPrayer(next);
+      return next;
+    });
+  };
+
   const syncAzanFromNotify = (): void => {
     setAzanPrayerKeys([...notifyKeys]);
     saveAzanPrayerKeys(new Set(notifyKeys));
@@ -637,11 +720,6 @@ export function App(): ReactElement {
   };
 
   const notifyPermDisabled = !nativeNotificationsEnabled && !notificationsSupported();
-
-  const onThemePreferenceChange = (pref: ThemePreference): void => {
-    saveThemePreference(pref);
-    setThemePref(pref);
-  };
 
   const municipalityByNormalized = useMemo(() => {
     const m = new Map<string, string>();
@@ -769,16 +847,18 @@ export function App(): ReactElement {
   }, []);
 
   const hijriInfo = useMemo(() => {
+    if (activeTab !== "calendar") return null;
     const date = new Date(dateInput + "T12:00:00");
     if (Number.isNaN(date.getTime())) return null;
     return hijriFromGregorian(date, locale);
-  }, [dateInput, locale]);
+  }, [activeTab, dateInput, locale]);
 
   const hijriEventMessageId = useMemo(
     () => (hijriInfo ? hijriImportantDayKey(hijriInfo) : null),
     [hijriInfo]
   );
   const gregorianInfoLabel = useMemo(() => {
+    if (activeTab !== "calendar") return null;
     const date = new Date(dateInput + "T12:00:00");
     if (Number.isNaN(date.getTime())) return null;
     try {
@@ -791,9 +871,10 @@ export function App(): ReactElement {
     } catch {
       return date.toDateString();
     }
-  }, [dateInput, locale]);
+  }, [activeTab, dateInput, locale]);
 
   const locationSummaryLine = useMemo(() => {
+    if (activeTab !== "prayer") return "";
     const cityVal = cityCustom.trim() || city;
     const d = new Date(dateInput + "T12:00:00");
     let datePart = dateInput;
@@ -809,7 +890,7 @@ export function App(): ReactElement {
       }
     }
     return `${cityVal} · ${datePart}`;
-  }, [city, cityCustom, dateInput, locale]);
+  }, [activeTab, city, cityCustom, dateInput, locale]);
 
   const [hijriViewAnchor, setHijriViewAnchor] = useState(
     () => new Date(`${formatDateYMD(new Date())}T12:00:00`)
@@ -820,26 +901,27 @@ export function App(): ReactElement {
   }, [dateInput]);
 
   const hijriMonthGrid = useMemo(() => {
+    if (activeTab !== "calendar") return null;
     if (Number.isNaN(hijriViewAnchor.getTime())) return null;
     return buildHijriMonthGrid(hijriViewAnchor, locale);
-  }, [hijriViewAnchor, locale]);
+  }, [activeTab, hijriViewAnchor, locale]);
 
   const scheduleRows = useMemo(() => {
-    if (!scheduleDay) return [];
+    if (activeTab !== "prayer" || !scheduleDay) return [];
     const d = new Date(scheduleDay.date + "T12:00:00");
     return buildScheduleRows(scheduleDay, d);
-  }, [scheduleDay]);
+  }, [activeTab, scheduleDay]);
 
   const isRamadanGregorianDay = useMemo(() => {
-    if (!scheduleDay) return false;
+    if (activeTab !== "prayer" || !scheduleDay) return false;
     const d = new Date(scheduleDay.date + "T12:00:00");
     return hijriFromGregorian(d, locale).month === 9;
-  }, [scheduleDay, locale]);
+  }, [activeTab, scheduleDay, locale]);
 
   const qiblaDeg = useMemo(() => {
-    if (!geo) return null;
+    if (activeTab !== "qibla" || !geo) return null;
     return qiblaBearing(geo.latitude, geo.longitude);
-  }, [geo]);
+  }, [activeTab, geo]);
   const qiblaNeedleDeg = useMemo(() => {
     if (qiblaDeg === null) return null;
     if (headingDeg === null) return qiblaDeg;
@@ -851,12 +933,19 @@ export function App(): ReactElement {
     return `/${locale}${path}`;
   };
 
+  const voiceDialogSelectedId =
+    adhanVoicePickerScope === "global"
+      ? azanVoiceId
+      : (azanVoiceByPrayer[adhanVoicePickerScope] ?? azanVoiceId);
+
   return (
     <div className="app-native-shell">
       <a href="#main-content" className="skip-link">
         {t("skipToContent")}
       </a>
-      <AppDownloadBanner t={t} />
+      <Suspense fallback={null}>
+        <AppDownloadBanner t={t} />
+      </Suspense>
       <header className="app-top-bar" role="banner">
         <div className="app-top-bar__inner">
           <p className="app-top-bar__eyebrow">{t("tagline")}</p>
@@ -870,11 +959,11 @@ export function App(): ReactElement {
         className="app-main masjid-sanctuary app-main--shell app-main--with-tabbar"
         aria-busy={loading}
       >
+      {activeTab === "prayer" ? (
       <section
         id="panel-prayer"
         role="tabpanel"
         aria-labelledby="tab-btn-prayer"
-        hidden={activeTab !== "prayer"}
         className="app-tab-panel app-page"
       >
       <header className="app-page-head app-page-head--toolbar">
@@ -1020,7 +1109,6 @@ export function App(): ReactElement {
             : null}
         </div>
       </section>
-
       <details className="disclosure-panel disclosure-panel--location">
         <summary className="disclosure-panel__summary">
           <span className="disclosure-panel__title">{t("disclosureLocationTitle")}</span>
@@ -1109,11 +1197,12 @@ export function App(): ReactElement {
               <p className="status-chip status-chip--info">{geoMessage}</p>
             ) : null}
             <div className="controls-row">
-              <div>
+              <div className="prayer-day-field">
                 <label htmlFor="date">{t("date")}</label>
                 <input
                   type="date"
                   id="date"
+                  className="prayer-date-input"
                   value={dateInput}
                   onChange={(e) => {
                     setDateInput(e.target.value);
@@ -1144,12 +1233,13 @@ export function App(): ReactElement {
       </details>
 
       </section>
+      ) : null}
 
+      {activeTab === "qibla" ? (
       <section
         id="panel-qibla"
         role="tabpanel"
         aria-labelledby="tab-btn-qibla"
-        hidden={activeTab !== "qibla"}
         className="app-tab-panel app-page"
       >
       <header className="app-page-head app-page-head--toolbar">
@@ -1243,12 +1333,13 @@ export function App(): ReactElement {
       </div>
 
       </section>
+      ) : null}
 
+      {activeTab === "calendar" ? (
       <section
         id="panel-calendar"
         role="tabpanel"
         aria-labelledby="tab-btn-calendar"
-        hidden={activeTab !== "calendar"}
         className="app-tab-panel app-page"
       >
       <header className="app-page-head app-page-head--toolbar">
@@ -1391,12 +1482,13 @@ export function App(): ReactElement {
       </div>
 
       </section>
+      ) : null}
 
+      {activeTab === "settings" ? (
       <section
         id="panel-settings"
         role="tabpanel"
         aria-labelledby="tab-btn-settings"
-        hidden={activeTab !== "settings"}
         className="app-tab-panel app-tab-panel--settings app-page"
       >
       <header className="app-page-head app-page-head--toolbar">
@@ -1425,42 +1517,18 @@ export function App(): ReactElement {
             ))}
           </select>
         </section>
-        <section
-          className="settings-tile"
-          aria-labelledby="settings-heading-theme"
-        >
-          <h3 id="settings-heading-theme" className="settings-tile__title">
-            {t("themeAppearance")}
-          </h3>
-          <div
-            className="theme-segmented theme-segmented--settings"
-            role="group"
-            aria-labelledby="settings-heading-theme"
-          >
-            <button
-              type="button"
-              className={`theme-option${themePref === "light" ? " theme-option--active" : ""}`}
-              aria-pressed={themePref === "light"}
-              onClick={() => onThemePreferenceChange("light")}
-            >
-              {t("themeDay")}
-            </button>
-            <button
-              type="button"
-              className={`theme-option${themePref === "dark" ? " theme-option--active" : ""}`}
-              aria-pressed={themePref === "dark"}
-              onClick={() => onThemePreferenceChange("dark")}
-            >
-              {t("themeNight")}
-            </button>
-          </div>
-        </section>
       </div>
-      <details className="settings-disclosure">
+      <details
+        className="settings-disclosure"
+        onToggle={(e) =>
+          setRemindersDisclosureOpen((e.currentTarget as HTMLDetailsElement).open)
+        }
+      >
         <summary className="settings-disclosure__summary">
           <span className="settings-disclosure__title">{t("reminders")}</span>
           <span className="settings-disclosure__badge">{notifyKeys.length}</span>
         </summary>
+        {remindersDisclosureOpen ? (
         <fieldset className="notify-fieldset notify-fieldset--disclosure">
           <legend className="visually-hidden">{t("reminders")}</legend>
         {nativeNotificationsEnabled && Capacitor.getPlatform() === "android" ? (
@@ -1582,12 +1650,19 @@ export function App(): ReactElement {
           {t("notifySilent")}
         </label>
         </fieldset>
+        ) : null}
       </details>
 
-      <details className="settings-disclosure">
+      <details
+        className="settings-disclosure"
+        onToggle={(e) =>
+          setAdhanDisclosureOpen((e.currentTarget as HTMLDetailsElement).open)
+        }
+      >
         <summary className="settings-disclosure__summary">
           <span className="settings-disclosure__title">{t("adhan")}</span>
         </summary>
+        {adhanDisclosureOpen ? (
         <fieldset className="adhan-fieldset adhan-fieldset--disclosure">
           <legend className="visually-hidden">{t("adhan")}</legend>
         <p className="adhan-hint">
@@ -1602,10 +1677,13 @@ export function App(): ReactElement {
               id="adhan-voice-trigger"
               className="adhan-voice-trigger"
               aria-haspopup="dialog"
-              aria-expanded={adhanVoicePickerOpen}
+              aria-expanded={
+                adhanVoicePickerOpen && adhanVoicePickerScope === "global"
+              }
               aria-controls="adhan-voice-dialog"
               aria-label={t("voiceSelectAria")}
               onClick={() => {
+                setAdhanVoicePickerScope("global");
                 setAdhanVoicePickerOpen(true);
                 adhanVoiceDialogRef.current?.showModal();
               }}
@@ -1619,11 +1697,18 @@ export function App(): ReactElement {
               ref={adhanVoiceDialogRef}
               className="adhan-voice-dialog"
               aria-labelledby="adhan-voice-dialog-title"
-              onClose={() => setAdhanVoicePickerOpen(false)}
+              onClose={() => {
+                setAdhanVoicePickerOpen(false);
+                setAdhanVoicePickerScope("global");
+              }}
             >
               <div className="adhan-voice-dialog__header">
                 <h3 id="adhan-voice-dialog-title" className="adhan-voice-dialog__title">
-                  {t("voice")}
+                  {adhanVoicePickerScope === "global"
+                    ? t("voice")
+                    : `${t("voice")} · ${t(
+                        prayerMsg(adhanVoicePickerScope, "prayer")
+                      )}`}
                 </h3>
                 <button
                   type="button"
@@ -1647,10 +1732,17 @@ export function App(): ReactElement {
                         <li key={vo.id}>
                           <button
                             type="button"
-                            className={`adhan-voice-option${vo.id === azanVoiceId ? " adhan-voice-option--active" : ""}`}
+                            className={`adhan-voice-option${vo.id === voiceDialogSelectedId ? " adhan-voice-option--active" : ""}`}
                             onClick={() => {
-                              setAzanVoiceId(vo.id);
-                              saveAzanVoiceId(vo.id);
+                              if (adhanVoicePickerScope === "global") {
+                                setAzanVoiceId(vo.id);
+                                saveAzanVoiceId(vo.id);
+                              } else {
+                                onAzanVoiceForPrayerChange(
+                                  adhanVoicePickerScope,
+                                  vo.id
+                                );
+                              }
                               setAzanPlayError(null);
                               adhanVoiceDialogRef.current?.close();
                             }}
@@ -1664,6 +1756,38 @@ export function App(): ReactElement {
                 ))}
               </div>
             </dialog>
+            <div className="adhan-per-prayer-voices">
+              <p className="adhan-section-label">{t("adhanPerPrayerTitle")}</p>
+              <div className="adhan-per-prayer-voices__grid">
+                {ORDER.filter((key) => key !== "sunrise").map((key) => (
+                  <div key={`voice-${key}`} className="adhan-per-prayer-voices__item">
+                    <span className="adhan-per-prayer-voices__prayer-label">
+                      {t(prayerMsg(key, "prayer"))}
+                    </span>
+                    <button
+                      type="button"
+                      className="adhan-voice-trigger adhan-voice-trigger--per-prayer"
+                      aria-haspopup="dialog"
+                      aria-expanded={
+                        adhanVoicePickerOpen &&
+                        adhanVoicePickerScope === key
+                      }
+                      aria-controls="adhan-voice-dialog"
+                      aria-label={`${t("voice")}: ${t(prayerMsg(key, "prayer"))}`}
+                      onClick={() => {
+                        setAdhanVoicePickerScope(key);
+                        setAdhanVoicePickerOpen(true);
+                        adhanVoiceDialogRef.current?.showModal();
+                      }}
+                    >
+                      <span className="adhan-voice-trigger__label">
+                        {getAzanVoiceLabel(azanVoiceByPrayer[key] ?? azanVoiceId)}
+                      </span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
           <div className="adhan-actions adhan-actions-btns">
             <button
@@ -1716,7 +1840,40 @@ export function App(): ReactElement {
             }}
           />
         </div>
-        <p className="adhan-sublegend">{t("adhanForPrayers")}</p>
+        {azanPlaying ? (
+          <div className="adhan-player-row">
+            <span className="adhan-player-time">
+              {formatAdhanTime(azanProgress?.currentTime ?? 0)}
+            </span>
+            <input
+              type="range"
+              className="adhan-player-scrub"
+              min={0}
+              max={
+                azanProgress && azanProgress.duration > 0
+                  ? azanProgress.duration
+                  : 1
+              }
+              step={0.25}
+              value={
+                azanProgress && azanProgress.duration > 0
+                  ? Math.min(azanProgress.currentTime, azanProgress.duration)
+                  : 0
+              }
+              disabled={
+                !azanProgress ||
+                !Number.isFinite(azanProgress.duration) ||
+                azanProgress.duration <= 0
+              }
+              aria-label={t("adhanSeek")}
+              onChange={(e) => seekAzan(Number(e.target.value))}
+            />
+            <span className="adhan-player-time">
+              {formatAdhanTime(azanProgress?.duration ?? 0)}
+            </span>
+          </div>
+        ) : null}
+        <p className="adhan-section-label">{t("adhanForPrayers")}</p>
         <div className="notify-grid adhan-prayer-grid" id="adhan-prayer-grid">
           {ORDER.map((key) => (
             <label key={key} className="notify-item">
@@ -1762,29 +1919,12 @@ export function App(): ReactElement {
             {t("adhanPlaying")}
           </div>
         )}
-        <p className="adhan-attrib">
-          {t("attribAladhan")}{" "}
-          <a
-            href="https://www.aladhan.com/download-adhans"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            AlAdhan
-          </a>{" "}
-          {t("attribCommons")}{" "}
-          <a
-            href="https://commons.wikimedia.org/wiki/Category:Adhan"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Wikimedia Commons
-          </a>
-          .
-        </p>
         </fieldset>
+        ) : null}
       </details>
 
       </section>
+      ) : null}
 
       </main>
 
@@ -1847,7 +1987,7 @@ export function App(): ReactElement {
             className={`app-tab${activeTab === "prayer" ? " app-tab--active" : ""}`}
             onClick={() => setActiveTab("prayer")}
           >
-            <IconPrayer className="app-tab__icon" />
+            <Suspense fallback={<span className="app-tab__icon" aria-hidden />}><IconPrayer className="app-tab__icon" /></Suspense>
             <span className="app-tab__label">{t("tabPrayer")}</span>
           </button>
           <button
@@ -1859,7 +1999,7 @@ export function App(): ReactElement {
             className={`app-tab${activeTab === "qibla" ? " app-tab--active" : ""}`}
             onClick={() => setActiveTab("qibla")}
           >
-            <IconQibla className="app-tab__icon" />
+            <Suspense fallback={<span className="app-tab__icon" aria-hidden />}><IconQibla className="app-tab__icon" /></Suspense>
             <span className="app-tab__label">{t("tabQibla")}</span>
           </button>
           <button
@@ -1871,7 +2011,7 @@ export function App(): ReactElement {
             className={`app-tab${activeTab === "calendar" ? " app-tab--active" : ""}`}
             onClick={() => setActiveTab("calendar")}
           >
-            <IconCalendar className="app-tab__icon" />
+            <Suspense fallback={<span className="app-tab__icon" aria-hidden />}><IconCalendar className="app-tab__icon" /></Suspense>
             <span className="app-tab__label">{t("tabCalendar")}</span>
           </button>
           <button
@@ -1883,7 +2023,7 @@ export function App(): ReactElement {
             className={`app-tab${activeTab === "settings" ? " app-tab--active" : ""}`}
             onClick={() => setActiveTab("settings")}
           >
-            <IconSettings className="app-tab__icon" />
+            <Suspense fallback={<span className="app-tab__icon" aria-hidden />}><IconSettings className="app-tab__icon" /></Suspense>
             <span className="app-tab__label">{t("tabSettings")}</span>
           </button>
         </div>

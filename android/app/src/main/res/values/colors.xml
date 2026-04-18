@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- OpenMath app palette (Teal600 / Slate100) -->
-    <color name="colorPrimary">#0D9488</color>
-    <color name="colorPrimaryDark">#0F766E</color>
-    <color name="colorAccent">#6366F1</color>
-    <!-- Match app dark UI during cold start (same as values-night). -->
-    <color name="splash_background">#000000</color>
-    <color name="navigation_bar_color">#000000</color>
+    <color name="colorPrimary">#15803D</color>
+    <color name="colorPrimaryDark">#14532D</color>
+    <color name="colorAccent">#15803D</color>
+    <color name="splash_background">#D2D8E4</color>
+    <color name="navigation_bar_color">#C8D0DD</color>
 </resources>

@@ -1,31 +1,33 @@
 <!DOCTYPE html>
-<html lang="sv" data-theme="dark" dir="ltr">
+<html lang="sv" dir="ltr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content"
+    />
     <meta
       name="description"
       content="Bönetider för Sverige med valfri adhan och påminnelser."
     />
-    <meta name="theme-color" content="#000000" />
-    <meta name="color-scheme" content="dark" />
-    <!-- First paint before JS/CSS: dark surface; script below switches to light if saved. -->
+    <meta name="theme-color" content="#d2d8e4" />
+    <meta name="color-scheme" content="light" />
     <style id="ctp-boot-surface">
       html {
-        background-color: #000000;
-        color-scheme: dark;
+        background-color: #d2d8e4;
+        color-scheme: light;
       }
       body {
         margin: 0;
-        background-color: #000000;
-        color: #f5f5f7;
+        background-color: #d2d8e4;
+        color: #1a2332;
         min-height: 100dvh;
         min-height: 100vh;
       }
       #app {
         min-height: 100dvh;
         min-height: 100vh;
-        background-color: #000000;
+        background-color: transparent;
       }
     </style>
     <link rel="manifest" href="/manifest.webmanifest" />
@@ -40,30 +42,8 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- Theme + locale before React — avoids white flash / wrong direction on load. -->
     <script>
       (function () {
-        try {
-          var theme = localStorage.getItem("ctp.theme");
-          if (theme === "light") {
-            document.documentElement.setAttribute("data-theme", "light");
-            document
-              .querySelector('meta[name="theme-color"]')
-              ?.setAttribute("content", "#f5f5f7");
-            document
-              .querySelector('meta[name="color-scheme"]')
-              ?.setAttribute("content", "light");
-            var surf = document.getElementById("ctp-boot-surface");
-            if (surf) {
-              surf.textContent =
-                "html{background-color:#f5f5f7;color-scheme:light}" +
-                "body{margin:0;background-color:#f5f5f7;color:#1c1c1e;min-height:100dvh;min-height:100vh}" +
-                "#app{min-height:100dvh;min-height:100vh;background-color:#f5f5f7}";
-            }
-          } else {
-            document.documentElement.setAttribute("data-theme", "dark");
-          }
-        } catch (e) {}
         try {
           var KEY = "ctp.locale";
           var VALID = { sv: 1, en: 1, ar: 1, fa: 1, ku: 1, so: 1 };

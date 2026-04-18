@@ -1,4 +1,5 @@
 import { Capacitor } from "@capacitor/core";
+import { Preferences } from "@capacitor/preferences";
 import { SWEDISH_MUNICIPALITIES } from "./data/swedishMunicipalities";
 
 /**
@@ -46,10 +47,27 @@ const PRAYER_KEYS: PrayerKey[] = [
   "isha",
 ];
 
-const PRAYER_CACHE_PREFIX = "ctp.prayer.cache.v1";
+/** Must match `PrayerDayCache` on Android (background worker reads Capacitor Preferences). */
+export const PRAYER_CACHE_PREFIX = "ctp.prayer.cache.v1";
 
 function prayerCacheKey(city: string, date: string): string {
   return `${PRAYER_CACHE_PREFIX}:${city}:${date}`;
+}
+
+/** Mirrors WebView cache into Capacitor Preferences so native code can read the same data offline. */
+function mirrorPrayerDayToNativePreferences(day: PrayerDay): void {
+  if (!Capacitor.isNativePlatform()) return;
+  const key = prayerCacheKey(day.city, day.date);
+  const entry: PrayerDayCacheEntry = {
+    savedAt: new Date().toISOString(),
+    day,
+  };
+  void Preferences.set({
+    key,
+    value: JSON.stringify(entry),
+  }).catch(() => {
+    /* ignore */
+  });
 }
 
 function loadCachedPrayerDay(city: string, date: string): PrayerDay | null {
@@ -74,6 +92,57 @@ function loadCachedPrayerDay(city: string, date: string): PrayerDay | null {
   }
 }
 
+/** Same shape as [loadCachedPrayerDay] but Capacitor Preferences (survives WebView cache clear; used by Android worker). */
+async function loadCachedPrayerDayFromPreferences(
+  city: string,
+  date: string
+): Promise<PrayerDay | null> {
+  if (!Capacitor.isNativePlatform()) return null;
+  try {
+    const { value } = await Preferences.get({ key: prayerCacheKey(city, date) });
+    if (!value) return null;
+    const parsed = JSON.parse(value) as PrayerDayCacheEntry;
+    if (!parsed?.day || typeof parsed.day.schedule !== "object") return null;
+    if (parsed.day.city !== city || parsed.day.date !== date) return null;
+    for (const key of PRAYER_KEYS) {
+      if (typeof parsed.day.schedule[key] !== "string") return null;
+    }
+    return parsed.day;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * One-time backfill: copy localStorage prayer cache into native Preferences so the Android
+ * background worker can use it after upgrading (older builds only wrote WebView storage).
+ */
+export async function syncPrayerCacheFromLocalStorageToNativePreferences(): Promise<void> {
+  if (!Capacitor.isNativePlatform()) return;
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k?.startsWith(`${PRAYER_CACHE_PREFIX}:`)) keys.push(k);
+    }
+    const CONC = 8;
+    for (let i = 0; i < keys.length; i += CONC) {
+      const slice = keys.slice(i, i + CONC);
+      await Promise.all(
+        slice.map(async (k) => {
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          const { value: existing } = await Preferences.get({ key: k });
+          if (existing === raw) return;
+          await Preferences.set({ key: k, value: raw });
+        })
+      );
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
 function saveCachedPrayerDay(day: PrayerDay): void {
   try {
     const entry: PrayerDayCacheEntry = {
@@ -81,6 +150,7 @@ function saveCachedPrayerDay(day: PrayerDay): void {
       day,
     };
     localStorage.setItem(prayerCacheKey(day.city, day.date), JSON.stringify(entry));
+    mirrorPrayerDayToNativePreferences(day);
   } catch {
     /* ignore storage failures */
   }
@@ -337,6 +407,9 @@ export function getAbsoluteBonetiderFetchUrl(): string {
  * `VITE_API_ORIGIN=https://din-sida.netlify.app` så anropen träffar samma backend.
  * Native builds fall back to the default Netlify origin if env is unset.
  */
+/** Client-side cap so a stuck network call does not leave the UI loading forever. */
+const BONETIDER_FETCH_TIMEOUT_MS = 22_000;
+
 export async function fetchPrayerTimes(
   city: string,
   date: Date = new Date()
@@ -349,26 +422,48 @@ export async function fetchPrayerTimes(
   });
 
   const fromCache = (): PrayerDay | null => loadCachedPrayerDay(place, dateYmd);
+  const fromCacheOrPrefs = async (): Promise<PrayerDay | null> => {
+    const a = fromCache();
+    if (a) return a;
+    return loadCachedPrayerDayFromPreferences(place, dateYmd);
+  };
 
   try {
-    const res = await fetch(bonetiderFetchUrl(), {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params.toString(),
-    });
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(
+      () => controller.abort(),
+      BONETIDER_FETCH_TIMEOUT_MS
+    );
+    let res: Response;
+    try {
+      res = await fetch(bonetiderFetchUrl(), {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params.toString(),
+        signal: controller.signal,
+      });
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
 
     if (!res.ok) {
-      const cached = fromCache();
+      const cached = await fromCacheOrPrefs();
       if (cached) return { day: cached, fromCache: true };
       throw new Error(`PRAYER_TIMES_HTTP_${res.status}`);
     }
 
     const html = await res.text();
+    const trimmedHead = html.trimStart();
+    if (trimmedHead.startsWith("{")) {
+      const cached = await fromCacheOrPrefs();
+      if (cached) return { day: cached, fromCache: true };
+      throw new Error("PRAYER_TIMES_PARSE");
+    }
     let schedule: PrayerSchedule;
     try {
       schedule = extractPrayerTimesFromWidgetHtml(html);
     } catch (e) {
-      const cached = fromCache();
+      const cached = await fromCacheOrPrefs();
       if (cached) return { day: cached, fromCache: true };
       if (e instanceof Error && e.message === "PRAYER_TIMES_EMPTY") {
         throw new Error("PRAYER_TIMES_EMPTY");
@@ -384,7 +479,7 @@ export async function fetchPrayerTimes(
     saveCachedPrayerDay(day);
     return { day, fromCache: false };
   } catch (e) {
-    const cached = fromCache();
+    const cached = await fromCacheOrPrefs();
     if (cached) return { day: cached, fromCache: true };
     throw e;
   }

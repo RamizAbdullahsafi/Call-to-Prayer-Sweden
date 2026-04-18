@@ -13,10 +13,14 @@ const config: CapacitorConfig = {
   plugins: {
     LocalNotifications: {
       sound: "azan_notify.wav",
-      iconColor: "#6366f1",
+      iconColor: "#157a3c",
     },
     SplashScreen: {
-      backgroundColor: "#000000",
+      backgroundColor: "#d2d8e4",
+      launchShowDuration: 0,
+      launchAutoHide: false,
+      launchFadeOutDuration: 280,
+      showSpinner: false,
     },
   },
 };

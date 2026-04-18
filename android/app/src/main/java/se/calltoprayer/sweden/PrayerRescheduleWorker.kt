@@ -108,8 +108,21 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
 
         val labels = cfg.optJSONObject("labels")
 
-        val azanEnabled = cfg.optBoolean("azanPlayEnabled", false)
-        val azanUrl = cfg.optString("azanAudioUrl", "")
+        val azanUrlLegacy = cfg.optString("azanAudioUrl", "")
+        val azanUrlByKeyJson = cfg.optJSONObject("azanAudioUrlByKey")
+        val azanUrlByKey = mutableMapOf<String, String>()
+        if (azanUrlByKeyJson != null) {
+            for (k in KEY_ORDER) {
+                val url = azanUrlByKeyJson.optString(k, "")
+                if (url.isNotEmpty()) azanUrlByKey[k] = url
+            }
+        }
+        val hasAzanAudio = azanUrlByKey.isNotEmpty() || azanUrlLegacy.isNotEmpty()
+        val azanEnabled = if (cfg.has("azanPlayEnabled")) {
+            cfg.optBoolean("azanPlayEnabled", false)
+        } else {
+            notifyMode == "full" && hasAzanAudio
+        }
         val azanVol = cfg.optDouble("azanVolume", 0.92).toFloat()
         val azanKeysJson = cfg.optJSONArray("azanKeys")
         val azanKeysSet = mutableSetOf<String>()
@@ -132,6 +145,8 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
 
         val now = Date()
         val notifications = mutableListOf<LocalNotification>()
+        /** True if at least one day was resolved (network or JS-mirrored cache); false if nothing usable. */
+        var anyPrayerDayFetched = false
 
         val dayCursor = Calendar.getInstance()
         for (offset in 0 until daysAhead) {
@@ -140,12 +155,16 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
             }
             val ymd = formatYmd(dayCursor)
 
-            val day: BonetiderClient.PrayerDay = try {
+            val day: BonetiderClient.PrayerDay? = try {
                 BonetiderClient.fetchPrayerTimes(apiFetchUrl, city, ymd)
             } catch (e: Exception) {
                 Logger.warn(Logger.tags("CTP"), "fetch failed $ymd: ${e.message}")
-                continue
+                PrayerDayCache.load(prefs, city, ymd)?.also {
+                    Logger.debug(Logger.tags("CTP"), "PrayerRescheduleWorker: cache hit $ymd")
+                }
             }
+            if (day == null) continue
+            anyPrayerDayFetched = true
 
             for (ki in 0 until keysJson.length()) {
                 try {
@@ -159,11 +178,15 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
                     val body = "$label ($timeStr)"
 
                     val id = nativeNotificationId(ymd, key)
-                    if (azanEnabled && azanUrl.isNotEmpty() && azanKeysSet.contains(key)) {
+                    val azanUrlForKey = azanUrlByKey[key] ?: azanUrlLegacy
+                    val useNativeAzanForKey =
+                        azanKeysSet.isEmpty() || azanKeysSet.contains(key)
+                    if (azanEnabled && azanUrlForKey.isNotEmpty() && useNativeAzanForKey) {
                         val ao = JSONObject()
                         ao.put("id", AzanAlarmScheduler.AZAN_ALARM_ID_OFFSET + id)
                         ao.put("atMs", at.time)
                         ao.put("key", key)
+                        ao.put("audioUrl", azanUrlForKey)
                         azanAlarms.put(ao)
                     }
                     val channelId = when {
@@ -200,7 +223,10 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
         }
 
         if (notifications.isEmpty()) {
-            AzanAlarmScheduler.cancelAll(ctx)
+            // No future slots: only clear azan if we had real schedule data but nothing left to fire.
+            if (anyPrayerDayFetched) {
+                AzanAlarmScheduler.cancelAll(ctx)
+            }
             return Result.success()
         }
 
@@ -221,8 +247,8 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
             return Result.failure()
         }
 
-        if (azanEnabled && azanUrl.isNotEmpty()) {
-            AzanAlarmScheduler.scheduleFromJs(ctx, azanUrl, azanVol, azanAlarms)
+        if (azanEnabled && azanAlarms.length() > 0) {
+            AzanAlarmScheduler.scheduleFromJs(ctx, azanVol, azanAlarms)
         } else {
             AzanAlarmScheduler.cancelAll(ctx)
         }

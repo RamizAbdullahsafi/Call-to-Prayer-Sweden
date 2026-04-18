@@ -17,15 +17,14 @@ class NativeAzanPlugin : Plugin() {
     @Suppress("unused")
     fun sync(call: PluginCall) {
         val enabled = call.getBoolean("enabled") ?: false
-        val url = call.getString("audioUrl") ?: ""
         val volume = call.getFloat("volume") ?: 0.92f
-        if (!enabled || url.isBlank()) {
+        if (!enabled) {
             AzanAlarmScheduler.cancelAll(context)
             call.resolve()
             return
         }
         val arr: JSONArray = call.getArray("alarms", JSArray()) ?: JSArray()
-        AzanAlarmScheduler.scheduleFromJs(context, url, volume, arr)
+        AzanAlarmScheduler.scheduleFromJs(context, volume, arr)
         call.resolve()
     }
 }

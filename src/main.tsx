@@ -4,10 +4,11 @@ import { createRoot } from "react-dom/client";
 import "./style.css";
 import { App } from "./App";
 import { I18nProvider } from "./i18n";
-import { initThemeFromStorage } from "./theme";
+import { initAppTheme } from "./theme";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { initNativeChrome } from "./nativeChrome";
 
-initThemeFromStorage();
+initAppTheme();
 
 if ("serviceWorker" in navigator && !Capacitor.isNativePlatform()) {
   window.addEventListener("load", () => {
@@ -26,4 +27,5 @@ if (root) {
       </ErrorBoundary>
     </StrictMode>
   );
+  void initNativeChrome();
 }

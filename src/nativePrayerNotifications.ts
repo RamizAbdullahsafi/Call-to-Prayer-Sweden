@@ -23,9 +23,8 @@ const BatteryOptimization = registerPlugin<BatteryOptimizationPlugin>(
 export interface NativeAzanPlugin {
   sync(options: {
     enabled: boolean;
-    audioUrl: string;
     volume: number;
-    alarms: { id: number; atMs: number; key: PrayerKey }[];
+    alarms: { id: number; atMs: number; key: PrayerKey; audioUrl: string }[];
   }): Promise<void>;
 }
 
@@ -233,7 +232,6 @@ export async function cancelAllNativePrayerNotifications(): Promise<void> {
       try {
         await NativeAzan.sync({
           enabled: false,
-          audioUrl: "",
           volume: 0.92,
           alarms: [],
         });
@@ -250,7 +248,6 @@ export async function cancelAllNativePrayerNotifications(): Promise<void> {
     try {
       await NativeAzan.sync({
         enabled: false,
-        audioUrl: "",
         volume: 0.92,
         alarms: [],
       });
@@ -338,7 +335,7 @@ async function syncAndroidAzanMediaAlarms(
   androidAzan:
     | {
         enabled: boolean;
-        audioUrl: string;
+        audioUrlByKey: Partial<Record<PrayerKey, string>>;
         volume: number;
         prayerKeys: Set<PrayerKey>;
       }
@@ -350,34 +347,43 @@ async function syncAndroidAzanMediaAlarms(
     if (!androidAzan?.enabled) {
       await NativeAzan.sync({
         enabled: false,
-        audioUrl: "",
         volume: 0.92,
         alarms: [],
       });
       return;
     }
-    const url = androidAzan.audioUrl.trim();
-    if (!url || androidAzan.volume <= 0) {
+    if (androidAzan.volume <= 0) {
       await NativeAzan.sync({
         enabled: false,
-        audioUrl: "",
         volume: 0.92,
         alarms: [],
       });
       return;
     }
-    const alarms: { id: number; atMs: number; key: PrayerKey }[] = [];
+    const byKey = androidAzan.audioUrlByKey;
+    const fallbackAudio =
+      (
+        Object.values(byKey).find(
+          (u): u is string => typeof u === "string" && u.trim().length > 0
+        ) ?? ""
+      ).trim();
+    const alarms: { id: number; atMs: number; key: PrayerKey; audioUrl: string }[] = [];
     for (const n of payloads) {
       if (!androidAzan.prayerKeys.has(n.extra.key)) continue;
+      const perKey = byKey[n.extra.key];
+      const audioUrl = (
+        perKey && perKey.trim().length > 0 ? perKey : fallbackAudio
+      ).trim();
+      if (!audioUrl) continue;
       alarms.push({
         id: androidAzanAlarmId(n.dateYmd, n.extra.key),
         atMs: n.schedule.at.getTime(),
         key: n.extra.key,
+        audioUrl,
       });
     }
     await NativeAzan.sync({
       enabled: alarms.length > 0,
-      audioUrl: url,
       volume: androidAzan.volume,
       alarms,
     });
@@ -396,7 +402,7 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
   /** Android: parallel exact alarms so full azan plays without a live WebView. */
   androidAzan?: {
     enabled: boolean;
-    audioUrl: string;
+    audioUrlByKey: Partial<Record<PrayerKey, string>>;
     volume: number;
     prayerKeys: Set<PrayerKey>;
   };
@@ -414,7 +420,6 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
         try {
           await NativeAzan.sync({
             enabled: false,
-            audioUrl: "",
             volume: 0.92,
             alarms: [],
           });
@@ -444,7 +449,6 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
       try {
         await NativeAzan.sync({
           enabled: false,
-          audioUrl: "",
           volume: 0.92,
           alarms: [],
         });
@@ -458,14 +462,21 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
   const now = new Date();
   const offsets = Array.from({ length: daysAhead }, (_, i) => i);
 
-  const settled = await Promise.allSettled(
-    offsets.map(async (offset) => {
-      const d = new Date();
-      d.setDate(d.getDate() + offset);
-      d.setHours(12, 0, 0, 0);
-      return fetchPrayerTimes(city, d).then((r) => r.day);
-    })
-  );
+  /** Few parallel calls: 30 at once overloads Netlify/IF and starves the main UI fetch. */
+  const FETCH_CONCURRENCY = 4;
+  const settled: PromiseSettledResult<PrayerDay>[] = [];
+  for (let start = 0; start < offsets.length; start += FETCH_CONCURRENCY) {
+    const slice = offsets.slice(start, start + FETCH_CONCURRENCY);
+    const batch = await Promise.allSettled(
+      slice.map(async (offset) => {
+        const d = new Date();
+        d.setDate(d.getDate() + offset);
+        d.setHours(12, 0, 0, 0);
+        return fetchPrayerTimes(city, d).then((r) => r.day);
+      })
+    );
+    settled.push(...batch);
+  }
 
   const notifications: SchedulePayload[] = [];
 

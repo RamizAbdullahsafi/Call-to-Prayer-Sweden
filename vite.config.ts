@@ -22,4 +22,21 @@ export default defineConfig({
       "/api/bonetider": bonetiderProxy,
     },
   },
+  build: {
+    target: "es2020",
+    cssMinify: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("react-dom") || id.includes("/react/")) {
+            return "vendor-react";
+          }
+          if (id.includes("@capacitor")) {
+            return "vendor-capacitor";
+          }
+        },
+      },
+    },
+  },
 });

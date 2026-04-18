@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4ADE80</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#38BDF8</color>
-    <color name="splash_background">#000000</color>
-    <color name="navigation_bar_color">#000000</color>
+    <!-- Same balanced palette as day — single app appearance -->
+    <color name="colorPrimary">#15803D</color>
+    <color name="colorPrimaryDark">#14532D</color>
+    <color name="colorAccent">#15803D</color>
+    <color name="splash_background">#D2D8E4</color>
+    <color name="navigation_bar_color">#C8D0DD</color>
 </resources>

@@ -1,52 +1,28 @@
-export type ThemePreference = "light" | "dark";
+/** Single balanced appearance (no day/night toggle). */
+const THEME_COLOR = "#d2d8e4";
 
-const STORAGE_KEY = "ctp.theme";
-
-export function getStoredThemePreference(): ThemePreference {
+/** Sets meta tags for status bar / PWA chrome; CSS defines the actual palette. */
+export function applyAppTheme(): void {
+  document.documentElement.removeAttribute("data-theme");
   try {
-    const v = localStorage.getItem(STORAGE_KEY);
-    if (v === "system") {
-      localStorage.setItem(STORAGE_KEY, "dark");
-      return "dark";
-    }
-    if (v === "light" || v === "dark") return v;
+    localStorage.removeItem("ctp.theme");
   } catch {
     /* ignore */
   }
-  return "dark";
-}
-
-export function saveThemePreference(pref: ThemePreference): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, pref);
-  } catch {
-    /* ignore */
-  }
-}
-
-export function applyEffectiveTheme(effective: "light" | "dark"): void {
-  document.documentElement.setAttribute("data-theme", effective);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
-    meta.setAttribute(
-      "content",
-      effective === "dark" ? "#000000" : "#f5f5f7"
-    );
+    meta.setAttribute("content", THEME_COLOR);
   }
-  /** Helps native form controls follow dark/light in supporting browsers. */
   let schemeMeta = document.querySelector('meta[name="color-scheme"]');
   if (!schemeMeta) {
     schemeMeta = document.createElement("meta");
     schemeMeta.setAttribute("name", "color-scheme");
     document.head.appendChild(schemeMeta);
   }
-  schemeMeta.setAttribute(
-    "content",
-    effective === "dark" ? "dark" : "light"
-  );
+  schemeMeta.setAttribute("content", "light");
 }
 
 /** Call once on startup (before paint if imported from main). */
-export function initThemeFromStorage(): void {
-  applyEffectiveTheme(getStoredThemePreference());
+export function initAppTheme(): void {
+  applyAppTheme();
 }
