@@ -14,7 +14,7 @@ export async function initNativeChrome(): Promise<void> {
 
   try {
     await StatusBar.setStyle({ style: Style.Light });
-    await StatusBar.setBackgroundColor({ color: "#d2d8e4" });
+    await StatusBar.setBackgroundColor({ color: "#e5efe9" });
   } catch {
     /* older WebViews / permission quirks */
   }

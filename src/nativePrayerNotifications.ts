@@ -80,6 +80,9 @@ export function androidAzanAlarmId(date: string, key: PrayerKey): number {
   return ANDROID_AZAN_ALARM_ID_OFFSET + nativeNotificationId(date, key);
 }
 
+/** Drop stale runs when `scheduleNativePrayerNotificationsAhead` is triggered in quick succession (e.g. language + labels). */
+let scheduleNativePrayerNotificationsGeneration = 0;
+
 let channelsReady = false;
 
 async function ensureChannels(): Promise<void> {
@@ -409,6 +412,8 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
 }): Promise<void> {
   if (!isNativeLocalNotificationsAvailable()) return;
 
+  const myGen = ++scheduleNativePrayerNotificationsGeneration;
+
   const { display } = await LocalNotifications.checkPermissions();
   if (display !== "granted") {
     await LocalNotifications.requestPermissions();
@@ -433,6 +438,7 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
 
   await ensureChannels();
   await cancelAllNativePrayerNotifications();
+  if (myGen !== scheduleNativePrayerNotificationsGeneration) return;
 
   const {
     city,
@@ -478,6 +484,8 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
     settled.push(...batch);
   }
 
+  if (myGen !== scheduleNativePrayerNotificationsGeneration) return;
+
   const notifications: SchedulePayload[] = [];
 
   for (let i = 0; i < settled.length; i++) {
@@ -506,6 +514,16 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
 
   if (notifications.length === 0) {
     logNotificationDebug("no future notifications to schedule (check network / city)");
+    if (
+      myGen === scheduleNativePrayerNotificationsGeneration &&
+      Capacitor.getPlatform() === "android"
+    ) {
+      try {
+        await syncAndroidAzanMediaAlarms(androidAzan, []);
+      } catch {
+        /* ignore */
+      }
+    }
     return;
   }
 
@@ -532,6 +550,8 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
     );
   }
 
+  if (myGen !== scheduleNativePrayerNotificationsGeneration) return;
+
   try {
     await scheduleInChunks(toSchedule);
     logNotificationDebug(
@@ -540,6 +560,7 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
       "notifications up to",
       toSchedule[toSchedule.length - 1]!.schedule.at.toISOString()
     );
+    if (myGen !== scheduleNativePrayerNotificationsGeneration) return;
     try {
       await persistPrayerScheduleConfig(
         buildPrayerSchedulePersisted({
@@ -555,6 +576,7 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
     } catch (err) {
       logNotificationDebug("persistPrayerScheduleConfig failed", err);
     }
+    if (myGen !== scheduleNativePrayerNotificationsGeneration) return;
     await syncAndroidAzanMediaAlarms(androidAzan, toSchedule);
   } catch (e) {
     logNotificationDebug("LocalNotifications.schedule error", e);

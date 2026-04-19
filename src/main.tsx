@@ -12,7 +12,10 @@ initAppTheme();
 
 if ("serviceWorker" in navigator && !Capacitor.isNativePlatform()) {
   window.addEventListener("load", () => {
-    void navigator.serviceWorker.register("/sw.js", { scope: "/" });
+    const base = import.meta.env.BASE_URL ?? "/";
+    const scope = base.endsWith("/") ? base : `${base}/`;
+    const swUrl = new URL("sw.js", new URL(scope, self.location.origin)).href;
+    void navigator.serviceWorker.register(swUrl, { scope });
   });
 }
 

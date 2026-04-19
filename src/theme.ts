@@ -1,5 +1,5 @@
 /** Single balanced appearance (no day/night toggle). */
-const THEME_COLOR = "#d2d8e4";
+const THEME_COLOR = "#e5efe9";
 
 /** Sets meta tags for status bar / PWA chrome; CSS defines the actual palette. */
 export function applyAppTheme(): void {

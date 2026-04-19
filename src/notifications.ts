@@ -114,7 +114,7 @@ export type PrayerNotifyOptions = {
   /** When true, the system/browser notification uses no default sound (HTML adhan still plays). */
   getNotificationSilent?: () => boolean;
   /** Localized notification title (defaults to app name). */
-  notificationTitle?: string;
+  notificationTitle?: string | (() => string);
   /** Localized prayer name for the notification body. */
   prayerLabel?: (key: PrayerKey) => string;
 };
@@ -156,7 +156,11 @@ function tick(
           ? "Shuruk"
           : key.charAt(0).toUpperCase() + key.slice(1));
       const silent = options?.getNotificationSilent?.() ?? false;
-      const title = options?.notificationTitle ?? "Call to Prayer Sweden";
+      const rawTitle = options?.notificationTitle;
+      const title =
+        typeof rawTitle === "function"
+          ? rawTitle()
+          : (rawTitle ?? "Call to Prayer Sweden");
       new Notification(title, {
         body: `${label} (${day.schedule[key]})`,
         tag: `ctp-${day.date}-${key}`,

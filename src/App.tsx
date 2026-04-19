@@ -515,8 +515,8 @@ export function App(): ReactElement {
         city: cityVal,
         keys: notifyKeySet,
         notifyMode,
-        title: t("appTitle"),
-        prayerLabel: (key) => t(prayerMsg(key, "prayer")),
+        title: tRef.current("appTitle"),
+        prayerLabel: (key) => tRef.current(prayerMsg(key, "prayer")),
         androidAzan:
           Capacitor.getPlatform() === "android"
             ? {
@@ -593,22 +593,15 @@ export function App(): ReactElement {
           playAzanFromVoiceId(voiceByPrayer[key] ?? loadAzanVoiceId());
         },
         getNotificationSilent: () => notifySilentRef.current,
-        notificationTitle: t("appTitle"),
-        prayerLabel: (key) => t(prayerMsg(key, "prayer")),
+        notificationTitle: () => tRef.current("appTitle"),
+        prayerLabel: (key) => tRef.current(prayerMsg(key, "prayer")),
       }
     );
     disposeNotifyRef.current = dispose;
     return () => {
       dispose();
     };
-  }, [
-    scheduleDay,
-    notifyKeySet,
-    notifySilent,
-    notifyMode,
-    locale,
-    t,
-  ]);
+  }, [scheduleDay, notifyKeySet, notifySilent, notifyMode]);
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform() || !isNativeLocalNotificationsAvailable()) {

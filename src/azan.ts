@@ -24,9 +24,16 @@ export type AzanVoiceDef = {
 /** Android [AzanPlaybackService] prefix for [R.raw] lookup (basename of offlineFile). */
 export const RAW_ASSET_PREFIX = "asset://raw/";
 
-/** Relative app URL; bundled in Capacitor `www` and listed in `public/sw.js` for PWA offline cache. */
+/**
+ * Bundled app URL under `public/audio/` (Vite → `dist/` → Capacitor `www`).
+ * Uses `import.meta.env.BASE_URL` so subpath deploys and WebView origins resolve correctly.
+ * UI language (`document.documentElement.lang` / locale) does not affect this path — the same
+ * files are used for sv, en, ar, fa, ku, and so.
+ */
 export function webAudioPath(offlineFile: string): string {
-  return `/audio/${offlineFile}`;
+  const rawBase = import.meta.env.BASE_URL ?? "/";
+  const base = rawBase.endsWith("/") ? rawBase : `${rawBase}/`;
+  return `${base}audio/${offlineFile}`;
 }
 
 export function androidRawAssetUrl(offlineFile: string): string {
@@ -594,7 +601,7 @@ export function saveAzanVoiceIdsByPrayer(map: AzanVoiceByPrayer): void {
 
 /**
  * Bundled file path for in-app HTML5 playback (`new Audio()`).
- * Always `/audio/…` from `public/audio/` (Vite → `dist/` → Capacitor `public/`).
+ * Uses {@link webAudioPath} under `public/audio/` (Vite → `dist/` → Capacitor `public/`).
  * Works offline in the WebView/PWA without network — do not use `asset://raw/` here
  * (that scheme is only for `getAzanStreamUrl` → Android native azan alarms / foreground service).
  */
@@ -628,7 +635,11 @@ export function playAzanFromVoiceId(
   onPlaybackError?: () => void
 ): void {
   const url = getAzanBundledWebUrl(voiceId);
-  if (url) playAzanUrl(url, getVoiceMeta(voiceId), onPlaybackError);
+  if (!url) {
+    onPlaybackError?.();
+    return;
+  }
+  playAzanUrl(url, getVoiceMeta(voiceId), onPlaybackError);
 }
 
 export function playAzanUrl(
@@ -643,6 +654,11 @@ export function playAzanUrl(
   a.preload = "auto";
   /* iOS WebKit: hint inline playback (video uses playsinline; harmless on Audio). */
   a.setAttribute("playsinline", "");
+  try {
+    a.load();
+  } catch {
+    /* ignore */
+  }
   currentAudio = a;
 
   const m = meta ?? { title: "Azan", artist: "Call to Prayer Sweden" };
