@@ -1,5 +1,6 @@
 /*
- * Balanced prayer app UI: calm mint–sage mist, forest accent, clear hierarchy (practical + professional).
+ * Minimalist Clinic UI: neutral data-first surfaces, high-legibility charcoal text,
+ * and restrained royal-blue accents for key actions.
  */
 html {
   -webkit-text-size-adjust: 100%;
@@ -14,51 +15,56 @@ html {
   --font: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "DM Sans", system-ui, sans-serif;
   --touch-min: 2.75rem;
-  --shadow-sm: 0 1px 0 rgba(18, 46, 38, 0.05);
-  --shadow-md: 0 4px 20px rgba(18, 46, 38, 0.07);
-  --shadow-float: 0 14px 36px rgba(18, 46, 38, 0.09);
-  --shadow-glow: 0 0 0 1px rgba(18, 102, 69, 0.22);
+  --shadow-sm: 0 1px 0 rgba(51, 51, 51, 0.05);
+  --shadow-md: 0 4px 20px rgba(51, 51, 51, 0.08);
+  --shadow-float: 0 14px 36px rgba(51, 51, 51, 0.1);
+  --shadow-glow: 0 0 0 1px rgba(74, 144, 226, 0.24);
   --tab-bar-h: 4rem;
   --tab-pad-inline: 0.45rem;
   --tab-gap: 0.14rem;
-  --bg: #e5efe9;
-  --surface: #edf5f0;
-  --surface-elevated: #f7fbf9;
-  --surface-hover: #dfece4;
-  --border: rgba(22, 48, 38, 0.1);
-  --separator: rgba(22, 48, 38, 0.07);
-  --text: #152a24;
-  --muted: #4a6b5e;
-  --accent: #126645;
-  --accent-2: #0d4a30;
-  --accent-hover: #0f5236;
-  --accent-soft: rgba(18, 102, 69, 0.1);
-  --accent-line: rgba(18, 102, 69, 0.28);
-  --primary-fg: #fafdfc;
-  --next: #126645;
-  --next-soft-bg: rgba(18, 102, 69, 0.1);
-  --next-soft-border: rgba(18, 102, 69, 0.22);
-  --spirit-warm: rgba(184, 149, 74, 0.12);
+  --bg: #dfe4ea;
+  --surface: #e9ecef;
+  --surface-elevated: #f1f3f5;
+  --surface-hover: #dde3e8;
+  --border: rgba(51, 51, 51, 0.14);
+  --separator: rgba(51, 51, 51, 0.1);
+  --text: #333333;
+  --muted: #5f6770;
+  --accent: #4a90e2;
+  --accent-2: #2f6fb8;
+  --accent-hover: #3d7fcc;
+  --accent-soft: rgba(74, 144, 226, 0.12);
+  --accent-line: rgba(74, 144, 226, 0.34);
+  --primary-fg: #f7f9fb;
+  --next: #4a90e2;
+  --next-soft-bg: rgba(74, 144, 226, 0.12);
+  --next-soft-border: rgba(74, 144, 226, 0.26);
+  --spirit-warm: rgba(74, 144, 226, 0.08);
   --error: #b42318;
   --error-soft-bg: rgba(180, 35, 24, 0.08);
   --error-soft-border: rgba(180, 35, 24, 0.18);
-  --focus: #126645;
-  --fieldset-tint: #eef5f1;
-  --list-hover: rgba(18, 60, 45, 0.055);
+  --focus: #4a90e2;
+  --fieldset-tint: #edf1f5;
+  --list-hover: rgba(51, 51, 51, 0.045);
   --spinner-track: rgba(255, 255, 255, 0.55);
-  --header-bg: rgba(242, 249, 245, 0.9);
-  --header-border: rgba(22, 48, 38, 0.08);
-  --panel-bg: #f0f7f3;
+  --header-bg: rgba(241, 245, 248, 0.92);
+  --header-border: rgba(51, 51, 51, 0.1);
+  --panel-bg: #edf1f5;
   --panel-shadow: var(--shadow-sm);
-  --hero-shine: rgba(18, 102, 69, 0.07);
-  --tab-bar-bg: rgba(229, 241, 234, 0.92);
-  --input-bg: #e2ebe5;
-  --inset-well: #d4e4db;
-  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a6b5e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  --chrome-bg: rgba(240, 248, 244, 0.93);
-  --chrome-border: rgba(22, 48, 38, 0.08);
-  --app-elevated: 0 1px 2px rgba(18, 46, 38, 0.05),
-    0 8px 28px rgba(18, 46, 38, 0.06);
+  --hero-shine: rgba(74, 144, 226, 0.08);
+  --tab-bar-bg: rgba(228, 234, 240, 0.94);
+  --input-bg: #e3e8ed;
+  --inset-well: #d8dfe6;
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6770' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  --chrome-bg: rgba(236, 241, 245, 0.94);
+  --chrome-border: rgba(51, 51, 51, 0.1);
+  --app-elevated: 0 1px 2px rgba(51, 51, 51, 0.06),
+    0 8px 28px rgba(51, 51, 51, 0.08);
+  --data-strong: #2a2a2a;
+  --data-soft: #6a727b;
+  --icon-default: #6f7a86;
+  --icon-active: #4a90e2;
+  --icon-muted: #8a949f;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
@@ -94,8 +100,8 @@ body {
   font-family: var(--font);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   background:
-    radial-gradient(80% 50% at 50% -10%, rgba(255, 255, 255, 0.7) 0%, transparent 55%),
-    linear-gradient(170deg, #f2faf6 0%, #e8f3ed 38%, #d9e9e0 100%);
+    radial-gradient(80% 50% at 50% -10%, rgba(255, 255, 255, 0.62) 0%, transparent 55%),
+    linear-gradient(170deg, #eef2f5 0%, #e6ebef 42%, #dde3e8 100%);
   color: var(--text);
   text-rendering: optimizeLegibility;
   transition: background-color 0.2s ease, color 0.15s ease;
@@ -244,6 +250,43 @@ html:lang(so) :is(
   );
 }
 
+.startup-salam {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  background: color-mix(in srgb, #000 86%, transparent);
+  animation: startup-salam-fade 3.2s ease forwards;
+  pointer-events: none;
+}
+
+.startup-salam__text {
+  margin: 0;
+  font-family: "Noto Naskh Arabic", "Amiri", "Segoe UI", serif;
+  font-size: clamp(2rem, 10vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #f3cd75;
+  text-shadow: 0 2px 14px rgb(0 0 0 / 44%);
+}
+
+@keyframes startup-salam-fade {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 /* Sticky header */
 .app-top-bar {
   position: sticky;
@@ -387,7 +430,7 @@ input:focus-visible {
 
 .app-download-banner__mark {
   flex-shrink: 0;
-  color: var(--accent);
+  color: var(--icon-active);
 }
 
 .app-download-banner__mark-svg {
@@ -827,6 +870,93 @@ button.secondary:disabled {
   font-size: 0.8125rem;
 }
 
+.release-health {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+}
+
+.release-health__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.release-health__title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.release-health__stamp {
+  margin: 0.45rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.release-health__list {
+  margin: 0.65rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.release-health__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-elevated);
+}
+
+.release-health__pill {
+  flex: 0 0 auto;
+  min-width: 2.85rem;
+  padding: 0.17rem 0.4rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.release-health__pill--ok {
+  color: var(--accent-2);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+}
+
+.release-health__pill--bad {
+  color: var(--error);
+  background: var(--error-soft-bg);
+  border: 1px solid var(--error-soft-border);
+}
+
+.release-health__copy {
+  min-width: 0;
+}
+
+.release-health__label {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.release-health__detail {
+  margin: 0.2rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
 .notify-fieldset {
   margin: 0 0 1.15rem;
   padding: 1.1rem 1.1rem 1.15rem;
@@ -1043,14 +1173,14 @@ button.secondary:disabled {
     ),
     radial-gradient(
       circle at 50% 38%,
-      rgba(22, 163, 74, 0.12),
+      rgba(74, 144, 226, 0.14),
       transparent 58%
     ),
     var(--input-bg);
   color: var(--accent);
   box-shadow:
     var(--shadow-sm),
-    0 0 40px -18px rgba(22, 163, 74, 0.2),
+    0 0 40px -18px rgba(74, 144, 226, 0.22),
     inset 0 0 0 1px rgba(255, 255, 255, 0.35);
 }
 
@@ -1188,7 +1318,7 @@ button.secondary:disabled {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--input-bg);
-  color: var(--accent-2);
+  color: var(--icon-default);
   cursor: pointer;
   transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
 }
@@ -1790,9 +1920,9 @@ button.secondary:disabled {
 
 .next-banner__time {
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: 1.55rem;
   font-weight: 700;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.04em;
   color: var(--accent);
   font-variant-numeric: tabular-nums;
 }
@@ -1806,6 +1936,7 @@ button.secondary:disabled {
   font-weight: 600;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
   letter-spacing: -0.02em;
   background: var(--input-bg);
   border-radius: var(--radius-pill);
@@ -1836,9 +1967,13 @@ button.secondary:disabled {
   margin: 0;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--separator);
+  border-bottom: 1px solid color-mix(in srgb, var(--separator) 88%, var(--border));
   border-radius: 0;
   transition: background 0.15s ease;
+}
+
+.prayer-row:nth-child(even) {
+  background: color-mix(in srgb, var(--surface-elevated) 94%, var(--input-bg));
 }
 
 .prayer-row:last-child {
@@ -1865,23 +2000,25 @@ button.secondary:disabled {
   font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: var(--data-strong);
 }
 
 .prayer-row .name-en {
   display: block;
   font-size: 0.8rem;
   font-weight: 400;
-  color: var(--muted);
+  color: var(--data-soft);
   margin-top: 0.15rem;
 }
 
 .prayer-row time {
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
   font-family: var(--font-display);
   font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  color: var(--data-strong);
+  letter-spacing: -0.025em;
 }
 
 .prayer-row > div:first-child {
@@ -2328,12 +2465,14 @@ html[dir="rtl"] .prayer-row .name-en {
   flex-shrink: 0;
   width: 24px;
   height: 24px;
-  opacity: 0.42;
+  color: var(--icon-default);
+  opacity: 0.9;
   transition: opacity 0.2s ease, transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .app-tab:focus-visible .app-tab__icon {
-  opacity: 0.72;
+  color: var(--icon-active);
+  opacity: 1;
 }
 
 .app-tab--active {
@@ -2341,6 +2480,7 @@ html[dir="rtl"] .prayer-row .name-en {
 }
 
 .app-tab--active .app-tab__icon {
+  color: var(--icon-active);
   opacity: 1;
   transform: translateY(-1px) scale(1.04);
 }
@@ -2388,6 +2528,43 @@ html[dir="rtl"] .prayer-row .name-en {
   flex-direction: column;
   gap: 0.85rem;
   margin-bottom: 1.25rem;
+}
+
+.azan-guard {
+  margin: 0 0 1rem;
+  padding: 0.95rem 1rem 1rem;
+  border: 1px solid var(--error-soft-border);
+  border-radius: var(--radius);
+  background: var(--error-soft-bg);
+}
+
+.azan-guard__title {
+  margin: 0 0 0.45rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--error);
+}
+
+.azan-guard__intro {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
+.azan-guard__list {
+  margin: 0 0 0.8rem;
+  padding: 0 0 0 1rem;
+}
+
+.azan-guard__item {
+  margin: 0 0 0.35rem;
+  color: var(--text);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.azan-guard__fix {
+  margin-top: 0.1rem;
 }
 
 .settings-tile {

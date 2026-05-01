@@ -4,6 +4,6 @@
     <color name="colorPrimary">#126645</color>
     <color name="colorPrimaryDark">#0D4A30</color>
     <color name="colorAccent">#126645</color>
-    <color name="splash_background">#E5EFE9</color>
+    <color name="splash_background">#000000</color>
     <color name="navigation_bar_color">#D9E9E0</color>
 </resources>

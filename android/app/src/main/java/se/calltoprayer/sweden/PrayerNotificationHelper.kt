@@ -4,11 +4,8 @@ import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
-import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
 import com.capacitorjs.plugins.localnotifications.NotificationStorage
@@ -58,33 +55,18 @@ object PrayerNotificationHelper {
         }
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
 
-        val pkg = context.packageName
-        val rawId = context.resources.getIdentifier("azan_notify", "raw", pkg)
-        var soundUri: Uri? = null
-        if (rawId != 0) {
-            soundUri = Uri.parse("${ContentResolver.SCHEME_ANDROID_RESOURCE}://$pkg/$rawId")
-        }
-
-        val audioAttributes = AudioAttributes.Builder()
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-            .build()
-
         val loud = NotificationChannel(
-            "ctp-prayer-alarm-v1",
+            "ctp-prayer-alarm-v3",
             "Prayer times (azan)",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             description = "Short sound at prayer time (full azan uses separate playback)."
             enableVibration(true)
-            if (soundUri != null) {
-                setSound(soundUri, audioAttributes)
-            }
         }
         nm.createNotificationChannel(loud)
 
         val quiet = NotificationChannel(
-            "ctp-prayer-quiet-v1",
+            "ctp-prayer-quiet-v3",
             "Prayer times (quiet)",
             NotificationManager.IMPORTANCE_LOW
         ).apply {
@@ -95,7 +77,7 @@ object PrayerNotificationHelper {
         nm.createNotificationChannel(quiet)
 
         val vibrate = NotificationChannel(
-            "ctp-prayer-vibrate-v1",
+            "ctp-prayer-vibrate-v3",
             "Prayer times (vibrate)",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {

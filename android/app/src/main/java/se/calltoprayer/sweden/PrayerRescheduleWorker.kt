@@ -25,9 +25,10 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
     companion object {
         private const val PREFS = "CapacitorStorage"
         private const val CONFIG_KEY = "ctp.prayerScheduleConfig.v1"
-        private const val CHANNEL_LOUD = "ctp-prayer-alarm-v1"
-        private const val CHANNEL_QUIET = "ctp-prayer-quiet-v1"
-        private const val CHANNEL_VIBRATE = "ctp-prayer-vibrate-v1"
+        private const val CHANNEL_LOUD = "ctp-prayer-alarm-v3"
+        private const val CHANNEL_QUIET = "ctp-prayer-quiet-v3"
+        private const val CHANNEL_VIBRATE = "ctp-prayer-vibrate-v3"
+        private const val SMALL_ICON = "ic_stat_prayer_bell"
         private val KEY_ORDER = arrayOf("fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha")
 
         private fun formatYmd(cal: Calendar): String {
@@ -201,9 +202,11 @@ class PrayerRescheduleWorker(context: Context, params: WorkerParameters) : Worke
                     json.put("id", id)
                     json.put("title", title)
                     json.put("body", body)
+                    // Force app-provided monochrome status-bar icon for prayer notifications.
+                    json.put("smallIcon", SMALL_ICON)
                     json.put("channelId", channelId)
                     if (channelId == CHANNEL_LOUD) {
-                        json.put("sound", "azan_notify.wav")
+                        json.put("sound", "default")
                     }
                     val sched = JSObject()
                     sched.put("at", formatUtcIso(at))

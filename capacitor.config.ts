@@ -12,7 +12,7 @@ const config: CapacitorConfig = {
   },
   plugins: {
     LocalNotifications: {
-      sound: "azan_notify.wav",
+      smallIcon: "ic_stat_prayer_bell",
       iconColor: "#126645",
     },
     SplashScreen: {

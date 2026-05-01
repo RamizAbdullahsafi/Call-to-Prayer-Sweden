@@ -4,8 +4,7 @@
     android:height="108dp"
     android:viewportHeight="108"
     android:viewportWidth="108">
-    <!-- Cool deep slate: reads fresher than flat black behind bright gold/teal -->
     <path
-        android:fillColor="#0E1622"
+        android:fillColor="#000000"
         android:pathData="M0,0h108v108h-108z" />
 </vector>

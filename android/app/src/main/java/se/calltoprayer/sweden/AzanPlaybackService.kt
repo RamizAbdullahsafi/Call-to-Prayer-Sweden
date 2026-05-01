@@ -58,7 +58,7 @@ class AzanPlaybackService : Service() {
         val notif = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.azan_playback_title))
             .setContentText(getString(R.string.azan_playback_body, key))
-            .setSmallIcon(R.drawable.ic_masjid_foreground)
+            .setSmallIcon(R.drawable.ic_stat_prayer_bell)
             .setContentIntent(contentPi)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)

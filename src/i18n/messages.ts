@@ -118,7 +118,13 @@ export type MessageId =
   | "androidSetupStepExact"
   | "androidSetupStepBattery"
   | "androidSetupBatteryButton"
-  | "batteryUnrestrictedOk";
+  | "batteryUnrestrictedOk"
+  | "azanGuardAria"
+  | "azanGuardTitle"
+  | "azanGuardIntro"
+  | "azanGuardFixing"
+  | "azanGuardFixAll"
+  | "azanGuardAllClear";
 
 type Messages = Record<MessageId, string>;
 
@@ -259,6 +265,13 @@ const sv: Messages = {
     "Batteri — låt inte systemet stänga av appen i bakgrunden.",
   androidSetupBatteryButton: "Öppna app- och batteriinställningar",
   batteryUnrestrictedOk: "Batteri: ej begränsat (bra) ✓",
+  azanGuardAria: "Azan-skydd",
+  azanGuardTitle: "Azan-skydd",
+  azanGuardIntro:
+    "Azan kan utebli tills detta är åtgärdat. Använd snabbfixen, gå tillbaka och kör kontroll igen.",
+  azanGuardFixing: "Åtgärdar...",
+  azanGuardFixAll: "Åtgärda alla hinder nu",
+  azanGuardAllClear: "Azan-skydd: alla hinder är åtgärdade.",
 };
 
 const en: Messages = {
@@ -398,6 +411,13 @@ const en: Messages = {
     "Battery — stop the system from putting the app to sleep.",
   androidSetupBatteryButton: "Open app & battery settings",
   batteryUnrestrictedOk: "Battery: unrestricted ✓",
+  azanGuardAria: "Azan protection guard",
+  azanGuardTitle: "Azan protection guard",
+  azanGuardIntro:
+    "Azan can fail until these are fixed. Use one-tap repair, then return and run check.",
+  azanGuardFixing: "Applying fixes...",
+  azanGuardFixAll: "Fix all blockers now",
+  azanGuardAllClear: "Azan protection guard: all blockers are cleared.",
 };
 
 const ar: Messages = {
@@ -535,6 +555,13 @@ const ar: Messages = {
   androidSetupStepBattery: "البطارية — لا تدع النظام يوقف التطبيق في الخلفية.",
   androidSetupBatteryButton: "فتح إعدادات التطبيق والبطارية",
   batteryUnrestrictedOk: "البطارية: غير مقيدة ✓",
+  azanGuardAria: "حماية الأذان",
+  azanGuardTitle: "حماية الأذان",
+  azanGuardIntro:
+    "قد يفشل الأذان حتى يتم إصلاح هذه المشاكل. استخدم الإصلاح بنقرة واحدة ثم عد وشغّل الفحص.",
+  azanGuardFixing: "جارٍ تطبيق الإصلاحات...",
+  azanGuardFixAll: "إصلاح كل العوائق الآن",
+  azanGuardAllClear: "حماية الأذان: تم حل جميع العوائق.",
 };
 
 const fa: Messages = {
@@ -672,6 +699,13 @@ const fa: Messages = {
   androidSetupStepBattery: "باتری — نگذارید سیستم برنامه را در پس‌زمینه بخواباند.",
   androidSetupBatteryButton: "باز کردن تنظیمات برنامه و باتری",
   batteryUnrestrictedOk: "باتری: بدون محدودیت ✓",
+  azanGuardAria: "محافظت اذان",
+  azanGuardTitle: "محافظت اذان",
+  azanGuardIntro:
+    "اذان ممکن است تا رفع این موارد اجرا نشود. تعمیر سریع را بزنید، سپس برگردید و دوباره بررسی کنید.",
+  azanGuardFixing: "در حال اعمال اصلاحات...",
+  azanGuardFixAll: "همه موانع را همین حالا رفع کن",
+  azanGuardAllClear: "محافظت اذان: همه موانع رفع شد.",
 };
 
 const ku: Messages = {
@@ -809,6 +843,13 @@ const ku: Messages = {
   androidSetupStepBattery: "Batterê — nehêle pergal sepanê di paşperdê de rawestîne.",
   androidSetupBatteryButton: "Mîhengên sepan û batterê veke",
   batteryUnrestrictedOk: "Batterê: bê sînor ✓",
+  azanGuardAria: "Parastina ezanê",
+  azanGuardTitle: "Parastina ezanê",
+  azanGuardIntro:
+    "Ezan dikare bisekine heta ku van astengan çareser bikin. Çareseriya yek-tikandinê bikar bîne, paşê vegere û dîsa kontrol bike.",
+  azanGuardFixing: "Çareseriyan tên sepandin...",
+  azanGuardFixAll: "Hemû astengan niha çareser bike",
+  azanGuardAllClear: "Parastina ezanê: hemû asteng hatin rakirin.",
 };
 
 const so: Messages = {
@@ -946,6 +987,13 @@ const so: Messages = {
   androidSetupStepBattery: "Batteriga — ha u oggolaanin nidaamka inuu barnaamijka dhigo mid hurda.",
   androidSetupBatteryButton: "Fur dejinta barnaamijka iyo batteriga",
   batteryUnrestrictedOk: "Batteriga: aan xadidnayn ✓",
+  azanGuardAria: "Ilaalinta adaan",
+  azanGuardTitle: "Ilaalinta adaan",
+  azanGuardIntro:
+    "Adaan wuxuu fashilmi karaa ilaa arrimahan la saxo. Isticmaal hagaajin hal-taabasho ah, kadibna soo noqo oo mar kale hubi.",
+  azanGuardFixing: "Hagaajinta waa la dabaqayaa...",
+  azanGuardFixAll: "Hadda hagaaji dhammaan caqabadaha",
+  azanGuardAllClear: "Ilaalinta adaan: dhammaan caqabadaha waa la xalliyay.",
 };
 
 export const MESSAGES: Record<Locale, Messages> = {

@@ -24,6 +24,7 @@ import {
   AZAN_VOICE_GROUPS,
   DEFAULT_AZAN_PRAYER_KEYS,
   getAzanVoiceLabel,
+  getBundledAzanOfflineFiles,
   getAzanStreamUrl,
   loadAzanPlayEnabled,
   loadAzanPrayerKeys,
@@ -62,11 +63,13 @@ import {
   getNativeNotificationDisplayPermission,
   isIgnoringBatteryOptimizations,
   isNativeLocalNotificationsAvailable,
+  NOTIFICATION_SOUND,
   openAndroidAppNotificationSettings,
   openAndroidBatteryOptimizationSettings,
   openAndroidExactAlarmSettings,
   requestNativeNotificationPermissions,
   scheduleNativePrayerNotificationsAhead,
+  verifyAndroidRawAudioAssets,
 } from "./nativePrayerNotifications";
 import {
   LOCALES,
@@ -151,6 +154,14 @@ type DeviceOrientationWithPermission = typeof DeviceOrientationEvent & {
 
 const COMPASS_SMOOTH = 0.16;
 
+type ReleaseDiagnosticStatus = "pass" | "warn" | "fail";
+type ReleaseDiagnosticItem = {
+  id: string;
+  label: string;
+  status: ReleaseDiagnosticStatus;
+  detail: string;
+};
+
 function loadNotifySilent(): boolean {
   try {
     return localStorage.getItem(NOTIFY_SILENT_KEY) === "1";
@@ -228,6 +239,67 @@ const ScheduleSkeleton = memo(function ScheduleSkeleton(): ReactElement {
   );
 });
 
+const NextPrayerBanner = memo(function NextPrayerBanner({
+  scheduleDay,
+  t,
+  onPrayerElapsed,
+}: {
+  scheduleDay: PrayerDay;
+  t: (id: MessageId, vars?: Record<string, string | number>) => string;
+  onPrayerElapsed: () => void;
+}): ReactElement | null {
+  const [nowTick, setNowTick] = useState(() => new Date());
+  const prevCountdownDiffRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      if (document.visibilityState === "hidden") return;
+      setNowTick(new Date());
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const nextPrayer = useMemo(() => getNextPrayer(scheduleDay, nowTick), [scheduleDay, nowTick]);
+
+  useEffect(() => {
+    if (!nextPrayer) {
+      prevCountdownDiffRef.current = null;
+      return;
+    }
+    const diff = nextPrayer.at.getTime() - nowTick.getTime();
+    const prev = prevCountdownDiffRef.current;
+    prevCountdownDiffRef.current = diff;
+    if (prev !== null && prev > 0 && diff <= 0) {
+      onPrayerElapsed();
+    }
+  }, [nextPrayer, nowTick, onPrayerElapsed]);
+
+  if (!nextPrayer) return null;
+
+  return (
+    <div id="next" className="next-banner" role="region" aria-label={t("nextPrayer")}>
+      <div className="next-banner__main">
+        <div className="label">{t("nextPrayer")}</div>
+        <div className="name">
+          {t(prayerMsg(nextPrayer.key, "prayer"))}
+          <span className="next-banner__dot" aria-hidden>
+            ·
+          </span>
+          <time
+            className="next-banner__time"
+            dateTime={`${scheduleDay.date}T${scheduleDay.schedule[nextPrayer.key]}`}
+          >
+            {scheduleDay.schedule[nextPrayer.key]}
+          </time>
+        </div>
+      </div>
+      <div className="countdown" aria-live="polite">
+        {formatCountdownI18n(nextPrayer.at.getTime() - nowTick.getTime(), t)}
+      </div>
+    </div>
+  );
+});
+
 export function App(): ReactElement {
   const { t, locale, setLocale } = useI18n();
   /** Latest `t` for async callbacks without retriggering `loadPrayerTimes` when only language changes. */
@@ -242,7 +314,17 @@ export function App(): ReactElement {
   const [dateInput, setDateInput] = useState(() =>
     formatDateYMD(new Date())
   );
+  const [nowTick, setNowTick] = useState(() => new Date());
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      if (document.visibilityState === "hidden") return;
+      setNowTick(new Date());
+    }, 5000);
+    return () => window.clearInterval(id);
+  }, []);
   const [error, setError] = useState<string | null>(null);
+  const [audioAssetWarning, setAudioAssetWarning] = useState<string | null>(null);
   const [scheduleDay, setScheduleDay] = useState<PrayerDay | null>(null);
   const [offlineCachedTimes, setOfflineCachedTimes] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -274,7 +356,6 @@ export function App(): ReactElement {
   const [adhanVoicePickerScope, setAdhanVoicePickerScope] = useState<
     "global" | PrayerKey
   >("global");
-  const [nowTick, setNowTick] = useState(() => new Date());
   const [geo, setGeo] = useState<GeoPoint | null>(null);
   const [geoLoading, setGeoLoading] = useState(false);
   const [geoMessage, setGeoMessage] = useState<string | null>(null);
@@ -282,11 +363,15 @@ export function App(): ReactElement {
   const [compassPermissionNeeded, setCompassPermissionNeeded] = useState(false);
   const [compassError, setCompassError] = useState<string | null>(null);
   const headingSmoothRef = useRef<number | null>(null);
+  const headingRafRef = useRef<number | null>(null);
+  const headingPendingRef = useRef<number | null>(null);
   const stopCompassRef = useRef<() => void>(() => {});
 
   const [activeTab, setActiveTab] = useState<
     "prayer" | "qibla" | "calendar" | "settings"
   >("prayer");
+  const [showLaunchGreeting, setShowLaunchGreeting] = useState(true);
+  const adhanUiVisibleRef = useRef(false);
 
   useEffect(() => {
     saveNotifyMode(notifyMode);
@@ -321,7 +406,6 @@ export function App(): ReactElement {
   notifySilentRef.current = notifySilent;
 
   const disposeNotifyRef = useRef<() => void>(() => {});
-  const prevCountdownDiffRef = useRef<number | null>(null);
 
   const loadPrayerTimes = useCallback(async (): Promise<void> => {
     const tr = tRef.current;
@@ -372,19 +456,17 @@ export function App(): ReactElement {
   }, [locale]);
 
   useEffect(() => {
-    if (activeTab !== "prayer") return;
-    const id = window.setInterval(() => {
-      if (document.visibilityState === "hidden") return;
-      setNowTick(new Date());
-    }, 1000);
-    return () => window.clearInterval(id);
-  }, [activeTab]);
-
-  useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     const id = window.setTimeout(() => {
       void syncPrayerCacheFromLocalStorageToNativePreferences();
     }, 0);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      setShowLaunchGreeting(false);
+    }, 3200);
     return () => window.clearTimeout(id);
   }, []);
 
@@ -402,7 +484,10 @@ export function App(): ReactElement {
   }, []);
 
   useEffect(() => {
-    setAzanProgressListener((p) => setAzanProgress(p));
+    setAzanProgressListener((p) => {
+      if (!adhanUiVisibleRef.current) return;
+      setAzanProgress(p);
+    });
     return () => setAzanProgressListener(null);
   }, []);
 
@@ -417,8 +502,31 @@ export function App(): ReactElement {
     "granted" | "denied" | "unsupported"
   >("unsupported");
   const [batteryOptimizationIgnored, setBatteryOptimizationIgnored] = useState(false);
+  const [releaseHealthRunning, setReleaseHealthRunning] = useState(false);
+  const [releaseHealthCheckedAt, setReleaseHealthCheckedAt] = useState<Date | null>(null);
+  const [releaseDebugOk, setReleaseDebugOk] = useState<boolean | null>(null);
+  const [releaseDebugMessage, setReleaseDebugMessage] = useState("");
+  const [releaseDiagnostics, setReleaseDiagnostics] = useState<ReleaseDiagnosticItem[]>([]);
+  const [releaseReportCopied, setReleaseReportCopied] = useState(false);
+  const [autoFixRunning, setAutoFixRunning] = useState(false);
+  const [developerToolsEnabled] = useState(() => {
+    if (import.meta.env.DEV) return true;
+    try {
+      return localStorage.getItem("ctp.devtools") === "1";
+    } catch {
+      return false;
+    }
+  });
   const [remindersDisclosureOpen, setRemindersDisclosureOpen] = useState(false);
   const [adhanDisclosureOpen, setAdhanDisclosureOpen] = useState(false);
+
+  useEffect(() => {
+    const visible = activeTab === "settings" && adhanDisclosureOpen;
+    adhanUiVisibleRef.current = visible;
+    if (!visible) {
+      setAzanProgress(null);
+    }
+  }, [activeTab, adhanDisclosureOpen]);
 
   useEffect(() => {
     if (!nativeNotificationsEnabled) return;
@@ -457,6 +565,305 @@ export function App(): ReactElement {
     };
   }, []);
 
+  const runReleaseHealthCheck = useCallback(async (): Promise<void> => {
+    if (!developerToolsEnabled) return;
+    if (!nativeNotificationsEnabled || Capacitor.getPlatform() !== "android") {
+      setReleaseDebugOk(false);
+      setReleaseDebugMessage("Android native notifications are not active on this device.");
+      setReleaseDiagnostics([]);
+      return;
+    }
+    setReleaseHealthRunning(true);
+    try {
+      const cityVal = cityCustomRef.current.trim() || city;
+      const requiredAudioFiles = [
+        ...getBundledAzanOfflineFiles(),
+        ...(NOTIFICATION_SOUND && NOTIFICATION_SOUND !== "default"
+          ? [NOTIFICATION_SOUND]
+          : []),
+      ];
+      const [displayPerm, exactAlarm, batteryIgnored, missingAudio, pending, todayFetch, tomorrowFetch] =
+        await Promise.all([
+        getNativeNotificationDisplayPermission(),
+        getAndroidExactAlarmPermission(),
+        isIgnoringBatteryOptimizations(),
+        verifyAndroidRawAudioAssets(requiredAudioFiles),
+        LocalNotifications.getPending(),
+        fetchPrayerTimes(cityVal, new Date()),
+        (() => {
+          const d = new Date();
+          d.setDate(d.getDate() + 1);
+          return fetchPrayerTimes(cityVal, d);
+        })(),
+        ]);
+      const hasMaghribAzan = azanPrayerKeys.includes("maghrib");
+      const hasAzanOnAnyScheduledPrayer = notifyKeys.some((key) =>
+        azanPrayerKeys.includes(key)
+      );
+      const pendingBeforeCount = pending.notifications.length;
+      let pendingCount = pendingBeforeCount;
+      let pendingRescheduleNote = "";
+      if (pendingBeforeCount === 0) {
+        try {
+          await scheduleNativePrayerNotificationsAhead({
+            city: cityVal,
+            keys: new Set(notifyKeys),
+            notifyMode,
+            title: tRef.current("appTitle"),
+            prayerLabel: (key) => tRef.current(prayerMsg(key, "prayer")),
+            androidAzan:
+              Capacitor.getPlatform() === "android"
+                ? {
+                    enabled: notifyMode === "full",
+                    audioUrlByKey: ORDER.reduce<Partial<Record<PrayerKey, string>>>(
+                      (acc, key) => {
+                        const voiceId = azanVoiceByPrayer[key] ?? azanVoiceId;
+                        const url = getAzanStreamUrl(voiceId);
+                        if (url) acc[key] = url;
+                        return acc;
+                      },
+                      {}
+                    ),
+                    volume: azanVolumePct / 100,
+                    prayerKeys: new Set(azanPrayerKeys),
+                  }
+                : undefined,
+          });
+          await new Promise((resolve) => window.setTimeout(resolve, 350));
+          const pendingAfter = await LocalNotifications.getPending();
+          pendingCount = pendingAfter.notifications.length;
+          pendingRescheduleNote =
+            pendingCount > 0
+              ? `Auto-reschedule recovered queue (${pendingCount} pending).`
+              : "Auto-reschedule ran, but queue is still empty.";
+        } catch (e) {
+          pendingRescheduleNote = `Auto-reschedule failed: ${
+            e instanceof Error ? e.message : "unknown error"
+          }`;
+        }
+      }
+      const checkRows: ReleaseDiagnosticItem[] = [
+        {
+          id: "perm",
+          label: "Notification permission",
+          status: displayPerm === "granted" ? "pass" : "fail",
+          detail:
+            displayPerm === "granted"
+              ? "Granted"
+              : "Not granted. Open app notification settings and allow notifications.",
+        },
+        {
+          id: "exact",
+          label: "Exact alarms",
+          status: exactAlarm === "granted" ? "pass" : "fail",
+          detail:
+            exactAlarm === "granted"
+              ? "Allowed"
+              : "Denied. Enable exact alarms for Prayer Sweden.",
+        },
+        {
+          id: "battery",
+          label: "Battery optimization",
+          status: batteryIgnored ? "pass" : "fail",
+          detail: batteryIgnored
+            ? "App is unrestricted"
+            : "Restricted. Set app to Unrestricted / Don't optimize.",
+        },
+        {
+          id: "audio-assets",
+          label: "Bundled audio assets",
+          status: missingAudio.length === 0 ? "pass" : "fail",
+          detail:
+            missingAudio.length === 0
+              ? "All required raw assets exist in installed build."
+              : `Missing: ${missingAudio.join(", ")}`,
+        },
+        {
+          id: "mode",
+          label: "Reminder mode",
+          status: notifyMode === "full" ? "pass" : "warn",
+          detail:
+            notifyMode === "full"
+              ? "Full Azan mode is enabled."
+              : "Not Full mode. Notifications can work, but native azan audio won't.",
+        },
+        {
+          id: "azan-toggle",
+          label: "Azan playback toggle",
+          status: azanPlay ? "pass" : "warn",
+          detail: azanPlay ? "Enabled" : "Disabled",
+        },
+        {
+          id: "azan-volume",
+          label: "Azan volume",
+          status: azanVolumePct > 0 ? "pass" : "fail",
+          detail: azanVolumePct > 0 ? `${azanVolumePct}%` : "0% (muted)",
+        },
+        {
+          id: "azan-maghrib",
+          label: "Maghrib azan selected",
+          status: hasMaghribAzan ? "pass" : "warn",
+          detail: hasMaghribAzan ? "Included" : "Not included in azan prayers",
+        },
+        {
+          id: "overlap",
+          label: "Reminder/Azan overlap",
+          status: hasAzanOnAnyScheduledPrayer ? "pass" : "fail",
+          detail: hasAzanOnAnyScheduledPrayer
+            ? "At least one reminder prayer has azan enabled."
+            : "No overlap. Azan cannot play for any scheduled reminder.",
+        },
+        {
+          id: "api-today",
+          label: "Prayer API fetch (today)",
+          status: todayFetch?.day?.schedule ? "pass" : "fail",
+          detail: todayFetch?.day?.date
+            ? `OK for ${todayFetch.day.city} (${todayFetch.day.date})`
+            : "Failed to fetch today's prayer times.",
+        },
+        {
+          id: "api-tomorrow",
+          label: "Prayer API fetch (tomorrow)",
+          status: tomorrowFetch?.day?.schedule ? "pass" : "fail",
+          detail: tomorrowFetch?.day?.date
+            ? `OK for ${tomorrowFetch.day.city} (${tomorrowFetch.day.date})`
+            : "Failed to fetch tomorrow's prayer times.",
+        },
+        {
+          id: "pending",
+          label: "Pending native notifications",
+          status: pendingCount > 0 ? "pass" : "fail",
+          detail:
+            pendingCount > 0
+              ? `${pendingCount} notifications queued in OS${pendingRescheduleNote ? ` (${pendingRescheduleNote})` : ""}`
+              : `0 queued notifications.${pendingRescheduleNote ? ` ${pendingRescheduleNote}` : " Scheduling likely failed or was cleared."}`,
+        },
+      ];
+      const failCount = checkRows.filter((r) => r.status === "fail").length;
+      const warnCount = checkRows.filter((r) => r.status === "warn").length;
+      setReleaseDiagnostics(checkRows);
+      setReleaseDebugOk(failCount === 0);
+      setReleaseDebugMessage(
+        failCount > 0
+          ? `Found ${failCount} critical issue(s) and ${warnCount} warning(s). Fix critical issues first, then run this check again.`
+          : warnCount > 0
+            ? `No critical issues found. ${warnCount} warning(s) remain.`
+            : "All diagnostics passed. If azan still fails, test during lock screen and share device model + Android version."
+      );
+      setReleaseHealthCheckedAt(new Date());
+    } catch (err) {
+      setReleaseDebugOk(false);
+      setReleaseDiagnostics([]);
+      setReleaseDebugMessage(
+        `Diagnostics crashed before completion: ${
+          err instanceof Error ? err.message : "unknown error"
+        }`
+      );
+      setReleaseHealthCheckedAt(new Date());
+    } finally {
+      setReleaseHealthRunning(false);
+    }
+  }, [
+    developerToolsEnabled,
+    nativeNotificationsEnabled,
+    city,
+    azanPrayerKeys,
+    notifyKeys,
+    notifyMode,
+    azanPlay,
+    azanVolumePct,
+  ]);
+
+  const copyReleaseDiagnosticReport = useCallback(async (): Promise<void> => {
+    if (releaseDiagnostics.length === 0) return;
+    const cityVal = cityCustomRef.current.trim() || city;
+    const checkedAt = releaseHealthCheckedAt
+      ? releaseHealthCheckedAt.toISOString()
+      : "not-run";
+    const header = [
+      "Prayer Sweden Diagnostic Report",
+      `CheckedAt: ${checkedAt}`,
+      `City: ${cityVal}`,
+      `Summary: ${releaseDebugMessage || "No summary"}`,
+      "",
+      "Checks:",
+    ];
+    const rows = releaseDiagnostics.map(
+      (row) => `- [${row.status.toUpperCase()}] ${row.label}: ${row.detail}`
+    );
+    const text = [...header, ...rows].join("\n");
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "true");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setReleaseReportCopied(true);
+      window.setTimeout(() => setReleaseReportCopied(false), 1800);
+    } catch {
+      setReleaseReportCopied(false);
+    }
+  }, [releaseDiagnostics, releaseHealthCheckedAt, city, releaseDebugMessage]);
+
+  const applyAzanAutoFixes = useCallback(async (): Promise<void> => {
+    if (!developerToolsEnabled) return;
+    if (!nativeNotificationsEnabled || Capacitor.getPlatform() !== "android") return;
+    setAutoFixRunning(true);
+    try {
+      if (notifyMode !== "full") {
+        setNotifyMode("full");
+      }
+      if (!azanPlay) {
+        setAzanPlay(true);
+        saveAzanPlayEnabled(true);
+      }
+      if (azanVolumePct <= 0) {
+        setAzanVolumePct(92);
+        saveAzanVolume(0.92);
+      }
+      const hasAzanOverlap = notifyKeys.some((key) => azanPrayerKeys.includes(key));
+      if (!hasAzanOverlap) {
+        const next = [...notifyKeys];
+        setAzanPrayerKeys(next);
+        saveAzanPrayerKeys(new Set(next));
+      }
+      await requestNativeNotificationPermissions();
+      await openAndroidAppNotificationSettings();
+      await openAndroidExactAlarmSettings();
+      await openAndroidBatteryOptimizationSettings();
+      setPermRevision((n) => n + 1);
+      setNativeRescheduleTick((n) => n + 1);
+      await runReleaseHealthCheck();
+    } finally {
+      setAutoFixRunning(false);
+    }
+  }, [
+    developerToolsEnabled,
+    nativeNotificationsEnabled,
+    notifyMode,
+    azanPlay,
+    azanVolumePct,
+    notifyKeys,
+    azanPrayerKeys,
+    runReleaseHealthCheck,
+  ]);
+
+  useEffect(() => {
+    if (!developerToolsEnabled) return;
+    if (!remindersDisclosureOpen) return;
+    if (!nativeNotificationsEnabled || Capacitor.getPlatform() !== "android") return;
+    void runReleaseHealthCheck();
+  }, [developerToolsEnabled, remindersDisclosureOpen, nativeNotificationsEnabled, runReleaseHealthCheck]);
+
   const permStatus = useMemo((): string => {
     if (nativeNotificationsEnabled) {
       if (nativePerm === "granted") return t("permGranted");
@@ -470,26 +877,98 @@ export function App(): ReactElement {
     return t("permDefault");
   }, [nativeNotificationsEnabled, nativePerm, permRevision, t]);
 
-  const nextPrayer = useMemo(() => {
-    if (activeTab !== "prayer" || !scheduleDay) return null;
-    return getNextPrayer(scheduleDay, nowTick);
-  }, [activeTab, scheduleDay, nowTick]);
-
-  useEffect(() => {
-    if (!scheduleDay || !nextPrayer) {
-      prevCountdownDiffRef.current = null;
-      return;
-    }
-    const diff = nextPrayer.at.getTime() - nowTick.getTime();
-    const prev = prevCountdownDiffRef.current;
-    prevCountdownDiffRef.current = diff;
-    if (prev !== null && prev > 0 && diff <= 0) {
-      void loadPrayerTimes();
-    }
-  }, [scheduleDay, nextPrayer, nowTick, loadPrayerTimes]);
-
   const notifyKeySet = useMemo(() => new Set(notifyKeys), [notifyKeys]);
   const adhanKeySet = useMemo(() => new Set(azanPrayerKeys), [azanPrayerKeys]);
+  const hasAzanOnAnyScheduledPrayer = useMemo(
+    () => notifyKeys.some((key) => azanPrayerKeys.includes(key)),
+    [notifyKeys, azanPrayerKeys]
+  );
+  const azanBlockingReason = useMemo((): string | null => {
+    if (notifyMode !== "full") {
+      return "Azan won't play because reminder mode is not Full Azan.";
+    }
+    if (!azanPlay) {
+      return "Azan won't play because \"Play azan with reminder\" is off.";
+    }
+    if (azanVolumePct <= 0) {
+      return "Azan won't play because volume is set to 0%.";
+    }
+    if (!hasAzanOnAnyScheduledPrayer) {
+      return "Azan won't play because no selected reminder prayer has azan enabled.";
+    }
+    return null;
+  }, [notifyMode, azanPlay, azanVolumePct, hasAzanOnAnyScheduledPrayer]);
+
+  const hardBlockers = useMemo((): string[] => {
+    if (!nativeNotificationsEnabled || Capacitor.getPlatform() !== "android") return [];
+    const out: string[] = [];
+    if (nativePerm !== "granted") out.push("Notifications are not granted in Android settings.");
+    if (androidExactAlarm === "denied") out.push("Exact alarms are disabled for this app.");
+    if (!batteryOptimizationIgnored) {
+      out.push("Battery optimization is enabled and may block prayer-time audio.");
+    }
+    if (audioAssetWarning) out.push(audioAssetWarning);
+    if (notifyMode !== "full") out.push("Reminder mode must be Full for native azan alarms.");
+    if (!azanPlay) out.push("Play azan with reminder is turned off.");
+    if (azanVolumePct <= 0) out.push("Azan volume is 0%.");
+    if (!hasAzanOnAnyScheduledPrayer) {
+      out.push("No overlap between selected reminder prayers and azan prayers.");
+    }
+    return out;
+  }, [
+    nativeNotificationsEnabled,
+    nativePerm,
+    androidExactAlarm,
+    batteryOptimizationIgnored,
+    audioAssetWarning,
+    notifyMode,
+    azanPlay,
+    azanVolumePct,
+    hasAzanOnAnyScheduledPrayer,
+  ]);
+
+  useEffect(() => {
+    if (!developerToolsEnabled) return;
+    if (!nativeNotificationsEnabled || Capacitor.getPlatform() !== "android") return;
+    if (activeTab !== "settings" || !remindersDisclosureOpen) return;
+    const id = window.setInterval(() => {
+      setPermRevision((n) => n + 1);
+      setNativeRescheduleTick((n) => n + 1);
+      void runReleaseHealthCheck();
+    }, 180000);
+    return () => window.clearInterval(id);
+  }, [
+    developerToolsEnabled,
+    nativeNotificationsEnabled,
+    runReleaseHealthCheck,
+    activeTab,
+    remindersDisclosureOpen,
+  ]);
+
+  useEffect(() => {
+    if (Capacitor.getPlatform() !== "android") return;
+    if (!isNativeLocalNotificationsAvailable()) return;
+    const requiredFiles = [
+      ...getBundledAzanOfflineFiles(),
+      ...(NOTIFICATION_SOUND && NOTIFICATION_SOUND !== "default"
+        ? [NOTIFICATION_SOUND]
+        : []),
+    ];
+    let cancelled = false;
+    void verifyAndroidRawAudioAssets(requiredFiles).then((missing) => {
+      if (cancelled) return;
+      if (missing.length === 0) {
+        setAudioAssetWarning(null);
+        return;
+      }
+      setAudioAssetWarning(
+        `Audio assets missing in this build: ${missing.join(", ")}. Rebuild and reinstall the app before relying on azan alerts.`
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const cleanupNativeNotifications = useCallback((): void => {
     if (Capacitor.isNativePlatform() && isNativeLocalNotificationsAvailable()) {
@@ -761,7 +1240,14 @@ export function App(): ReactElement {
       const next =
         prev === null ? raw : lerpHeading(prev, raw, COMPASS_SMOOTH);
       headingSmoothRef.current = next;
-      setHeadingDeg(next);
+      headingPendingRef.current = next;
+      if (headingRafRef.current !== null) return;
+      headingRafRef.current = window.requestAnimationFrame(() => {
+        headingRafRef.current = null;
+        if (headingPendingRef.current !== null) {
+          setHeadingDeg(headingPendingRef.current);
+        }
+      });
       setCompassError(null);
     };
     const useAbsolute = hasAbsoluteOrientationListener();
@@ -775,6 +1261,11 @@ export function App(): ReactElement {
       window.addEventListener("deviceorientation", onOrientation, true);
     }
     return () => {
+      if (headingRafRef.current !== null) {
+        window.cancelAnimationFrame(headingRafRef.current);
+        headingRafRef.current = null;
+      }
+      headingPendingRef.current = null;
       window.removeEventListener("orientationchange", onOrientationChange);
       if (useAbsolute) {
         window.removeEventListener(
@@ -911,6 +1402,11 @@ export function App(): ReactElement {
     return hijriFromGregorian(d, locale).month === 9;
   }, [activeTab, scheduleDay, locale]);
 
+  const nextPrayer = useMemo(() => {
+    if (!scheduleDay) return null;
+    return getNextPrayer(scheduleDay, nowTick);
+  }, [scheduleDay, nowTick]);
+
   const qiblaDeg = useMemo(() => {
     if (activeTab !== "qibla" || !geo) return null;
     return qiblaBearing(geo.latitude, geo.longitude);
@@ -933,6 +1429,13 @@ export function App(): ReactElement {
 
   return (
     <div className="app-native-shell">
+      {showLaunchGreeting ? (
+        <div className="startup-salam" role="status" aria-live="polite">
+          <p className="startup-salam__text" lang="ar" dir="rtl">
+            السلام عليكم
+          </p>
+        </div>
+      ) : null}
       <a href="#main-content" className="skip-link">
         {t("skipToContent")}
       </a>
@@ -969,6 +1472,11 @@ export function App(): ReactElement {
           {error}
         </div>
       ) : null}
+      {audioAssetWarning ? (
+        <p className="status-chip status-chip--warning" role="alert">
+          {audioAssetWarning}
+        </p>
+      ) : null}
 
       <div className="live-region-polite" aria-live="polite" aria-atomic="true">
         {loading ? (
@@ -981,35 +1489,14 @@ export function App(): ReactElement {
         </p>
       ) : null}
 
-      {!scheduleDay || !nextPrayer ? null : (
-        <div
-          id="next"
-          className="next-banner"
-          role="region"
-          aria-label={t("nextPrayer")}
-        >
-          <div className="next-banner__main">
-            <div className="label">{t("nextPrayer")}</div>
-            <div className="name">
-              {t(prayerMsg(nextPrayer.key, "prayer"))}
-              <span className="next-banner__dot" aria-hidden>
-                ·
-              </span>
-              <time
-                className="next-banner__time"
-                dateTime={`${scheduleDay.date}T${scheduleDay.schedule[nextPrayer.key]}`}
-              >
-                {scheduleDay.schedule[nextPrayer.key]}
-              </time>
-            </div>
-          </div>
-          <div className="countdown" aria-live="polite">
-            {formatCountdownI18n(
-              nextPrayer.at.getTime() - nowTick.getTime(),
-              t
-            )}
-          </div>
-        </div>
+      {!scheduleDay ? null : (
+        <NextPrayerBanner
+          scheduleDay={scheduleDay}
+          t={t}
+          onPrayerElapsed={() => {
+            void loadPrayerTimes();
+          }}
+        />
       )}
 
       <section
@@ -1488,6 +1975,39 @@ export function App(): ReactElement {
         <h2 className="app-page-title">{t("tabSettings")}</h2>
         <p className="app-page-sub">{t("settingsSection")}</p>
       </header>
+      {nativeNotificationsEnabled && Capacitor.getPlatform() === "android" ? (
+        <section className="azan-guard" aria-label={t("azanGuardAria")}>
+          <h3 className="azan-guard__title">{t("azanGuardTitle")}</h3>
+          {hardBlockers.length > 0 ? (
+            <>
+              <p className="azan-guard__intro">
+                {t("azanGuardIntro")}
+              </p>
+              <ul className="azan-guard__list">
+                {hardBlockers.map((msg, idx) => (
+                  <li key={`${idx}-${msg}`} className="azan-guard__item">
+                    {msg}
+                  </li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                className="primary azan-guard__fix"
+                disabled={autoFixRunning}
+                onClick={() => {
+                  void applyAzanAutoFixes();
+                }}
+              >
+                {autoFixRunning ? t("azanGuardFixing") : t("azanGuardFixAll")}
+              </button>
+            </>
+          ) : (
+            <p className="status-chip status-chip--offline" role="status">
+              {t("azanGuardAllClear")}
+            </p>
+          )}
+        </section>
+      ) : null}
       <div className="settings-stack">
         <section
           className="settings-tile"
@@ -1601,6 +2121,54 @@ export function App(): ReactElement {
                 </div>
               </li>
             </ol>
+            {developerToolsEnabled ? (
+              <div className="release-health" role="region" aria-label="Release health check">
+                <div className="release-health__header">
+                  <h4 className="release-health__title">Release health check</h4>
+                  <div className="android-setup__actions">
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() => void runReleaseHealthCheck()}
+                      disabled={releaseHealthRunning}
+                    >
+                      {releaseHealthRunning ? "Checking..." : "Run check"}
+                    </button>
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() => void copyReleaseDiagnosticReport()}
+                      disabled={releaseDiagnostics.length === 0}
+                    >
+                      {releaseReportCopied ? "Copied" : "Copy report"}
+                    </button>
+                  </div>
+                </div>
+                {releaseHealthCheckedAt ? (
+                  <p className="release-health__stamp">
+                    Last check: {releaseHealthCheckedAt.toLocaleTimeString()}
+                  </p>
+                ) : null}
+                {releaseDebugMessage ? (
+                  <p
+                    className={`status-chip ${
+                      releaseDebugOk ? "status-chip--offline" : "status-chip--warning"
+                    }`}
+                  >
+                    {releaseDebugMessage}
+                  </p>
+                ) : null}
+                {releaseDiagnostics.length > 0 ? (
+                  <ul className="azan-guard__list">
+                    {releaseDiagnostics.map((row) => (
+                      <li key={row.id} className="azan-guard__item">
+                        [{row.status.toUpperCase()}] {row.label}: {row.detail}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className="notify-actions">
@@ -1901,6 +2469,15 @@ export function App(): ReactElement {
           />
           {t("playAdhanOnNotify")}
         </label>
+        {azanBlockingReason ? (
+          <p className="status-chip status-chip--warning" role="status">
+            {azanBlockingReason}
+          </p>
+        ) : (
+          <p className="status-chip status-chip--offline" role="status">
+            Azan playback is ready with current settings.
+          </p>
+        )}
         {!azanPlaying ? null : (
           <div
             id="adhan-playing"

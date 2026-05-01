@@ -358,6 +358,11 @@ export const AZAN_VOICE_GROUPS: { groupId: string; groupLabel: string; voices: A
 
 export const AZAN_VOICES: AzanVoiceDef[] = AZAN_VOICE_GROUPS.flatMap((g) => g.voices);
 
+/** Unique bundled audio filenames referenced by voice definitions. */
+export function getBundledAzanOfflineFiles(): string[] {
+  return [...new Set(AZAN_VOICES.map((v) => v.offlineFile).filter(Boolean))];
+}
+
 /** Label for the current voice id (for the picker button). */
 export function getAzanVoiceLabel(voiceId: string): string {
   for (const g of AZAN_VOICE_GROUPS) {

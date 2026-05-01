@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "npm run icons",
+    "prebuild": "npm run validate:assets && npm run icons",
     "build": "tsc && vite build",
+    "validate:assets": "node scripts/validate-audio-assets.mjs",
+    "validate:playstore": "node scripts/validate-playstore-readiness.mjs",
+    "release:preflight": "npm run validate:assets && npm run validate:playstore && npm run build",
     "icons": "node scripts/generate-pwa-icons.mjs",
     "azan-audio": "node scripts/fetch-azan-audio.mjs",
     "preview": "vite preview",

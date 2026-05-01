@@ -26,21 +26,30 @@ export interface NativeAzanPlugin {
     volume: number;
     alarms: { id: number; atMs: number; key: PrayerKey; audioUrl: string }[];
   }): Promise<void>;
+  verifyRawAssets(options: { files: string[] }): Promise<{ missing: string[] }>;
 }
 
 const NativeAzan = registerPlugin<NativeAzanPlugin>("NativeAzan");
 
 // Versioned IDs: Android channels keep sound settings after creation.
 // Bump when changing sound/importance so devices pick up new channel defaults.
-const CHANNEL_LOUD = "ctp-prayer-alarm-v1";
-const CHANNEL_QUIET = "ctp-prayer-quiet-v1";
+const CHANNEL_LOUD = "ctp-prayer-alarm-v3";
+const CHANNEL_QUIET = "ctp-prayer-quiet-v3";
 /** Sound off, device vibration on (Android 8+ channel). */
-const CHANNEL_VIBRATE = "ctp-prayer-vibrate-v1";
+const CHANNEL_VIBRATE = "ctp-prayer-vibrate-v3";
+/** iOS default notification sound. Android uses channel default sound. */
+export const NOTIFICATION_SOUND = "default";
 
 /** Old channel ids (pre alarm-style audio); delete so Android recreates with patched plugin behavior. */
 const LEGACY_CHANNEL_IDS = [
   "prayer-times-v2",
   "prayer-times-quiet-v2",
+  "ctp-prayer-alarm-v1",
+  "ctp-prayer-quiet-v1",
+  "ctp-prayer-vibrate-v1",
+  "ctp-prayer-alarm-v2",
+  "ctp-prayer-quiet-v2",
+  "ctp-prayer-vibrate-v2",
 ];
 
 /** Apple limits pending local notifications (≈64); stay under with margin. */
@@ -102,7 +111,6 @@ async function ensureChannels(): Promise<void> {
     importance: 5,
     visibility: 1,
     vibration: true,
-    sound: "azan_notify.wav",
   });
   await LocalNotifications.createChannel({
     id: CHANNEL_QUIET,
@@ -128,10 +136,19 @@ function channelAndSoundForNotifyMode(mode: NotifyMode): {
   channelId: string;
   sound?: string;
 } {
+  const isAndroid = Capacitor.getPlatform() === "android";
   switch (mode) {
     case "full":
+      // Android "full" uses NativeAzan exact alarms for long playback.
+      // Keep reminder audible on default channel as a safety fallback in case
+      // OEM background limits block the azan foreground service.
+      return isAndroid
+        ? { channelId: CHANNEL_LOUD, sound: undefined }
+        : { channelId: CHANNEL_LOUD, sound: NOTIFICATION_SOUND };
     case "notify_only":
-      return { channelId: CHANNEL_LOUD, sound: "azan_notify.wav" };
+      return isAndroid
+        ? { channelId: CHANNEL_LOUD, sound: undefined }
+        : { channelId: CHANNEL_LOUD, sound: NOTIFICATION_SOUND };
     case "vibrate":
       return { channelId: CHANNEL_VIBRATE, sound: undefined };
     case "silent":
@@ -257,6 +274,24 @@ export async function cancelAllNativePrayerNotifications(): Promise<void> {
     } catch {
       /* ignore */
     }
+  }
+}
+
+/**
+ * Verifies Android bundled `res/raw` audio files exist in the installed app.
+ * Returns missing filenames (with extension) so UI can warn the user/admin.
+ */
+export async function verifyAndroidRawAudioAssets(
+  files: string[]
+): Promise<string[]> {
+  if (Capacitor.getPlatform() !== "android") return [];
+  try {
+    const wanted = [...new Set(files.map((f) => f.trim()).filter(Boolean))];
+    if (wanted.length === 0) return [];
+    const result = await NativeAzan.verifyRawAssets({ files: wanted });
+    return Array.isArray(result?.missing) ? result.missing : [];
+  } catch {
+    return [];
   }
 }
 
@@ -437,7 +472,6 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
   }
 
   await ensureChannels();
-  await cancelAllNativePrayerNotifications();
   if (myGen !== scheduleNativePrayerNotificationsGeneration) return;
 
   const {
@@ -451,6 +485,7 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
   } = options;
 
   if (keys.size === 0) {
+    await cancelAllNativePrayerNotifications();
     if (Capacitor.getPlatform() === "android") {
       try {
         await NativeAzan.sync({
@@ -513,17 +548,8 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
   }
 
   if (notifications.length === 0) {
-    logNotificationDebug("no future notifications to schedule (check network / city)");
-    if (
-      myGen === scheduleNativePrayerNotificationsGeneration &&
-      Capacitor.getPlatform() === "android"
-    ) {
-      try {
-        await syncAndroidAzanMediaAlarms(androidAzan, []);
-      } catch {
-        /* ignore */
-      }
-    }
+    // Keep previous schedule when refresh failed (network/city/API) so reminders do not disappear.
+    logNotificationDebug("no future notifications to schedule; preserving existing schedule");
     return;
   }
 
@@ -553,6 +579,8 @@ export async function scheduleNativePrayerNotificationsAhead(options: {
   if (myGen !== scheduleNativePrayerNotificationsGeneration) return;
 
   try {
+    await cancelAllNativePrayerNotifications();
+    if (myGen !== scheduleNativePrayerNotificationsGeneration) return;
     await scheduleInChunks(toSchedule);
     logNotificationDebug(
       "schedule complete",
